@@ -34,6 +34,7 @@ public class findMate extends behaviour {
 						listOfPotentialMates.get(rndIndex).setMateFound(true, owner);
 						owner.setMateFound(true, listOfPotentialMates.get(rndIndex));
 						
+						runtime.createChild(owner, listOfPotentialMates.get(rndIndex));
 					}
 				}
 				else {

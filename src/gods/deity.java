@@ -37,6 +37,20 @@ public class deity {
 		behaviours.add(new createConcept(this));
 		willingness = random(30,70);
 	}
+	
+	public deity (String name, int DvR, int Sex, int Sexuality, LinkedList<deity> parents) {
+		this.name = name;
+		this.domains = domains;
+		this.divineRank = DvR;
+		this.gender = Sex;
+		this.sexuality = sexuality;
+
+		behaviours = new LinkedList<behaviour>();
+
+		behaviours.add(new findMate(this));
+		behaviours.add(new createConcept(this));
+		willingness = random(30,70);		
+	}
 
 	public void addBehaviour(behaviour behaviour) {
 		this.behaviours.add(behaviour);
@@ -92,11 +106,22 @@ public class deity {
 		return name;
 	}
 
+	public LinkedList<deity> getChildren(){
+		return children;
+	}
+	
+	public int getDvR() {
+		return divineRank;
+	}
+	
 	public boolean seduce(deity seducer) {
 		int modifier = 0;
 		for(deity parent:parents) {
 			if(parent == seducer) {
 				modifier +=20;
+			}
+			if(parent.getChildren().contains(seducer)) {
+				modifier +=5;
 			}
 		}
 		
