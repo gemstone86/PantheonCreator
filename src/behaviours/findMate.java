@@ -14,7 +14,7 @@ public class findMate extends behaviour {
 	}
 
 	@Override
-	public void act(runtime runtime) {
+	public boolean act(runtime runtime) {
 		System.out.println("\t\t"+owner.getName() + " tries to find a mate");
 
 		if(!owner.checkIfMateFound()) {
@@ -36,6 +36,7 @@ public class findMate extends behaviour {
 					owner.setMateFound(true, listOfPotentialMates.get(rndIndex));
 
 					main.runtime.createChild(owner, listOfPotentialMates.get(rndIndex));
+					return true;
 				}
 
 				else {
@@ -46,5 +47,6 @@ public class findMate extends behaviour {
 		else {
 //			System.out.println("\t\t\tI have been seduced already");
 		}
+		return false;
 	}
 }

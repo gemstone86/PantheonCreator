@@ -14,10 +14,10 @@ public class createConcept extends behaviour{
 	}
 
 	@Override
-	public void act(runtime runtime) {
+	public boolean act(runtime runtime) {
 		// TODO Auto-generated method stub
 		System.out.println("\t\t"+owner.getName() + " creates a concept");
-		
+		return false;
 	}
 
 }

@@ -69,7 +69,7 @@ public class runtime {
 
 	private static String[] listOfDomains = {"Good", "Chaos", "Evil", "Order", "Creation", "Destruction", "Storms", "Health", "Disease", "Anger", 
 			"Air", "Fire", "Earth", "Water", "Ocean", "Nature", "Animals", "Law", "War", "Peace", "Justice", "Sun", "Moon", "Death", "Fertility",
-			"Harvest", "Beauty", "Luck", "Wealth",};
+			"Harvest", "Beauty", "Luck", "Wealth","Magi", "Travel", "Mountains"};
 	
 	private static LinkedList<String> worldConcepts = new LinkedList<String>();
 	
