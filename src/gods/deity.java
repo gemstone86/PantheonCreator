@@ -213,6 +213,19 @@ public class deity {
 			System.out.println("-----------------------------------"+this.getName() + " has died");
 			return true;
 		}
+		
+		if(this.getBehaviour().size() <1) {
+			findMotivation();
+		}
 		return false;
 	}
+	
+	public LinkedList<behaviour> getBehaviour(){
+		return behaviours;
+	}
+
+	public void findMotivation() {
+		
+	}
+	
 }
