@@ -46,12 +46,12 @@ public class deity {
 
 		behaviours = new LinkedList<behaviour>();
 
-		behaviours.add(new findMate(this));
+		if(DvR > 4)behaviours.add(new findMate(this));
 		behaviours.add(new createConcept(this));
 		willingness = random(30,70);
 
 		this.parents = parents;
-		
+
 		//add code to fetch 1-2 domain from father, 1-2 domain from mother and then 1-2 random domains.
 		inherit();
 	}
@@ -81,6 +81,10 @@ public class deity {
 		return domains;
 	}
 
+	public LinkedList<deity> getParents(){
+		return parents;
+	}
+
 	private void inherit() {
 		for(deity parent:parents) {
 			inheritDomain(parent);
@@ -106,9 +110,22 @@ public class deity {
 			return "Asexual";
 		}
 	}
-	
+
+	public String getSexualityNoun(int sex, int sexuality) {
+		if(sex == sexuality && sex != 2) {
+			return "Homosexual";
+		}
+		if(sex == 1 && sexuality == 3 || sex == 3 && sexuality ==1 ) {
+			return "Straight";
+		}
+		if(sex == 2) {
+			return "Pansexual";
+		}
+		return "Bisexual";
+	}
+
 	public void deityActs(runtime runtime) {
-		System.out.println("\t"+this.getName() + " (" +getGenderPronoun(getGender()) +") " + " "+this.getDomains().toString() + " acts");
+		System.out.println("\t"+this.getName() + " (Age: "+age+", DvR " + getDvR()+")" + " (" + getSexualityNoun(gender, sexuality) + " " +getGenderPronoun(getGender()) +") " + " "+this.getDomains().toString() + " acts");
 		for(behaviour i:behaviours) {
 			i.act(runtime);
 		}
@@ -189,8 +206,13 @@ public class deity {
 		children.add(newDeity);
 	}
 
-	public void resetMe() {
+	public boolean update() {
 		mateFound = false;
+		
+		if(random(1,100)<age) {
+			System.out.println("-----------------------------------"+this.getName() + " has died");
+			return true;
+		}
+		return false;
 	}
-	
 }

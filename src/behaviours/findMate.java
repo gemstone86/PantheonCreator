@@ -18,7 +18,7 @@ public class findMate extends behaviour {
 		System.out.println("\t\t"+owner.getName() + " tries to find a mate");
 
 		if(!owner.checkIfMateFound()) {
-			System.out.println("\t\tNo Mate already found");
+//			System.out.println("\t\tNo Mate already found");
 			LinkedList<deity> listOfPotentialMates = new LinkedList<deity>();
 			for(deity i:runtime.getListOfDeities()) {
 				//build list of potential mates in this generation
@@ -39,12 +39,12 @@ public class findMate extends behaviour {
 				}
 
 				else {
-					System.out.println("\t\t\tCouldn't find any mates");
+					//System.out.println("\t\t\tCouldn't find any mates");
 				}
 			}
 		}
 		else {
-			System.out.println("\t\t\tI have been seduced already");
+//			System.out.println("\t\t\tI have been seduced already");
 		}
 	}
 }

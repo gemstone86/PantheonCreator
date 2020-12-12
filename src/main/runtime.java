@@ -47,6 +47,9 @@ public class runtime {
 	public static void removeDeity(int index) {
 		listOfDeities.remove(index);
 	}
+	public static void removeDeity(deity deity) {
+		listOfDeities.remove(deity);
+	}
 
 	public static LinkedList<deity> getListOfDeities(){
 		return listOfDeities;
