@@ -1,9 +1,6 @@
 
 package main;
 
-import java.util.LinkedList;
-import gods.*;
-
 import gods.deity;
 
 public class pantheonCreator {
@@ -39,18 +36,18 @@ public class pantheonCreator {
 				deity.deityActs(runtime);
 			}
 			for(int j = 0; j<runtime.getListOfDeities().size();j++) {
-				if(runtime.getListOfDeities().get(j).update()) {
-					runtime.getListOfDeities().remove(j);
+				if(main.runtime.getListOfDeities().get(j).update()) {
+					main.runtime.getListOfDeities().remove(j);
 				}
 				
 			}
-			for(deity newDeity:runtime.getNextGen()) {
-				runtime.addDeity(newDeity);
+			for(deity newDeity:main.runtime.getNextGen()) {
+				main.runtime.addDeity(newDeity);
 			}
-			runtime.resetNextGen();
+			main.runtime.resetNextGen();
 		}
 		System.out.println("---Final Pantheon---");
-		for(deity deity:runtime.getListOfDeities()) {
+		for(deity deity:main.runtime.getListOfDeities()) {
 			System.out.println("\t"+deity.getName() + " (DvR " + deity.getDvR()+")" + " (" +deity.getGenderPronoun(deity.getGender()) +") " + " "+deity.getDomains().toString());
 			for(deity parent:deity.getParents()) {
 				System.out.println("\t\tParent:" + parent.getName());

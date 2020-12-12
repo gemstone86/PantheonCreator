@@ -71,6 +71,13 @@ public class runtime {
 			"Air", "Fire", "Earth", "Water", "Ocean", "Nature", "Animals", "Law", "War", "Peace", "Justice", "Sun", "Moon", "Death", "Fertility",
 			"Harvest", "Beauty", "Luck", "Wealth",};
 	
+	private static LinkedList<String> worldConcepts = new LinkedList<String>();
+	
+	
+	public static LinkedList<String> getListOfConcept(){
+		return worldConcepts;
+	}
+	
 	public static String randomDomain() {
 		return listOfDomains[getRandom(0,listOfDomains.length)];
 	}
