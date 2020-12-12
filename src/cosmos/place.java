@@ -4,7 +4,6 @@ import gods.*;
 
 public abstract class place {
 
-
 	public abstract String getName();
 	
 	public abstract void setName();
