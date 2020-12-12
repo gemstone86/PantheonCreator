@@ -8,23 +8,23 @@ import main.runtime;
 public class deity {
 
 	private String name;
-	private String domains[];
+	private LinkedList<String> domains = new LinkedList<String>();
 	private int divineRank;
-	private LinkedList<deity> parents;
-	private LinkedList<deity> children;
+	private LinkedList<deity> parents = new LinkedList<deity>();
+	private LinkedList<deity> children = new LinkedList<deity>();
 	private LinkedList<behaviour> behaviours;
 	private boolean mateFound = false;
 	private int willingness;
 	private deity mate;
 	private int age = 0;
-	
-	
+
+
 	private int sexuality;
 	private int gender;
 
 	private int random = (int) Math.random();
 
-	public deity(String name, String[] domains, int DvR, int Sex, int sexuality) {
+	public deity(String name, LinkedList<String> domains, int DvR, int Sex, int sexuality) {
 		this.name = name;
 		this.domains = domains;
 		this.divineRank = DvR;
@@ -37,27 +37,78 @@ public class deity {
 		behaviours.add(new createConcept(this));
 		willingness = random(30,70);
 	}
-	
+
 	public deity (String name, int DvR, int Sex, int Sexuality, LinkedList<deity> parents) {
 		this.name = name;
-		this.domains = domains;
 		this.divineRank = DvR;
 		this.gender = Sex;
-		this.sexuality = sexuality;
+		this.sexuality = Sexuality;
 
 		behaviours = new LinkedList<behaviour>();
 
 		behaviours.add(new findMate(this));
 		behaviours.add(new createConcept(this));
-		willingness = random(30,70);		
+		willingness = random(30,70);
+
+		this.parents = parents;
+		
+		//add code to fetch 1-2 domain from father, 1-2 domain from mother and then 1-2 random domains.
+		inherit();
+	}
+
+	private void inheritDomain(deity parent) {
+		if(parent.getDomains().size() > 1) {
+			LinkedList<String> inheritance = new LinkedList<String>();
+
+			for(String element:parent.getDomains()) {
+				inheritance.add(element);
+			}
+
+			int numOfInheritance = random(1,2);
+
+			for(int index = 0; index < numOfInheritance; index++) {
+				int rnd = random(1,inheritance.size());
+				domains.add(inheritance.get(rnd));
+				inheritance.remove(rnd);
+			}
+		}
+		else {
+			domains.add(parent.getDomains().element());
+		}
+	}
+
+	public LinkedList<String> getDomains(){
+		return domains;
+	}
+
+	private void inherit() {
+		for(deity parent:parents) {
+			inheritDomain(parent);
+		}
+		int randomDomains = random(1,2);
+		for(int i = 0; i<randomDomains;i++) {
+			domains.add(runtime.randomDomain());
+		}
 	}
 
 	public void addBehaviour(behaviour behaviour) {
 		this.behaviours.add(behaviour);
 	}
 
+	public String getGenderPronoun(int sex) {
+		if(sex == 1) {
+			return "Male";
+		}
+		else if (sex == 3) {
+			return "Female";
+		}
+		else {
+			return "Asexual";
+		}
+	}
+	
 	public void deityActs(runtime runtime) {
-		System.out.println("\t"+this.getName() + " acts");
+		System.out.println("\t"+this.getName() + " (" +getGenderPronoun(getGender()) +") " + " "+this.getDomains().toString() + " acts");
 		for(behaviour i:behaviours) {
 			i.act(runtime);
 		}
@@ -97,7 +148,7 @@ public class deity {
 		mateFound = false;
 		mate = null;
 	}
-	
+
 	public int random(int start, int end) {
 		return (int) ((Math.random() * (end - start)) + start);
 	}
@@ -109,26 +160,37 @@ public class deity {
 	public LinkedList<deity> getChildren(){
 		return children;
 	}
-	
+
 	public int getDvR() {
 		return divineRank;
 	}
-	
+
 	public boolean seduce(deity seducer) {
 		int modifier = 0;
-		for(deity parent:parents) {
-			if(parent == seducer) {
-				modifier +=20;
-			}
-			if(parent.getChildren().contains(seducer)) {
-				modifier +=5;
+		if(parents != null) {
+			for(deity parent:parents) {
+
+				if(parent == seducer) {
+					modifier +=20;
+				}
+				if(parent.getChildren().contains(seducer)) {
+					modifier +=5;
+				}
 			}
 		}
-		
+
 		if((random(1,100)+modifier) <= willingness) {
 			return true;
 		}
 		return false;
 	}
 
+	public void addChild(deity newDeity) {
+		children.add(newDeity);
+	}
+
+	public void resetMe() {
+		mateFound = false;
+	}
+	
 }

@@ -33,9 +33,19 @@ public class pantheonCreator {
 	public void run() {
 		runtime runtime = new runtime();
 		
-		for(int i = 0; i<2; i++) {
+		for(int i = 0; i<5; i++) {
 			System.out.println("----" + "Generation " + i +"----");
-			main.runtime.getListOfDeities().get(i).deityActs(runtime);
+			for(deity deity:runtime.getListOfDeities()) {
+				deity.deityActs(runtime);
+			}
+			for(deity deity:runtime.getListOfDeities()) {
+				deity.resetMe();
+			}
+			for(deity newDeity:runtime.getNextGen()) {
+				runtime.addDeity(newDeity);
+			}
+			runtime.resetNextGen();
+			
 		}
 	}
 	

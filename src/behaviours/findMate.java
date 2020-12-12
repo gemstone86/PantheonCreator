@@ -18,25 +18,26 @@ public class findMate extends behaviour {
 		System.out.println("\t\t"+owner.getName() + " tries to find a mate");
 
 		if(!owner.checkIfMateFound()) {
-
+			System.out.println("\t\tNo Mate already found");
+			LinkedList<deity> listOfPotentialMates = new LinkedList<deity>();
 			for(deity i:runtime.getListOfDeities()) {
 				//build list of potential mates in this generation
-				LinkedList<deity> listOfPotentialMates = new LinkedList<deity>();
+
 				if( i.checkCompatibility(owner.getGender() )){
 					listOfPotentialMates.add(i);
 				}
+			}
+			if(listOfPotentialMates.size() > 0) {
+				int rndIndex = main.runtime.getRandom(0,listOfPotentialMates.size()-1);
 
-				if(listOfPotentialMates.size() > 0) {
-					int rndIndex = runtime.getRandom(0,listOfPotentialMates.size()-1);
+				//seduce potential mate
+				if(listOfPotentialMates.get(rndIndex).seduce(owner)) {
+					listOfPotentialMates.get(rndIndex).setMateFound(true, owner);
+					owner.setMateFound(true, listOfPotentialMates.get(rndIndex));
 
-					//seduce potential mate
-					if(listOfPotentialMates.get(rndIndex).seduce(owner)) {
-						listOfPotentialMates.get(rndIndex).setMateFound(true, owner);
-						owner.setMateFound(true, listOfPotentialMates.get(rndIndex));
-						
-						runtime.createChild(owner, listOfPotentialMates.get(rndIndex));
-					}
+					main.runtime.createChild(owner, listOfPotentialMates.get(rndIndex));
 				}
+
 				else {
 					System.out.println("\t\t\tCouldn't find any mates");
 				}
