@@ -30,7 +30,9 @@ public class pantheonCreator {
 	public void run() {
 		runtime runtime = new runtime();
 
-		for(int i = 0; i<5; i++) {
+		int generations = 10;
+		
+		for(int i = 0; i<generations; i++) {
 			System.out.println("----" + "Generation " + i +"----");
 			for(deity deity:runtime.getListOfDeities()) {
 				deity.deityActs();

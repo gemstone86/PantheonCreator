@@ -9,8 +9,7 @@ public class findMate extends behaviour {
 
 	private deity owner;
 	private runtime context;
-	
-	
+		
 	public findMate(deity deity, runtime context) {
 		owner = deity;
 		this.setContext(context);

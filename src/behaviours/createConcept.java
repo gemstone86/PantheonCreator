@@ -12,7 +12,7 @@ public class createConcept extends behaviour{
 	
 	public createConcept(deity deity, runtime context) {
 		owner = deity;
-		this.setContext(context);
+		this.context = context;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -20,7 +20,8 @@ public class createConcept extends behaviour{
 	public boolean act() {
 		// TODO Auto-generated method stub
 		System.out.println("\t\t"+owner.getName() + " creates a concept");
-		return false;
+		System.out.println(context);
+		return true;
 	}
 
 }

@@ -5,15 +5,13 @@ import main.runtime;
 
 public class findMotivation extends behaviour{
 
-	
+	private deity owner;
 	private runtime context;
-	
+
 	public findMotivation(deity deity, runtime context) {
 		owner = deity;
 		this.setContext(context);
 	}
-
-	private deity owner;
 
 	@Override
 	public boolean act() {

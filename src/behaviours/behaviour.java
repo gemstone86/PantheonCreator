@@ -21,4 +21,7 @@ public class behaviour {
 		this.context = context;
 	}
 	
+	public deity getOwner() {
+		return owner;
+	}
 }
