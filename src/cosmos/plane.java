@@ -46,4 +46,14 @@ public class plane extends place{
 		
 	}
 
+	@Override
+	public place getParentPlane() {
+		return parentPlane;
+	}
+
+	@Override
+	public deity getCreator() {
+		return creator;
+	}
+
 }

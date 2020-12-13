@@ -1,21 +1,53 @@
 package cosmos;
 
+import java.util.LinkedList;
+
 import gods.*;
 
-public abstract class place {
+public class place {
 
-	public abstract String getName();
+	private place parentPlane;
+	private deity creator;
 	
-	public abstract void setName();
+	LinkedList<place> connections = new LinkedList<place>();
 	
-	public abstract place addConnection(place newConnection);
+	private String name;
 	
-	public abstract void removeConnection(int index);
+	public String getName() {
+		return name;
+	}
 	
-	public abstract place getConnections();
+	public void setName(String name) {
+		this.name = name;
+	}
 	
-	public abstract void setOwner(deity deity);
+	public void addConnection(place newConnection) {
+		connections.add(newConnection);
+	}
 	
-	public abstract void removeOwner();
+	public void removeConnection(int index) {
+		connections.remove(index);
+	}
+	
+	public LinkedList<place> getConnections() {
+		return connections;
+	}
+	
+	public void setOwner(deity deity) {
+		this.creator = deity;
+	}
+	
+	public void removeOwner() {
+		this.creator = null;
+	}
+	
+	public place getParentPlane() {
+		return parentPlane;
+	}
+	
+	public deity getCreator() {
+		return creator;
+	}
+	
 	
 }

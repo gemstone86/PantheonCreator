@@ -33,6 +33,8 @@ public class deity {
 
 		behaviours = new LinkedList<behaviour>();
 
+		behaviours.add(new findMotivation(this));
+		
 		willingness = random(30,70);
 	}
 
@@ -43,6 +45,8 @@ public class deity {
 		this.sexuality = Sexuality;
 
 		behaviours = new LinkedList<behaviour>();
+		
+		behaviours.add(new findMotivation(this));
 
 		willingness = random(30,70);
 
@@ -122,7 +126,6 @@ public class deity {
 
 	public void deityActs(runtime runtime) {
 		System.out.println("\t"+this.getName() + " (Age: "+age+", DvR " + getDvR()+")" + " (" + getSexualityNoun(gender, sexuality) + " " +getGenderPronoun(getGender()) +") " + " "+this.getDomains().toString() + " acts");
-		findMotivation();
 		for(int i = 0; i<behaviours.size(); i++) {
 			behaviour action = behaviours.get(i);
 			boolean satisfied = action.act(runtime);
@@ -215,24 +218,10 @@ public class deity {
 			return true;
 		}
 
-
-		findMotivation();
 		return false;
 	}
 
 	public LinkedList<behaviour> getBehaviour(){
 		return behaviours;
 	}
-
-	public void findMotivation() {
-		if(this.getBehaviour().size() <1) {
-			int rnd = random(1,5);
-			switch(rnd) {
-			case 1: this.addBehaviour(new findMate(this)); System.out.println("\t\tI want to find a mate"); break;
-			case 2: this.addBehaviour(new createConcept(this)); System.out.println("\t\tI want to create a concept"); break;
-			default: System.out.println("\t\tI want... nothing for now"); break;
-			}
-		}
-	}
-
 }

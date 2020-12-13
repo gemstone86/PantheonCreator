@@ -10,7 +10,7 @@ public class findMate extends behaviour {
 	private deity owner;
 
 	public findMate(deity deity) {
-		this.owner = deity;
+		owner = deity;
 	}
 
 	@Override

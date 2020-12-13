@@ -10,7 +10,8 @@ public class createConcept extends behaviour{
 	private deity owner;
 	
 	public createConcept(deity deity) {
-		this.owner = deity;
+		owner = deity;
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
