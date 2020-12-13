@@ -1,7 +1,6 @@
 package cosmos;
 
-public class cosmos {
+public class cosmos extends place{
 
-	
 	
 }

@@ -20,8 +20,8 @@ public class runtime {
 		ureDomains.add(randomDomain()); ureDomains.add(randomDomain()); ureDomains.add(randomDomain());
 		iraDomains.add(randomDomain()); iraDomains.add(randomDomain()); iraDomains.add(randomDomain());
 
-		addDeity(new deity(getName(1), ureDomains, 20, 1, 3));
-		addDeity(new deity(getName(3), iraDomains, 20, 3, 1));
+		addDeity(new deity(getName(1), ureDomains, 20, 1, 3, this));
+		addDeity(new deity(getName(3), iraDomains, 20, 3, 1, this));
 	}
 	public runtime(boolean debug) {
 		newPantheon();
@@ -31,27 +31,27 @@ public class runtime {
 		ureDomains.add("Creation"); ureDomains.add("Order"); ureDomains.add("Good");
 		iraDomains.add("Destruction"); iraDomains.add("Chaos"); iraDomains.add("Evil");
 
-		addDeity(new deity("Ure", ureDomains, 20, 1, 3));
-		addDeity(new deity("Ira", iraDomains, 20, 3, 1));
+		addDeity(new deity("Ure", ureDomains, 20, 1, 3, this));
+		addDeity(new deity("Ira", iraDomains, 20, 3, 1, this));
 	}
 
-	public static void newPantheon() {
+	public void newPantheon() {
 		listOfDeities = new LinkedList<deity>();
 		nextGeneration = new LinkedList<deity>();
 	}
 
-	public static void addDeity(deity deity) {
+	public void addDeity(deity deity) {
 		listOfDeities.add(deity);
 	}
 
-	public static void removeDeity(int index) {
+	public void removeDeity(int index) {
 		listOfDeities.remove(index);
 	}
-	public static void removeDeity(deity deity) {
+	public void removeDeity(deity deity) {
 		listOfDeities.remove(deity);
 	}
 
-	public static LinkedList<deity> getListOfDeities(){
+	public LinkedList<deity> getListOfDeities(){
 		return listOfDeities;
 	}
 
@@ -59,34 +59,34 @@ public class runtime {
 		return (int) ((Math.random() * (end - start)) + start);
 	}
 
-	private static String[] listOfMaleNames = {"Rao", "Re", "Meln", "Varu", "Kil","gahn", "Torak", "Freden", "medri", "vorn", "var", "Galden",
+	private String[] listOfMaleNames = {"Rao", "Re", "Meln", "Varu", "Kil","gahn", "Torak", "Freden", "medri", "vorn", "var", "Galden",
 			"Ilmater", "Helm", "Bvaal", "Nern", "Hur", "Her'u", "Sardor", "Akkad", "Mystr", "vreten", "vadir", "Turh", "Oda", "Zaes", 
 			"kvanir", "kurdor", "gherem", "Ure"};
 
-	private static String[] listOfFemaleNames = {"Basti", "Sekashi", "Sunra", "Vira", "friah", "tira", "Sia", "Ceira", "Curai","Sori", "Zora",
+	private String[] listOfFemaleNames = {"Basti", "Sekashi", "Sunra", "Vira", "friah", "tira", "Sia", "Ceira", "Curai","Sori", "Zora",
 			"Kitara", "Helena", "Herai", "Shira", "Isa", "Misani", "Bika", "Miranda", "Si", "Shu", "Iduna", "Hethia", "Bikra", "Zia", 
 			"Mitani", "Kara", "Sonia", "Ira"};
 
-	private static String[] listOfDomains = {"Good", "Chaos", "Evil", "Order", "Creation", "Destruction", "Storms", "Health", "Disease", "Anger", 
+	private String[] listOfDomains = {"Good", "Chaos", "Evil", "Order", "Creation", "Destruction", "Storms", "Health", "Disease", "Anger", 
 			"Air", "Fire", "Earth", "Water", "Ocean", "Nature", "Animals", "Law", "War", "Peace", "Justice", "Sun", "Moon", "Death", "Fertility",
 			"Harvest", "Beauty", "Luck", "Wealth","Magi", "Travel", "Mountains"};
 	
-	private static LinkedList<String> worldConcepts = new LinkedList<String>();
+	private LinkedList<String> worldConcepts = new LinkedList<String>();
 	
 	
-	public static LinkedList<String> getListOfConcept(){
+	public LinkedList<String> getListOfConcept(){
 		return worldConcepts;
 	}
 	
-	public static String randomDomain() {
+	public String randomDomain() {
 		return listOfDomains[getRandom(0,listOfDomains.length)];
 	}
 	
-	public static void resetGeneration() {
+	public void resetGeneration() {
 		nextGeneration = new LinkedList<deity>();
 	}
 
-	public static int generateSexuality(int mostCommon, int leastCommon) {
+	public int generateSexuality(int mostCommon, int leastCommon) {
 		int rnd = getRandom(1,100);
 		if(rnd < 6) {
 			return leastCommon;
@@ -97,7 +97,7 @@ public class runtime {
 		return mostCommon;
 	}
 
-	public static String getName(int sex){
+	public String getName(int sex){
 		if(sex == 1) {
 			return listOfMaleNames[getRandom(0,listOfMaleNames.length)];
 
@@ -115,7 +115,7 @@ public class runtime {
 		}
 	}
 
-	public static void createChild(deity father, deity mother) {
+	public void createChild(deity father, deity mother) {
 		LinkedList<deity> parents = new LinkedList<deity>();
 		parents.add(father);
 		parents.add(mother);
@@ -145,7 +145,7 @@ public class runtime {
 		int average = (father.getDvR()+mother.getDvR())/2;
 		int newDvR = getRandom(average-5,average+2);
 
-		deity newDeity = new deity(newName, newDvR, sex, sexuality, parents);
+		deity newDeity = new deity(newName, newDvR, sex, sexuality, parents, this);
 		
 		nextGeneration.add(newDeity);
 		

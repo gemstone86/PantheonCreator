@@ -8,19 +8,22 @@ import main.runtime;
 public class findMate extends behaviour {
 
 	private deity owner;
-
-	public findMate(deity deity) {
+	private runtime context;
+	
+	
+	public findMate(deity deity, runtime context) {
 		owner = deity;
+		this.setContext(context);
 	}
 
 	@Override
-	public boolean act(runtime runtime) {
+	public boolean act() {
 		System.out.println("\t\t"+owner.getName() + " tries to find a mate");
 
 		if(!owner.checkIfMateFound()) {
 //			System.out.println("\t\tNo Mate already found");
 			LinkedList<deity> listOfPotentialMates = new LinkedList<deity>();
-			for(deity i:runtime.getListOfDeities()) {
+			for(deity i:context.getListOfDeities()) {
 				//build list of potential mates in this generation
 
 				if( i.checkCompatibility(owner.getGender() )){
@@ -35,7 +38,7 @@ public class findMate extends behaviour {
 					listOfPotentialMates.get(rndIndex).setMateFound(true, owner);
 					owner.setMateFound(true, listOfPotentialMates.get(rndIndex));
 
-					main.runtime.createChild(owner, listOfPotentialMates.get(rndIndex));
+					context.createChild(owner, listOfPotentialMates.get(rndIndex));
 					return true;
 				}
 

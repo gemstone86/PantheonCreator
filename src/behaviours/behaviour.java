@@ -4,10 +4,21 @@ package behaviours;
 import gods.*;
 import main.runtime;
 
-public abstract class behaviour {
+public class behaviour {
 
 	private deity owner;
+	private runtime context;
 	
-	abstract public boolean act(runtime runtime);
+	public boolean act() {
+		return true;
+	}
+	
+	public runtime getContext() {
+		return context;
+	}
+	
+	public void setContext(runtime context) {
+		this.context = context;
+	}
 	
 }

@@ -17,14 +17,19 @@ public class deity {
 	private int willingness;
 	private deity mate;
 	private int age = 0;
-
+	private runtime context;
 
 	private int sexuality;
 	private int gender;
 
 	private int random = (int) Math.random();
 
-	public deity(String name, LinkedList<String> domains, int DvR, int Sex, int sexuality) {
+	public deity(String name, LinkedList<String> domains, int DvR, int Sex, int sexuality, runtime context) {
+
+		
+		this.context = context;
+		
+		
 		this.name = name;
 		this.domains = domains;
 		this.divineRank = DvR;
@@ -33,12 +38,13 @@ public class deity {
 
 		behaviours = new LinkedList<behaviour>();
 
-		behaviours.add(new findMotivation(this));
+		behaviours.add(new findMotivation(this, context));
 		
 		willingness = random(30,70);
 	}
 
-	public deity (String name, int DvR, int Sex, int Sexuality, LinkedList<deity> parents) {
+	public deity (String name, int DvR, int Sex, int Sexuality, LinkedList<deity> parents, runtime context) {
+		this.context = context;
 		this.name = name;
 		this.divineRank = DvR;
 		this.gender = Sex;
@@ -46,7 +52,7 @@ public class deity {
 
 		behaviours = new LinkedList<behaviour>();
 		
-		behaviours.add(new findMotivation(this));
+		behaviours.add(new findMotivation(this, context));
 
 		willingness = random(30,70);
 
@@ -91,7 +97,7 @@ public class deity {
 		}
 		int randomDomains = random(1,2);
 		for(int i = 0; i<randomDomains;i++) {
-			domains.add(runtime.randomDomain());
+			domains.add(context.randomDomain());
 		}
 	}
 
@@ -124,11 +130,11 @@ public class deity {
 		return "Bisexual";
 	}
 
-	public void deityActs(runtime runtime) {
+	public void deityActs() {
 		System.out.println("\t"+this.getName() + " (Age: "+age+", DvR " + getDvR()+")" + " (" + getSexualityNoun(gender, sexuality) + " " +getGenderPronoun(getGender()) +") " + " "+this.getDomains().toString() + " acts");
 		for(int i = 0; i<behaviours.size(); i++) {
 			behaviour action = behaviours.get(i);
-			boolean satisfied = action.act(runtime);
+			boolean satisfied = action.act();
 			if(satisfied) {
 				behaviours.remove(i);
 			}

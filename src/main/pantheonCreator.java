@@ -33,21 +33,21 @@ public class pantheonCreator {
 		for(int i = 0; i<5; i++) {
 			System.out.println("----" + "Generation " + i +"----");
 			for(deity deity:runtime.getListOfDeities()) {
-				deity.deityActs(runtime);
+				deity.deityActs();
 			}
 			for(int j = 0; j<runtime.getListOfDeities().size();j++) {
-				if(main.runtime.getListOfDeities().get(j).update()) {
-					main.runtime.getListOfDeities().remove(j);
+				if(runtime.getListOfDeities().get(j).update()) {
+					runtime.getListOfDeities().remove(j);
 				}
 				
 			}
 			for(deity newDeity:main.runtime.getNextGen()) {
-				main.runtime.addDeity(newDeity);
+				runtime.addDeity(newDeity);
 			}
 			main.runtime.resetNextGen();
 		}
 		System.out.println("---Final Pantheon---");
-		for(deity deity:main.runtime.getListOfDeities()) {
+		for(deity deity:runtime.getListOfDeities()) {
 			System.out.println("\t"+deity.getName() + " (DvR " + deity.getDvR()+")" + " (" +deity.getGenderPronoun(deity.getGender()) +") " + " "+deity.getDomains().toString());
 			for(deity parent:deity.getParents()) {
 				System.out.println("\t\tParent:" + parent.getName());

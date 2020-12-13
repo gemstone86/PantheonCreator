@@ -8,14 +8,16 @@ import main.runtime;
 public class createConcept extends behaviour{
 
 	private deity owner;
+	private runtime context;
 	
-	public createConcept(deity deity) {
+	public createConcept(deity deity, runtime context) {
 		owner = deity;
+		this.setContext(context);
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	public boolean act(runtime runtime) {
+	public boolean act() {
 		// TODO Auto-generated method stub
 		System.out.println("\t\t"+owner.getName() + " creates a concept");
 		return false;
