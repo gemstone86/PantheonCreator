@@ -15,6 +15,7 @@ public class deity {
 	private LinkedList<behaviour> behaviours;
 	private boolean mateFound = false;
 	private int willingness;
+	private int baseWillingness;
 	private deity mate;
 	private int age = 0;
 	private runtime context;
@@ -40,7 +41,8 @@ public class deity {
 
 		behaviours.add(new findMotivation(this, context));
 		
-		willingness = random(30,70);
+		baseWillingness = random(30,70);
+		willingness = baseWillingness;
 	}
 
 	public deity (String name, int DvR, int Sex, int Sexuality, LinkedList<deity> parents, runtime context) {
@@ -54,8 +56,9 @@ public class deity {
 		
 		behaviours.add(new findMotivation(this, context));
 
-		willingness = random(30,70);
-
+		baseWillingness = random(30,70);
+		willingness = baseWillingness;
+		
 		this.parents = parents;
 
 		//add code to fetch 1-2 domain from father, 1-2 domain from mother and then 1-2 random domains.
@@ -74,12 +77,12 @@ public class deity {
 
 			for(int index = 0; index < numOfInheritance; index++) {
 				int rnd = random(1,inheritance.size());
-				domains.add(inheritance.get(rnd));
+				addDomain(inheritance.get(rnd));
 				inheritance.remove(rnd);
 			}
 		}
 		else {
-			domains.add(parent.getDomains().element());
+			addDomain(parent.getDomains().element());
 		}
 	}
 
@@ -97,7 +100,7 @@ public class deity {
 		}
 		int randomDomains = random(1,2);
 		for(int i = 0; i<randomDomains;i++) {
-			domains.add(context.randomDomain());
+			addDomain(context.randomDomain());
 		}
 	}
 
@@ -207,8 +210,10 @@ public class deity {
 		}
 
 		if((random(1,100)+modifier) <= willingness) {
+			willingness = baseWillingness;
 			return true;
 		}
+		willingness+=2;
 		return false;
 	}
 
@@ -229,5 +234,14 @@ public class deity {
 
 	public LinkedList<behaviour> getBehaviour(){
 		return behaviours;
+	}
+	
+	public void addDomain(String domain) {
+		for(int i = 0; i<domains.size();i++) {
+			if(domain.equals(domains.get(i))){
+				return;
+			}
+		}
+		domains.add(domain);
 	}
 }

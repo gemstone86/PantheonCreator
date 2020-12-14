@@ -12,7 +12,7 @@ public class findMate extends behaviour {
 		
 	public findMate(deity deity, runtime context) {
 		owner = deity;
-		this.setContext(context);
+		this.context = context;
 	}
 
 	@Override
