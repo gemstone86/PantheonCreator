@@ -8,6 +8,8 @@ public class cosmos extends place{
 
 	private runtime context;
 	
+	private LinkedList<plane> underConstruction = new LinkedList<plane>();
+	
 	public cosmos(runtime context) {
 		super(context);
 	}
@@ -25,5 +27,21 @@ public class cosmos extends place{
 	
 	public String getRandomConcept() {
 		return createdConcepts.get(context.getRandom(0,createdConcepts.size()));
+	}
+	
+	public plane startBuildingPlane() {
+		plane newPlane = new plane(context);
+		newPlane.setName(context.getRandomPlaneName());
+		createdPlanes.add(newPlane);
+		
+		return newPlane;
+	}
+	
+	public LinkedList<plane> getPlanesUnderConstruction(){
+		return underConstruction;
+	}
+	
+	public int getConstructionSize() {
+		return underConstruction.size();
 	}
 }

@@ -16,6 +16,12 @@ public class nameGenerator {
 
 	}
 
+	private String[] malePrefix = {"Ra", "Re", "Set", "Ze", "Ga", "Fre", "Vo", "Ak", "Ur", "Kil", "Rak"};
+	private String[] maleSuffix = {"", "o", "or", "us", "otor", "meron", "kad", "ir", "es", "dran", "'ur", "'u", "rh"};
+	
+	private String[] planePrefix = {"Mid", "Olym", "Nifel", "Had", "Ker"};
+	private String[] planeSuffix = {"", "gard", "pus", "heim", "es", "as", "ren"};
+	
 	private String[] listOfMaleNames = {"Rao", "Re", "Meln", "Varu", "Kil","gahn", "Torak", "Freden", "medri", "vorn", "var", "Galden",
 			"Ilmater", "Helm", "Bvaal", "Nern", "Hur", "Her'u", "Sardor", "Akkad", "Mystr", "vreten", "vadir", "Turh", "Oda", "Zaes", 
 			"kvanir", "kurdor", "gherem", "Ure", "Hardran", "Rehdan","Normu"};
@@ -34,10 +40,10 @@ public class nameGenerator {
 	}
 
 
-	public String getName(int sex){
+	public String getRandomName(int sex){
 		if(sex == 1) {
-			return listOfMaleNames[context.getRandom(0,listOfMaleNames.length)];
-
+//			return listOfMaleNames[context.getRandom(0,listOfMaleNames.length)];
+			return malePrefix[context.getRandom(0,malePrefix.length)] + maleSuffix[context.getRandom(0, maleSuffix.length)];
 		}
 		else if(sex == 3) {
 			return listOfFemaleNames[context.getRandom(0,listOfFemaleNames.length)];
@@ -52,9 +58,11 @@ public class nameGenerator {
 		}
 	}
 
+	public String getRandomPlaneName() {
+		return planePrefix[context.getRandom(0,planePrefix.length)] + planeSuffix[context.getRandom(0,planeSuffix.length)];
+	}
 
 	public String getRandomDomainFromPool() {
-
 		if(conceptPool.size()<1) {
 			int rnd = context.getRandom(0, conceptPool.size());
 

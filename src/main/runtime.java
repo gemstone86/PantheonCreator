@@ -98,7 +98,7 @@ public class runtime {
 
 
 		String newName ="";
-		newName = nameGen.getName(sex);
+		newName = nameGen.getRandomName(sex);
 		
 		if(sex == 1) {
 			sexuality = generateSexuality(3,1);
@@ -110,10 +110,10 @@ public class runtime {
 		else if(sex == 2) {
 			sexuality = getRandom(1,3);
 			if(getRandom(1,2) == 1) {
-				newName = nameGen.getName(1);
+				newName = nameGen.getRandomName(1);
 			}
 			else {
-				newName = nameGen.getName(3);
+				newName = nameGen.getRandomName(3);
 			}
 			
 		}
@@ -144,7 +144,13 @@ public class runtime {
 		return nameGen.randomDomain();
 	}
 	
+	public String getRandomName() {
+		return nameGen.getRandomName(1);
+	}
 	
+	public String getRandomPlaneName() {
+		return nameGen.getRandomPlaneName();
+	}
 	
 	public cosmos getCosmos() {
 		return theCosmos;
