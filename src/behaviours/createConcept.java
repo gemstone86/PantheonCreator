@@ -20,7 +20,6 @@ public class createConcept extends behaviour{
 	public boolean act() {
 		// TODO Auto-generated method stub
 		System.out.println("\t\t"+owner.getName() + " creates a concept");
-		System.out.println(context);
 		return true;
 	}
 

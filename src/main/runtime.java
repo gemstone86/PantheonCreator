@@ -20,9 +20,10 @@ public class runtime {
 		ureDomains.add(randomDomain()); ureDomains.add(randomDomain()); ureDomains.add(randomDomain());
 		iraDomains.add(randomDomain()); iraDomains.add(randomDomain()); iraDomains.add(randomDomain());
 
-		addDeity(new deity(getName(1), ureDomains, 20, 1, 3, this));
-		addDeity(new deity(getName(3), iraDomains, 20, 3, 1, this));
+		ureDomains.add("Health");
+		iraDomains.add("Health");	
 	}
+	
 	public runtime(boolean debug) {
 		newPantheon();
 
