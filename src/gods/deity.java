@@ -3,10 +3,13 @@ package gods;
 import java.util.LinkedList;
 
 import behaviours.*;
+import cosmos.place;
 import main.runtime;
 
 public class deity {
 
+	
+	private boolean alive = true;
 	private String name;
 	private LinkedList<String> domains = new LinkedList<String>();
 	private int divineRank;
@@ -19,6 +22,8 @@ public class deity {
 	private deity mate;
 	private int age = 0;
 	private runtime context;
+	
+	private place homeplane;
 
 	private int sexuality;
 	private int gender;
@@ -226,6 +231,7 @@ public class deity {
 
 		if(random(1,100)<age) {
 			System.out.println("-----------------------------------"+this.getName() + " has died");
+			alive = false;
 			return true;
 		}
 
@@ -243,5 +249,17 @@ public class deity {
 			}
 		}
 		domains.add(domain);
+	}
+	
+	public String toString(){
+		return ("\t"+this.getName() + " (DvR " + this.getDvR()+")" + " (" +this.getGenderPronoun(this.getGender()) +") " + " "+this.getDomains().toString());
+	}
+	
+	public String finalToString() {
+		String returnString = "\t"+this.getName() + " (DvR " + this.getDvR()+")" + " (" +this.getGenderPronoun(this.getGender()) +") " + " "+this.getDomains().toString();
+		for(deity parent:getParents()) {
+			returnString += "\n\t\tParent:" + parent.getName();
+		}
+		return returnString;
 	}
 }

@@ -30,7 +30,7 @@ public class findMate extends behaviour {
 				}
 			}
 			if(listOfPotentialMates.size() > 0) {
-				int rndIndex = main.runtime.getRandom(0,listOfPotentialMates.size()-1);
+				int rndIndex = context.getRandom(0,listOfPotentialMates.size()-1);
 
 				//seduce potential mate
 				if(listOfPotentialMates.get(rndIndex).seduce(owner)) {

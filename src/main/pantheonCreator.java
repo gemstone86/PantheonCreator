@@ -43,18 +43,14 @@ public class pantheonCreator {
 				}
 				
 			}
-			for(deity newDeity:main.runtime.getNextGen()) {
+			for(deity newDeity:runtime.getNextGen()) {
 				runtime.addDeity(newDeity);
 			}
-			main.runtime.resetNextGen();
+			runtime.resetNextGen();
 		}
 		System.out.println("---Final Pantheon---");
 		for(deity deity:runtime.getListOfDeities()) {
-			System.out.println("\t"+deity.getName() + " (DvR " + deity.getDvR()+")" + " (" +deity.getGenderPronoun(deity.getGender()) +") " + " "+deity.getDomains().toString());
-			for(deity parent:deity.getParents()) {
-				System.out.println("\t\tParent:" + parent.getName());
-			}
+			System.out.println(deity.finalToString());
 		}
 	}
-
 }

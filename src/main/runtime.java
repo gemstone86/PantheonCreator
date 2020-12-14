@@ -2,26 +2,32 @@ package main;
 
 import java.util.LinkedList;
 
+import cosmos.cosmos;
 import gods.deity;
 
 public class runtime {
 
-	static LinkedList<deity> listOfDeities;
-	static LinkedList<deity> nextGeneration;
+	private LinkedList<deity> listOfDeities;
+	private LinkedList<deity> nextGeneration;
+	private cosmos theCosmos = new cosmos(this);
 
+	private nameGenerator nameGen;
 	boolean debug = false;
-
 
 	public runtime() {
 		newPantheon();
 
+		this.nameGen = new nameGenerator(this);
+		
 		LinkedList<String> ureDomains = new LinkedList<String>();
 		LinkedList<String> iraDomains = new LinkedList<String>();
-		ureDomains.add(randomDomain()); ureDomains.add(randomDomain()); ureDomains.add(randomDomain());
-		iraDomains.add(randomDomain()); iraDomains.add(randomDomain()); iraDomains.add(randomDomain());
 
-		ureDomains.add("Health");
-		iraDomains.add("Health");	
+		ureDomains.add(nameGen.randomDomain()); ureDomains.add(nameGen.randomDomain()); ureDomains.add(nameGen.randomDomain());
+		iraDomains.add(nameGen.randomDomain()); iraDomains.add(nameGen.randomDomain()); iraDomains.add(nameGen.randomDomain());
+
+		addDeity(new deity("Ure", ureDomains, 20, 1, 3, this));
+		addDeity(new deity("Ira", iraDomains, 20, 3, 1, this));
+		
 	}
 	
 	public runtime(boolean debug) {
@@ -56,31 +62,15 @@ public class runtime {
 		return listOfDeities;
 	}
 
-	public static int getRandom(int start, int end) {
+	public int getRandom(int start, int end) {
 		return (int) ((Math.random() * (end - start)) + start);
 	}
-
-	private String[] listOfMaleNames = {"Rao", "Re", "Meln", "Varu", "Kil","gahn", "Torak", "Freden", "medri", "vorn", "var", "Galden",
-			"Ilmater", "Helm", "Bvaal", "Nern", "Hur", "Her'u", "Sardor", "Akkad", "Mystr", "vreten", "vadir", "Turh", "Oda", "Zaes", 
-			"kvanir", "kurdor", "gherem", "Ure"};
-
-	private String[] listOfFemaleNames = {"Basti", "Sekashi", "Sunra", "Vira", "friah", "tira", "Sia", "Ceira", "Curai","Sori", "Zora",
-			"Kitara", "Helena", "Herai", "Shira", "Isa", "Misani", "Bika", "Miranda", "Si", "Shu", "Iduna", "Hethia", "Bikra", "Zia", 
-			"Mitani", "Kara", "Sonia", "Ira"};
-
-	private String[] listOfDomains = {"Good", "Chaos", "Evil", "Order", "Creation", "Destruction", "Storms", "Health", "Disease", "Anger", 
-			"Air", "Fire", "Earth", "Water", "Ocean", "Nature", "Animals", "Law", "War", "Peace", "Justice", "Sun", "Moon", "Death", "Fertility",
-			"Harvest", "Beauty", "Luck", "Wealth","Magi", "Travel", "Mountains"};
 	
 	private LinkedList<String> worldConcepts = new LinkedList<String>();
 	
 	
 	public LinkedList<String> getListOfConcept(){
 		return worldConcepts;
-	}
-	
-	public String randomDomain() {
-		return listOfDomains[getRandom(0,listOfDomains.length)];
 	}
 	
 	public void resetGeneration() {
@@ -98,24 +88,6 @@ public class runtime {
 		return mostCommon;
 	}
 
-	public String getName(int sex){
-		if(sex == 1) {
-			return listOfMaleNames[getRandom(0,listOfMaleNames.length)];
-
-		}
-		else if(sex == 3) {
-			return listOfFemaleNames[getRandom(0,listOfFemaleNames.length)];
-		}
-		else {
-			if(getRandom(1,2) == 1) {
-				return listOfMaleNames[getRandom(0,listOfMaleNames.length)];
-			}
-			else {
-				return listOfFemaleNames[getRandom(0,listOfFemaleNames.length)];
-			}
-		}
-	}
-
 	public void createChild(deity father, deity mother) {
 		LinkedList<deity> parents = new LinkedList<deity>();
 		parents.add(father);
@@ -126,22 +98,24 @@ public class runtime {
 
 
 		String newName ="";
+		newName = nameGen.getName(sex);
+		
 		if(sex == 1) {
-			newName = getName(1);
 			sexuality = generateSexuality(3,1);
 		}
 		else if(sex == 3) {
-			newName = getName(3);
+			
 			sexuality = generateSexuality(1,3);
 		}
 		else if(sex == 2) {
+			sexuality = getRandom(1,3);
 			if(getRandom(1,2) == 1) {
-				newName = getName(1);
+				newName = nameGen.getName(1);
 			}
 			else {
-				newName = getName(3);
+				newName = nameGen.getName(3);
 			}
-			sexuality = getRandom(1,3);
+			
 		}
 		int average = (father.getDvR()+mother.getDvR())/2;
 		int newDvR = getRandom(average-5,average+2);
@@ -155,10 +129,24 @@ public class runtime {
 		
 	}
 
-	public static LinkedList<deity> getNextGen(){
+	public LinkedList<deity> getNextGen(){
 		return nextGeneration;
 	}
-	public static void resetNextGen() {
+	public void resetNextGen() {
 		nextGeneration = new LinkedList<deity>();
+	}
+
+	public String getRandomDomainFromPool() {
+		return nameGen.getRandomDomainFromPool();
+	}
+	
+	public String randomDomain() {
+		return nameGen.randomDomain();
+	}
+	
+	
+	
+	public cosmos getCosmos() {
+		return theCosmos;
 	}
 }
