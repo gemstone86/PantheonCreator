@@ -44,4 +44,13 @@ public class cosmos extends place{
 	public int getConstructionSize() {
 		return underConstruction.size();
 	}
+	
+	public String toString() {
+		String returnMessage = "";
+		for(place plane:createdPlanes) {
+			returnMessage+=plane.toString();
+		}
+		
+		return returnMessage;
+	}
 }

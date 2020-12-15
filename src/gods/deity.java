@@ -30,7 +30,7 @@ public class deity {
 
 	private int random = (int) Math.random();
 
-	public deity(String name, LinkedList<String> domains, int DvR, int Sex, int sexuality, runtime context) {
+	public deity(String name, int DvR, int Sex, int sexuality, runtime context) {
 
 		
 		this.context = context;
@@ -252,11 +252,23 @@ public class deity {
 	}
 	
 	public String toString(){
-		return ("\t"+this.getName() + " (DvR " + this.getDvR()+")" + " (" +this.getGenderPronoun(this.getGender()) +") " + " "+this.getDomains().toString());
+		String status = "";
+		
+		if(!alive) {
+			status = "Dead ";
+		}
+		
+		return ("\t"+this.getName() + " (DvR " + this.getDvR()+")" + " (" +status+this.getGenderPronoun(this.getGender()) +") " + " "+this.getDomains().toString());
 	}
 	
 	public String finalToString() {
-		String returnString = "\t"+this.getName() + " (DvR " + this.getDvR()+")" + " (" +this.getGenderPronoun(this.getGender()) +") " + " "+this.getDomains().toString();
+		String status = "";
+		
+		if(!alive) {
+			status = "Dead ";
+		}
+		
+		String returnString = "\t"+this.getName() + " (DvR " + this.getDvR()+")" + " (" +status+this.getGenderPronoun(this.getGender()) +") " + " "+this.getDomains().toString();
 		for(deity parent:getParents()) {
 			returnString += "\n\t\tParent:" + parent.getName();
 		}

@@ -15,15 +15,18 @@ public class nameGenerator {
 		}
 	}
 
-	private String[] malePrefix = {"Ra", "Re", "Set", "Ze", "Ga", "Fre", "Vo", "Ak", "Ur", "Kil", "Rak"};
-	private String[] maleSuffix = {"", "o", "or", "us", "otor", "meron", "kad", "ir", "es", "dran", "'ur", "'u", "rh"};
+	private String[] malePrefix = {"Ra", "Re", "Set", "Ze", "Ga", "Fre", "Vo", "Ak", "Ur", "Kil", "Rak", "Mel", "Var", "Med", "Mys", "Il"};
+	private String[] maleSuffix = {"", "o", "or", "us", "otor", "meron", "kad", "ir", "es", "dran", "'ur", "'u", "rh", "tr", "an", "mater"};
 	
-	private String[] planePrefix = {"Mid", "Olym", "Nifel", "Had", "Ker"};
+	private String[] planePrefix = {"Mid", "Olym", "Nifel", "Had", "Ker", "Hel", "Har", "Rehn", "Elm"};
 	private String[] planeSuffix = {"", "gard", "pus", "heim", "es", "as", "ren"};
 	
-	private String[] listOfMaleNames = {"Rao", "Re", "Meln", "Varu", "Kil","gahn", "Torak", "Freden", "medri", "vorn", "var", "Galden",
-			"Ilmater", "Helm", "Bvaal", "Nern", "Hur", "Her'u", "Sardor", "Akkad", "Mystr", "vreten", "vadir", "Turh", "Oda", "Zaes", 
-			"kvanir", "kurdor", "gherem", "Ure", "Hardran", "Rehdan","Normu"};
+	private String[] femalePrefix = {"Ba", "He", "Is", "Shi", "Seka", "Vi", "Ti", "Cei", "Hel", "Shu", "Idu"};
+	private String[] femaleSuffix = {"", "st", "sti", "is", "ra", "ah", "a", "ia", "'ia", "na", "ena", "ni", "anda", "n"};
+	
+//	private String[] listOfMaleNames = {"Rao", "Re", "Meln", "Varu", "Kil","gahn", "Torak", "Freden", "medri", "vorn", "var", "Galden",
+//			"Ilmater", "Helm", "Bvaal", "Nern", "Hur", "Her'u", "Sardor", "Akkad", "Mystr", "vreten", "vadir", "Turh", "Oda", "Zaes", 
+//			"kvanir", "kurdor", "gherem", "Ure", "Hardran", "Rehdan","Normu"};
 
 	private String[] listOfFemaleNames = {"Basti", "Sekashi", "Sunra", "Vira", "friah", "tira", "Sia", "Ceira", "Curai","Sori", "Zora",
 			"Kitara", "Helena", "Herai", "Shira", "Isa", "Misani", "Bika", "Miranda", "Si", "Shu", "Iduna", "Hethia", "Bikra", "Zia", 
@@ -45,14 +48,16 @@ public class nameGenerator {
 			return malePrefix[context.getRandom(0,malePrefix.length)] + maleSuffix[context.getRandom(0, maleSuffix.length)];
 		}
 		else if(sex == 3) {
-			return listOfFemaleNames[context.getRandom(0,listOfFemaleNames.length)];
+			return femalePrefix[context.getRandom(0,femalePrefix.length)] + femaleSuffix[context.getRandom(0, femaleSuffix.length)];
 		}
 		else {
 			if(context.getRandom(1,2) == 1) {
-				return listOfMaleNames[context.getRandom(0,listOfMaleNames.length)];
+//				return listOfMaleNames[context.getRandom(0,listOfMaleNames.length)];
+				return malePrefix[context.getRandom(0,malePrefix.length)] + maleSuffix[context.getRandom(0, maleSuffix.length)];
 			}
 			else {
-				return listOfFemaleNames[context.getRandom(0,listOfFemaleNames.length)];
+//				return listOfFemaleNames[context.getRandom(0,listOfFemaleNames.length)];
+				return femalePrefix[context.getRandom(0,femalePrefix.length)] + femaleSuffix[context.getRandom(0, femaleSuffix.length)];
 			}
 		}
 	}

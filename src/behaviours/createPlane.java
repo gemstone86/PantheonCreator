@@ -38,7 +38,7 @@ public class createPlane extends behaviour {
 				plane = cosmos.startBuildingPlane();
 			}
 		}
-		System.out.println("\t\t\tI'm now working on "+plane.getName());
+		System.out.println("\t\t\tI'm working on "+plane.getName());
 		
 		if(plane.construct(context.getRandom(1, 14))) {
 			return true;

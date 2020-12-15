@@ -25,8 +25,13 @@ public class runtime {
 		ureDomains.add(nameGen.randomDomain()); ureDomains.add(nameGen.randomDomain()); ureDomains.add(nameGen.randomDomain());
 		iraDomains.add(nameGen.randomDomain()); iraDomains.add(nameGen.randomDomain()); iraDomains.add(nameGen.randomDomain());
 
-		addDeity(new deity("Ure", ureDomains, 20, 1, 3, this));
-		addDeity(new deity("Ira", iraDomains, 20, 3, 1, this));
+		addDeity(new deity("Ure", 20, 1, 3, this));
+		addDeity(new deity("Ira", 20, 3, 1, this));
+		
+		for(int i = 0; i<3; i++) {
+			listOfDeities.get(0).addDomain(ureDomains.get(i));
+			listOfDeities.get(1).addDomain(iraDomains.get(i));
+		}
 		
 	}
 	
@@ -38,8 +43,13 @@ public class runtime {
 		ureDomains.add("Creation"); ureDomains.add("Order"); ureDomains.add("Good");
 		iraDomains.add("Destruction"); iraDomains.add("Chaos"); iraDomains.add("Evil");
 
-		addDeity(new deity("Ure", ureDomains, 20, 1, 3, this));
-		addDeity(new deity("Ira", iraDomains, 20, 3, 1, this));
+		addDeity(new deity("Ure", 20, 1, 3, this));
+		addDeity(new deity("Ira", 20, 3, 1, this));
+		
+		for(int i = 0; i<3; i++) {
+			listOfDeities.get(0).addDomain(ureDomains.get(i));
+			listOfDeities.get(1).addDomain(iraDomains.get(i));
+		}
 	}
 
 	public void newPantheon() {

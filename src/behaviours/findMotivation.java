@@ -15,8 +15,9 @@ public class findMotivation extends behaviour{
 
 	@Override
 	public boolean act() {
-		if(owner.getBehaviour().size() <2 | context.getRandom(1, 100) < 50) {
-			System.out.println("\t\tI want something to do!");
+		//give me more to do if I only want something to do or if I roll less than 30.
+		if(owner.getBehaviour().size() <2 | context.getRandom(1, 100) < 30) {
+			System.out.println("\t\tI want something new to do!");
 			int rnd = context.getRandom(1,5);
 			switch(rnd) {
 			case 1: owner.addBehaviour(new findMate(owner, context)); System.out.println("\t\tI want to find a mate"); break;

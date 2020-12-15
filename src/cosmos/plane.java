@@ -29,5 +29,9 @@ public class plane extends place{
 	public void startConstruction(deity builder){
 		builders.add(builder);
 	}
+	
+	public String toString() {
+		return this.getName() + " is a plane with no concepts\n";
+	}
 
 }

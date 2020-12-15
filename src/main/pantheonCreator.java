@@ -52,5 +52,7 @@ public class pantheonCreator {
 		for(deity deity:runtime.getListOfDeities()) {
 			System.out.println(deity.finalToString());
 		}
+		System.out.println("---Cosmos---");
+		System.out.println(runtime.getCosmos().toString());
 	}
 }
