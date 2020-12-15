@@ -40,7 +40,8 @@ public class createPlane extends behaviour {
 		}
 		System.out.println("\t\t\tI'm working on "+plane.getName());
 		
-		if(plane.construct(context.getRandom(1, 14))) {
+		if(plane.construct(context.getRandom(1, owner.getDvR()))) {
+			System.out.println(2\t\t\tI'm done with " + plane.getName());
 			return true;
 		}
 		return false;

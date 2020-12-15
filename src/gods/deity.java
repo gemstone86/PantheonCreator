@@ -23,6 +23,9 @@ public class deity {
 	private int age = 0;
 	private runtime context;
 	
+	private int orderChaos;
+	private int goodEvil;
+	
 	private place homeplane;
 
 	private int sexuality;
@@ -67,7 +70,8 @@ public class deity {
 		this.parents = parents;
 
 		//add code to fetch 1-2 domain from father, 1-2 domain from mother and then 1-2 random domains.
-		inherit();
+		setUpinheritDomains();
+		inheritAlignment();
 	}
 
 	private void inheritDomain(deity parent) {
@@ -99,14 +103,19 @@ public class deity {
 		return parents;
 	}
 
-	private void inherit() {
+	private void setUpinheritDomains() {
 		for(deity parent:parents) {
 			inheritDomain(parent);
 		}
+		//get one or two additional domains.
 		int randomDomains = random(1,2);
 		for(int i = 0; i<randomDomains;i++) {
 			addDomain(context.randomDomain());
 		}
+	}
+	
+	private void inheritAlignment() {
+		
 	}
 
 	public void addBehaviour(behaviour behaviour) {
