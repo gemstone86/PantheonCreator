@@ -24,7 +24,6 @@ public class createPlane extends behaviour {
 	public boolean act() {
 		if(plane == null) {
 			if(context.getCosmos().getConstructionSize()>0) {
-					
 				if(context.getRandom(1, 50) > 10){
 					System.out.println("I should work togheter with other gods");
 					plane = cosmos.getPlanesUnderConstruction().getFirst();
