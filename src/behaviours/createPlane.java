@@ -25,13 +25,17 @@ public class createPlane extends behaviour {
 		if(plane == null) {
 			if(context.getCosmos().getConstructionSize()>0) {
 				if(context.getRandom(1, 50) > 10){
-					System.out.println("I should work togheter with other gods");
+					System.out.println("\t\t\tI should work togheter with other gods");
 					plane = cosmos.getPlanesUnderConstruction().getFirst();
 				}
 				else {
-					System.out.println("I want to make something of my own!");
+					System.out.println("\t\t\tI want to make something of my own!");
 					plane = cosmos.startBuildingPlane();
 				}
+			}
+			else {
+				System.out.println("\t\t\tI want to make something of my own!");
+				plane = cosmos.startBuildingPlane();
 			}
 		}
 		System.out.println("\t\t\tI'm now working on "+plane.getName());

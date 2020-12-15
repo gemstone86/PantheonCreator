@@ -13,7 +13,6 @@ public class nameGenerator {
 		for(String in:listOfDomains) {
 			conceptPool.add(in);
 		}
-
 	}
 
 	private String[] malePrefix = {"Ra", "Re", "Set", "Ze", "Ga", "Fre", "Vo", "Ak", "Ur", "Kil", "Rak"};

@@ -11,9 +11,10 @@ public class plane extends place{
 	
 	boolean done = false;
 	LinkedList<deity> builders = new LinkedList<deity>();
+	runtime context;
 	
 	public plane(runtime context) {
-		super(context);
+		this.context = context;
 		// TODO Auto-generated constructor stub
 	}
 	

@@ -9,15 +9,10 @@ public class place {
 
 	private place parentPlane;
 	private deity creator;
-	private runtime context;
 	
 	LinkedList<place> connections = new LinkedList<place>();
 	
 	private String name;
-	
-	public place(runtime context) {
-		this.context=context;
-	}
 	
 	public String getName() {
 		return name;

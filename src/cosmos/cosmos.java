@@ -11,7 +11,7 @@ public class cosmos extends place{
 	private LinkedList<plane> underConstruction = new LinkedList<plane>();
 	
 	public cosmos(runtime context) {
-		super(context);
+		this.context = context;
 	}
 
 	LinkedList<String> createdConcepts = new LinkedList<String>();
