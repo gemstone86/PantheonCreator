@@ -18,8 +18,8 @@ public class nameGenerator {
 	private String[] malePrefix = {"Ra", "Re", "Set", "Ze", "Ga", "Fre", "Vo", "Ak", "Ur", "Kil", "Rak", "Mel", "Var", "Med", "Mys", "Il"};
 	private String[] maleSuffix = {"", "o", "or", "us", "otor", "meron", "kad", "ir", "es", "dran", "'ur", "'u", "rh", "tr", "an", "mater"};
 	
-	private String[] planePrefix = {"Mid", "Olym", "Nifel", "Had", "Ker", "Hel", "Har", "Rehn", "Elm"};
-	private String[] planeSuffix = {"", "gard", "pus", "heim", "es", "as", "ren"};
+	private String[] planePrefix = {"Mid", "Olym", "Nifel", "Had", "Ker", "Hel", "Har", "Rehn", "Elm", "Ereb", "Fae"};
+	private String[] planeSuffix = {"", "gard", "pus", "heim", "es", "as", "ren", "altor", "run"};
 	
 	private String[] femalePrefix = {"Ba", "He", "Is", "Shi", "Seka", "Vi", "Ti", "Cei", "Hel", "Shu", "Idu"};
 	private String[] femaleSuffix = {"", "st", "sti", "is", "ra", "ah", "a", "ia", "'ia", "na", "ena", "ni", "anda", "n"};
