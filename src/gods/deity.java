@@ -15,6 +15,8 @@ public class deity {
 	private int divineRank;
 	private LinkedList<deity> parents = new LinkedList<deity>();
 	private LinkedList<deity> children = new LinkedList<deity>();
+	private LinkedList<deity> rivals = new LinkedList<deity>();
+	
 	private LinkedList<behaviour> behaviours;
 	private boolean mateFound = false;
 	private int willingness;
@@ -209,20 +211,26 @@ public class deity {
 		return divineRank;
 	}
 
+	/*
+	 * being seduced by another deity
+	 */
 	public boolean seduce(deity seducer) {
 		int modifier = 0;
+		//if you have parents check if 
 		if(parents != null) {
 			for(deity parent:parents) {
-
+				//if the parent is the seducer, make it more difficult
 				if(parent == seducer) {
 					modifier +=20;
 				}
+				//If the seducer is my sibling, make it more difficult
 				if(parent.getChildren().contains(seducer)) {
 					modifier +=5;
 				}
 			}
 		}
 
+		//check if seduction is successfull
 		if((random(1,100)+modifier) <= willingness) {
 			willingness = baseWillingness;
 			return true;
@@ -238,9 +246,9 @@ public class deity {
 	public boolean update() {
 		mateFound = false;
 
+		//check if deity has died
 		if(random(1,100)<age) {
-			System.out.println("-----------------------------------"+this.getName() + " has died");
-			alive = false;
+			this.addBehaviour(new die(this, context));
 			return true;
 		}
 
@@ -279,8 +287,19 @@ public class deity {
 		
 		String returnString = "\t"+this.getName() + " (DvR " + this.getDvR()+")" + " (" +status+this.getGenderPronoun(this.getGender()) +") " + " "+this.getDomains().toString();
 		for(deity parent:getParents()) {
-			returnString += "\n\t\tParent:" + parent.getName();
+			returnString += "\n\t\tParent:" + parent.getName() + " ("+parent.getStatus() + ")";
 		}
 		return returnString;
+	}
+
+	private String getStatus() {
+		if(!alive) {
+			return "Dead";
+		};
+			return "Alive";
+	}
+
+	public void setStatus(boolean alive) {
+		this.alive = alive;
 	}
 }

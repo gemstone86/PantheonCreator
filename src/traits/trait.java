@@ -1,14 +1,13 @@
+package traits;
 
-package behaviours;
-
+import behaviours.*;
 import gods.*;
 import main.runtime;
 
-public class behaviour {
+public class trait {
 
 	private deity owner;
 //	private runtime context;
-	private runtime context;
 	
 	public boolean act() {
 		return true;
@@ -24,5 +23,9 @@ public class behaviour {
 //	
 	public deity getOwner() {
 		return owner;
+	}
+	
+	public behaviour motivate() {
+		return null;
 	}
 }

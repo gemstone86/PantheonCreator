@@ -7,17 +7,18 @@ import gods.deity;
 
 public class runtime {
 
-	private LinkedList<deity> listOfDeities;
+	private LinkedList<deity> listOfActiveDeities;
+	private LinkedList<deity> listOfInactiveDeities = new LinkedList<deity>();
 	private LinkedList<deity> nextGeneration;
 	private cosmos theCosmos = new cosmos(this);
 
-	private nameGenerator nameGen;
+	private randomGenerator nameGen;
 	boolean debug = false;
 
 	public runtime() {
 		newPantheon();
 
-		this.nameGen = new nameGenerator(this);
+		this.nameGen = new randomGenerator(this);
 		
 		LinkedList<String> ureDomains = new LinkedList<String>();
 		LinkedList<String> iraDomains = new LinkedList<String>();
@@ -29,8 +30,8 @@ public class runtime {
 		addDeity(new deity("Ira", 20, 3, 1, this));
 		
 		for(int i = 0; i<3; i++) {
-			listOfDeities.get(0).addDomain(ureDomains.get(i));
-			listOfDeities.get(1).addDomain(iraDomains.get(i));
+			listOfActiveDeities.get(0).addDomain(ureDomains.get(i));
+			listOfActiveDeities.get(1).addDomain(iraDomains.get(i));
 		}
 		
 	}
@@ -47,29 +48,29 @@ public class runtime {
 		addDeity(new deity("Ira", 20, 3, 1, this));
 		
 		for(int i = 0; i<3; i++) {
-			listOfDeities.get(0).addDomain(ureDomains.get(i));
-			listOfDeities.get(1).addDomain(iraDomains.get(i));
+			listOfActiveDeities.get(0).addDomain(ureDomains.get(i));
+			listOfActiveDeities.get(1).addDomain(iraDomains.get(i));
 		}
 	}
 
 	public void newPantheon() {
-		listOfDeities = new LinkedList<deity>();
+		listOfActiveDeities = new LinkedList<deity>();
 		nextGeneration = new LinkedList<deity>();
 	}
 
 	public void addDeity(deity deity) {
-		listOfDeities.add(deity);
+		listOfActiveDeities.add(deity);
 	}
 
 	public void removeDeity(int index) {
-		listOfDeities.remove(index);
+		listOfActiveDeities.remove(index);
 	}
 	public void removeDeity(deity deity) {
-		listOfDeities.remove(deity);
+		listOfActiveDeities.remove(deity);
 	}
 
 	public LinkedList<deity> getListOfDeities(){
-		return listOfDeities;
+		return listOfActiveDeities;
 	}
 
 	public int getRandom(int start, int end) {
@@ -103,6 +104,7 @@ public class runtime {
 		parents.add(father);
 		parents.add(mother);
 		
+		//Set sex and sexuality
 		int sex = getRandom(1,3);
 		int sexuality = 0;
 
@@ -127,9 +129,12 @@ public class runtime {
 			}
 			
 		}
+		
+		//Set DvR
 		int average = (father.getDvR()+mother.getDvR())/2;
 		int newDvR = getRandom(average-5,average+2);
 
+		//generate the new deity
 		deity newDeity = new deity(newName, newDvR, sex, sexuality, parents, this);
 		
 		nextGeneration.add(newDeity);
@@ -164,5 +169,15 @@ public class runtime {
 	
 	public cosmos getCosmos() {
 		return theCosmos;
+	}
+
+	public boolean getDebug() {
+		// TODO Auto-generated method stub
+		return debug;
+	}
+
+	public LinkedList<deity> getListofInactiveDeities() {
+		// TODO Auto-generated method stub
+		return listOfInactiveDeities;
 	}
 }

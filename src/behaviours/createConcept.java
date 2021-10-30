@@ -24,10 +24,10 @@ public class createConcept extends behaviour{
 		System.out.println("\t\t"+owner.getName() + " creates a concept");
 		
 		if(!domainSet) {
-			myDomain = context.randomDomain();
+			myDomain = context.getRandomDomainFromPool();
 			if(myDomain == "empty") {
-			System.out.println("\t\t\tThere's nothing left to create");
-			return true;
+				System.out.println("\t\t\tThere's nothing left to create");
+				return true;
 			}
 			else {
 			

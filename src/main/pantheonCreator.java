@@ -38,10 +38,7 @@ public class pantheonCreator {
 				deity.deityActs();
 			}
 			for(int j = 0; j<runtime.getListOfDeities().size();j++) {
-				if(runtime.getListOfDeities().get(j).update()) {
-					runtime.getListOfDeities().remove(j);
-				}
-				
+				runtime.getListOfDeities().get(j).update();
 			}
 			for(deity newDeity:runtime.getNextGen()) {
 				runtime.addDeity(newDeity);

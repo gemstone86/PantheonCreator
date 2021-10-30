@@ -48,7 +48,7 @@ public class cosmos extends place{
 	public String toString() {
 		String returnMessage = "";
 		for(place plane:createdPlanes) {
-			returnMessage+=plane.toString();
+			returnMessage+=plane.toString()+", ";
 		}
 		
 		return returnMessage;

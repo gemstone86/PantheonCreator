@@ -1,7 +1,5 @@
 package behaviours;
 
-import java.util.LinkedList;
-
 import cosmos.*;
 import gods.deity;
 import main.runtime;
@@ -40,8 +38,21 @@ public class createPlane extends behaviour {
 		}
 		System.out.println("\t\t\tI'm working on "+plane.getName());
 		
+		if(context.getRandom(1,100)>75 && owner.getDomains().size()>0) {
+			int randIndex = context.getRandom(0, owner.getDomains().size());
+			String randString = owner.getDomains().get(randIndex);
+			System.out.println("\t\t\tI should add " + randString + " to the plane!");
+			
+			if(!plane.addConcept(randString)) {
+				System.out.println("\t\t\tIt's now a part of the plane!!");
+			}
+			else {
+				System.out.println("\t\t\tIt was already added to the plane");
+			}
+		}
+		
 		if(plane.construct(context.getRandom(1, owner.getDvR()))) {
-			System.out.println(2\t\t\tI'm done with " + plane.getName());
+			System.out.println("\t\t\tI'm done with " + plane.getName());
 			return true;
 		}
 		return false;

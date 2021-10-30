@@ -12,6 +12,7 @@ public class plane extends place{
 	boolean done = false;
 	LinkedList<deity> builders = new LinkedList<deity>();
 	runtime context;
+	LinkedList<String> concepts = new LinkedList<String>();
 	
 	public plane(runtime context) {
 		this.context = context;
@@ -20,7 +21,7 @@ public class plane extends place{
 	
 	public boolean construct(int points) {
 		build += points;
-		if(build > 100) {
+		if(build > 99) {
 			done = true;
 			return true;
 		}
@@ -31,7 +32,33 @@ public class plane extends place{
 	}
 	
 	public String toString() {
-		return this.getName() + " is a plane with no concepts\n";
+		String line = "";
+		if(concepts.size() < 1) {
+			return this.getName();
+		}
+		else {
+			for(int i = 0; i<concepts.size();i++) {
+				if(i==0) {
+					line +=concepts.get(i);
+				}
+				else{
+					line += ", "+concepts.get(i);
+				}
+			}
+		}
+		return this.getName() + " (" + line +")";
+	}
+
+	public boolean addConcept(String randString) {
+		// TODO Auto-generated method stub
+		
+		if(concepts.contains(randString)) {
+			return false;
+		}
+		concepts.add(randString);
+		
+		return true;
+		
 	}
 
 }

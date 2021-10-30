@@ -2,24 +2,29 @@ package main;
 
 import java.util.LinkedList;
 
-public class nameGenerator {
+public class randomGenerator {
 
 	private runtime context;
 	private LinkedList<String> conceptPool = new LinkedList<String>();
 
 
-	public nameGenerator(runtime context) {
+	public randomGenerator(runtime context) {
 		this.context = context;
 		for(String in:listOfDomains) {
 			conceptPool.add(in);
 		}
+		if(context.getDebug()) {
+			for(int i = 0; i<conceptPool.size();i++) {
+				System.out.println(conceptPool.get(i));
+			}
+		}
 	}
 
-	private String[] malePrefix = {"Ra", "Re", "Set", "Ze", "Ga", "Fre", "Vo", "Ak", "Ur", "Kil", "Rak", "Mel", "Var", "Med", "Mys", "Il"};
+	private String[] malePrefix = {"Ra", "Re", "Set", "Ze", "Ga", "Fre", "Vo", "Ak", "Ur", "Kil", "Rak", "Mel", "Var", "Med", "Mys", "Il", "Sar", "Akor"};
 	private String[] maleSuffix = {"", "o", "or", "us", "otor", "meron", "kad", "ir", "es", "dran", "'ur", "'u", "rh", "tr", "an", "mater"};
 	
-	private String[] planePrefix = {"Mid", "Olym", "Nifel", "Had", "Ker", "Hel", "Har", "Rehn", "Elm", "Ereb", "Fae"};
-	private String[] planeSuffix = {"", "gard", "pus", "heim", "es", "as", "ren", "altor", "run"};
+	private String[] planePrefix = {"Mid", "Olym", "Nifel", "Had", "Ker", "Hel", "Har", "Rehn", "Elm", "Ereb", "Fae", "Kor", "Nem"};
+	private String[] planeSuffix = {"", "gard", "pus", "heim", "es", "as", "ren", "altor", "run", "karn", "rorn", "nae"};
 	
 	private String[] femalePrefix = {"Ba", "He", "Is", "Shi", "Seka", "Vi", "Ti", "Cei", "Hel", "Shu", "Idu"};
 	private String[] femaleSuffix = {"", "st", "sti", "is", "ra", "ah", "a", "ia", "'ia", "na", "ena", "ni", "anda", "n"};
@@ -36,6 +41,8 @@ public class nameGenerator {
 			"Air", "Fire", "Earth", "Water", "Ocean", "Nature", "Animals", "Law", "War", "Peace", "Justice", "Sun", "Moon", "Death", "Fertility",
 			"Harvest", "Beauty", "Luck", "Wealth","Magic", "Travel", "Mountains"};
 
+	private LinkedList<String> listOfConcepts = new LinkedList<String>();
+	
 
 	public String randomDomain() {
 		return listOfDomains[context.getRandom(0,listOfDomains.length)];
@@ -67,7 +74,7 @@ public class nameGenerator {
 	}
 
 	public String getRandomDomainFromPool() {
-		if(conceptPool.size()<1) {
+		if(conceptPool.size()>0) {
 			int rnd = context.getRandom(0, conceptPool.size());
 
 

@@ -20,10 +20,11 @@ public class findMotivation extends behaviour{
 			System.out.println("\t\tI want something new to do!");
 			int rnd = context.getRandom(1,5);
 			switch(rnd) {
-			case 1: owner.addBehaviour(new findMate(owner, context)); System.out.println("\t\tI want to find a mate"); break;
-			case 2: owner.addBehaviour(new createConcept(owner, context)); System.out.println("\t\tI want to create a concept"); break;
-			case 3: owner.addBehaviour(new createPlane(owner, context)); System.out.println("\t\tI want to create a plane!");
-			default: System.out.println(" \t\tI want... nothing for now"); break;
+				case 1: owner.addBehaviour(new findMate(owner, context)); System.out.println("\t\tI want to find a mate"); break;
+				case 2: owner.addBehaviour(new createConcept(owner, context)); System.out.println("\t\tI want to create a concept"); break;
+				case 3: owner.addBehaviour(new createPlane(owner, context)); System.out.println("\t\tI want to create a plane!"); break;
+				case 4: owner.addBehaviour(new findRival(owner, context)); System.out.println("\t\tI need to find a rival!");
+				default: System.out.println(" \t\tI want... nothing for now"); break;
 			}
 		}
 		return false;
