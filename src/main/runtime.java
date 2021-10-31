@@ -26,12 +26,12 @@ public class runtime {
 		ureDomains.add(rndGen.randomDomain()); ureDomains.add(rndGen.randomDomain()); ureDomains.add(rndGen.randomDomain());
 		iraDomains.add(rndGen.randomDomain()); iraDomains.add(rndGen.randomDomain()); iraDomains.add(rndGen.randomDomain());
 
-		addDeity(new deity("Ure", 20, 1, 3, this));
-		addDeity(new deity("Ira", 20, 3, 1, this));
+//		addDeity(new deity("Ure", 20, 1, 3, this));
+//		addDeity(new deity("Ira", 20, 3, 1, this));
 		
 		for(int i = 0; i<3; i++) {
-			listOfActiveDeities.get(0).addDomain(ureDomains.get(i));
-			listOfActiveDeities.get(1).addDomain(iraDomains.get(i));
+//			listOfActiveDeities.get(0).addDomain(ureDomains.get(i));
+//			listOfActiveDeities.get(1).addDomain(iraDomains.get(i));
 		}
 		
 	}
@@ -100,9 +100,10 @@ public class runtime {
 	}
 
 	public void createChild(deity father, deity mother) {
+		System.out.println("Creating a new deity");
 		LinkedList<deity> parents = new LinkedList<deity>();
-		parents.add(father);
-		parents.add(mother);
+		if(father !=null) parents.add(father);
+		if(mother !=null) parents.add(mother);
 		
 		//Set sex and sexuality
 		int sex = getRandom(1,3);
@@ -131,16 +132,32 @@ public class runtime {
 		}
 		
 		//Set DvR
-		int average = (father.getDvR()+mother.getDvR())/2;
+		int a = getRandom(15,25);
+		if(father != null) {
+			a = father.getDvR();
+		}
+		int b = getRandom(15,25);
+		if(mother != null) {
+			b = mother.getDvR();
+		}
+		
+		int average = (a+b)/2;
 		int newDvR = getRandom(average-5,average+2);
-
+		if (newDvR < 0) {
+			newDvR =0;
+		}
+		
 		//generate the new deity
 		deity newDeity = new deity(newName, newDvR, sex, sexuality, parents, this);
 		
 		nextGeneration.add(newDeity);
 		
-		father.addChild(newDeity);
-		mother.addChild(newDeity);
+		if(father != null) {
+			father.addChild(newDeity);
+		}
+		if(mother != null) {
+			mother.addChild(newDeity);
+		}
 		
 	}
 
@@ -183,5 +200,10 @@ public class runtime {
 
 	public deity getRandomDeity() {
 		return listOfActiveDeities.get(getRandom(0,listOfActiveDeities.size()));
+	}
+
+	public void generateSpontaneousDeity() {
+		// TODO Auto-generated method stub
+		
 	}
 }

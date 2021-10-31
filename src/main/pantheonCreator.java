@@ -30,15 +30,22 @@ public class pantheonCreator {
 	public void run() {
 		runtime runtime = new runtime();
 
-		int generations = 10;
+		int generations = 20;
 		
-		for(int i = 0; i<generations; i++) {
+		for(int i = 0; i<generations+1; i++) {
 			System.out.println("----" + "Generation " + i +"----");
 			for(deity deity:runtime.getListOfDeities()) {
 				deity.deityActs();
 			}
 			for(int j = 0; j<runtime.getListOfDeities().size();j++) {
 				runtime.getListOfDeities().get(j).update();
+			}
+			if(runtime.getListOfDeities().size() <1) {
+				int generate = runtime.getRandom(1, 100);
+				if(generate > 74) {
+					runtime.createChild(null,null);
+					System.out.println("WORLD IS EMPTY");
+				}
 			}
 			for(deity newDeity:runtime.getNextGen()) {
 				runtime.addDeity(newDeity);

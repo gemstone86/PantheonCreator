@@ -12,6 +12,7 @@ public class findRival extends behaviour{
 	private runtime context;
 	LinkedList<deity> possibleRivals = new LinkedList<deity>();
 	private deity target;
+	private boolean lookingForTrouble = false;
 
 	public findRival(deity deity, runtime context) {
 		owner = deity;
@@ -28,11 +29,22 @@ public class findRival extends behaviour{
 			}
 			if(possibleRivals.size()>0) {
 				target = possibleRivals.get(context.getRandom(0, possibleRivals.size()));
+
+				if(!target.doYouKnowMe(owner)) {
+					target.addRelation(new relation(owner,-20, context));
+				}
+				System.out.println("\t\t\tI hate you " + target.getName());
+				return true;
 			}
-		if(!target.doYouKnowMe(owner)) {
-			target.addRelation(new relation(owner,-20, context));
+			else{
+				if(!lookingForTrouble) {
+					System.out.println("\t\t\tI'm looking for a fight!");
+					owner.addBehaviour(new interact(owner, context));
+					lookingForTrouble = true;
+				}
+			}
 		}
-		}
+		return false;
 
 	}
 }

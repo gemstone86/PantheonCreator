@@ -43,7 +43,7 @@ public class createPlane extends behaviour {
 			String randString = owner.getDomains().get(randIndex);
 			System.out.println("\t\t\tI should add " + randString + " to the plane!");
 			
-			if(!plane.addConcept(randString)) {
+			if(plane.addConcept(randString)) {
 				System.out.println("\t\t\tIt's now a part of the plane!!");
 			}
 			else {

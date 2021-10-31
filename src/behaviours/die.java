@@ -23,7 +23,7 @@ public class die extends behaviour {
 	public boolean act() {
 		owner.setStatus(false);
 		
-		context.getListOfDeities().remove(this);
+		context.getListOfDeities().remove(owner);
 		context.getListofInactiveDeities().add(owner);
 		
 		System.out.println("-----------------------------------"+owner.getName() + " has died");
