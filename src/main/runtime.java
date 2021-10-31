@@ -12,19 +12,19 @@ public class runtime {
 	private LinkedList<deity> nextGeneration;
 	private cosmos theCosmos = new cosmos(this);
 
-	private randomGenerator nameGen;
+	private randomGenerator rndGen;
 	boolean debug = false;
 
 	public runtime() {
 		newPantheon();
 
-		this.nameGen = new randomGenerator(this);
+		this.rndGen = new randomGenerator(this);
 		
 		LinkedList<String> ureDomains = new LinkedList<String>();
 		LinkedList<String> iraDomains = new LinkedList<String>();
 
-		ureDomains.add(nameGen.randomDomain()); ureDomains.add(nameGen.randomDomain()); ureDomains.add(nameGen.randomDomain());
-		iraDomains.add(nameGen.randomDomain()); iraDomains.add(nameGen.randomDomain()); iraDomains.add(nameGen.randomDomain());
+		ureDomains.add(rndGen.randomDomain()); ureDomains.add(rndGen.randomDomain()); ureDomains.add(rndGen.randomDomain());
+		iraDomains.add(rndGen.randomDomain()); iraDomains.add(rndGen.randomDomain()); iraDomains.add(rndGen.randomDomain());
 
 		addDeity(new deity("Ure", 20, 1, 3, this));
 		addDeity(new deity("Ira", 20, 3, 1, this));
@@ -110,7 +110,7 @@ public class runtime {
 
 
 		String newName ="";
-		newName = nameGen.getRandomName(sex);
+		newName = rndGen.getRandomName(sex);
 		
 		if(sex == 1) {
 			sexuality = generateSexuality(3,1);
@@ -122,10 +122,10 @@ public class runtime {
 		else if(sex == 2) {
 			sexuality = getRandom(1,3);
 			if(getRandom(1,2) == 1) {
-				newName = nameGen.getRandomName(1);
+				newName = rndGen.getRandomName(1);
 			}
 			else {
-				newName = nameGen.getRandomName(3);
+				newName = rndGen.getRandomName(3);
 			}
 			
 		}
@@ -152,19 +152,19 @@ public class runtime {
 	}
 
 	public String getRandomDomainFromPool() {
-		return nameGen.getRandomDomainFromPool();
+		return rndGen.getRandomDomainFromPool();
 	}
 	
 	public String randomDomain() {
-		return nameGen.randomDomain();
+		return rndGen.randomDomain();
 	}
 	
 	public String getRandomName() {
-		return nameGen.getRandomName(1);
+		return rndGen.getRandomName(1);
 	}
 	
 	public String getRandomPlaneName() {
-		return nameGen.getRandomPlaneName();
+		return rndGen.getRandomPlaneName();
 	}
 	
 	public cosmos getCosmos() {
@@ -179,5 +179,9 @@ public class runtime {
 	public LinkedList<deity> getListofInactiveDeities() {
 		// TODO Auto-generated method stub
 		return listOfInactiveDeities;
+	}
+
+	public deity getRandomDeity() {
+		return listOfActiveDeities.get(getRandom(0,listOfActiveDeities.size()));
 	}
 }

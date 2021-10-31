@@ -16,6 +16,8 @@ public class deity {
 	private LinkedList<deity> parents = new LinkedList<deity>();
 	private LinkedList<deity> children = new LinkedList<deity>();
 	private LinkedList<deity> rivals = new LinkedList<deity>();
+	private LinkedList<relation> relations = new LinkedList<relation>();
+	private LinkedList<deity> contacts = new LinkedList<deity>();
 	
 	private LinkedList<behaviour> behaviours;
 	private boolean mateFound = false;
@@ -301,5 +303,26 @@ public class deity {
 
 	public void setStatus(boolean alive) {
 		this.alive = alive;
+	}
+
+	public void addRelation(relation target) {
+		if(contacts.contains(target.getTarget())) {
+			return;
+		}
+		contacts.add(target.getTarget());
+		relations.add(target);
+		
+	}
+
+	public LinkedList<relation> getRelations() {
+		// TODO Auto-generated method stub
+		return relations;
+	}
+
+	public boolean doYouKnowMe(deity target) {
+		if(this.contacts.contains(target)){
+			return true;
+		}
+		return false;
 	}
 }
