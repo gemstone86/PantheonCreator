@@ -26,12 +26,12 @@ public class runtime {
 		ureDomains.add(rndGen.randomDomain()); ureDomains.add(rndGen.randomDomain()); ureDomains.add(rndGen.randomDomain());
 		iraDomains.add(rndGen.randomDomain()); iraDomains.add(rndGen.randomDomain()); iraDomains.add(rndGen.randomDomain());
 
-//		addDeity(new deity("Ure", 20, 1, 3, this));
-//		addDeity(new deity("Ira", 20, 3, 1, this));
+		addDeity(new deity("Ure", 20, 1, 3, this));
+		addDeity(new deity("Ira", 20, 3, 1, this));
 		
 		for(int i = 0; i<3; i++) {
-//			listOfActiveDeities.get(0).addDomain(ureDomains.get(i));
-//			listOfActiveDeities.get(1).addDomain(iraDomains.get(i));
+			listOfActiveDeities.get(0).addDomain(ureDomains.get(i));
+			listOfActiveDeities.get(1).addDomain(iraDomains.get(i));
 		}
 		
 	}
