@@ -25,16 +25,17 @@ public class die extends behaviour {
 	public boolean act() {
 		owner.setStatus(false);
 		
-		context.getListOfDeities().remove(owner);
-		context.getListofInactiveDeities().add(owner);
+		//context.getListOfDeities().remove(owner);
+		//context.getListofInactiveDeities().add(owner);
+		context.toInactive(owner);
 		
 		System.out.println("\t"+owner.getName() + " has died");
 		
-		LinkedList<String> domains = owner.getDomains();
+		//LinkedList<String> domains = owner.getDomains();
 		
-		for(int i = 0; i<domains.size();i++) {
-			context.returnDomainsToPool(domains.get(i));
-		}
+//		for(int i = 0; i<domains.size();i++) {
+//			context.returnDomainsToPool(domains.get(i));
+//		}
 		return true;
 	}
 }

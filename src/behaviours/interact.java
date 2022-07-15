@@ -28,15 +28,15 @@ public class interact extends behaviour{
 
 		if(target.getRelation()<-10) {
 			modifyRelation = context.getRandom(-10, 5);
-			System.out.println("\t\t\t" + target.getTarget().getName() + " is such a jerk! (" + modifyRelation +")");
+			System.out.println("\t\t\t" + target.getTarget().getName() + " is such a jerk! (From " + target.getRelation() + " to " + (modifyRelation + target.getRelation())+")");
 		}
 		else if(target.getRelation()>10) {
 			modifyRelation = context.getRandom(-5, 10);
-			System.out.println("\t\t\t" + target.getTarget().getName() + " is nice! (" + modifyRelation +")");
+			System.out.println("\t\t\t" + target.getTarget().getName() + " is nice! (From " + target.getRelation() + " to " + (modifyRelation + target.getRelation())+")");
 		}
 		else {
 			modifyRelation = context.getRandom(-20, 20);
-			System.out.println("\t\t\t" + target.getTarget().getName() + " is interesting! (" + modifyRelation +")");
+			System.out.println("\t\t\t" + target.getTarget().getName() + " is interesting! (From " + target.getRelation() + " to " + (modifyRelation + target.getRelation())+")");
 		}
 
 		target.modifyRelation(modifyRelation);

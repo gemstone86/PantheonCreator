@@ -1,6 +1,7 @@
 package main;
 
 import java.util.LinkedList;
+import java.util.Random;
 
 import cosmos.cosmos;
 import gods.deity;
@@ -14,6 +15,8 @@ public class runtime {
 
 	private randomGenerator rndGen;
 	boolean debug = false;
+	int seed = 1;
+	Random generator = new Random(seed);
 
 	public runtime() {
 		newPantheon();
@@ -74,7 +77,7 @@ public class runtime {
 	}
 
 	public int getRandom(int start, int end) {
-		return (int) ((Math.random() * (end - start)) + start);
+		return (int) ((generator.nextInt(end - start) ) + start);
 	}
 	
 	private LinkedList<String> worldConcepts = new LinkedList<String>();
@@ -214,4 +217,12 @@ public class runtime {
 	public void returnDomainsToPool(String string) {
 		rndGen.returnDomainToPool(string);
 	}
+
+	LinkedList<deity> toInactive = new LinkedList<deity>();
+	
+	public void toInactive(deity add) {
+		// TODO Auto-generated method stub
+		toInactive.add(add);
+	}
+
 }

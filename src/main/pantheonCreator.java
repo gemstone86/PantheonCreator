@@ -1,6 +1,9 @@
 
 package main;
 
+
+import java.util.LinkedList;
+
 import gods.deity;
 
 public class pantheonCreator {
@@ -35,12 +38,17 @@ public class pantheonCreator {
 		for(int i = 0; i<generations+1; i++) {
 			System.out.println("----" + "Generation " + i + " (" + runtime.getListOfDeities().size() + ")" +"----");
 			if(runtime.getListOfDeities().size() > 0) {
+				try {
 				for(deity deity:runtime.getListOfDeities()) {
 					deity.deityActs();
 				}
 			
 				for(int j = 0; j<runtime.getListOfDeities().size();j++) {
 					runtime.getListOfDeities().get(j).update();
+				}
+				}
+				catch(Error e) {
+					System.out.println(runtime.seed);
 				}
 			}
 			if(runtime.getListOfDeities().size() <1) {
@@ -54,6 +62,11 @@ public class pantheonCreator {
 			for(deity newDeity:runtime.getNextGen()) {
 				runtime.addDeity(newDeity);
 			}
+			for(deity newDeity:runtime.toInactive) {
+				runtime.getListofInactiveDeities().add(newDeity);
+				runtime.getListOfDeities().remove(newDeity);
+			}
+			runtime.toInactive = new LinkedList<deity>();
 			System.out.println("Current domains: " +runtime.getConcepts());
 			runtime.resetNextGen();
 		}
