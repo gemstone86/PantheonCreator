@@ -1,6 +1,8 @@
 package behaviours;
 
 
+import java.util.LinkedList;
+
 import cosmos.*;
 import gods.deity;
 import main.runtime;
@@ -26,9 +28,13 @@ public class die extends behaviour {
 		context.getListOfDeities().remove(owner);
 		context.getListofInactiveDeities().add(owner);
 		
-		System.out.println("-----------------------------------"+owner.getName() + " has died");
+		System.out.println("\t"+owner.getName() + " has died");
+		
+		LinkedList<String> domains = owner.getDomains();
+		
+		for(int i = 0; i<domains.size();i++) {
+			context.returnDomainsToPool(domains.get(i));
+		}
 		return true;
 	}
-
-
 }

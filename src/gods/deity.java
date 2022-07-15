@@ -125,6 +125,10 @@ public class deity {
 	public void addBehaviour(behaviour behaviour) {
 		this.behaviours.add(behaviour);
 	}
+	
+	public void removeAllBehaviours() {
+		this.behaviours = new LinkedList<behaviour>();
+	}
 
 	public String getGenderPronoun(int sex) {
 		if(sex == 1) {
@@ -161,6 +165,9 @@ public class deity {
 			}
 		}
 		age++;
+		if(!this.alive) {
+			this.removeAllBehaviours();
+		}
 	}
 
 	public int getGender() {

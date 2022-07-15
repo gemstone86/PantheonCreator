@@ -33,23 +33,28 @@ public class pantheonCreator {
 		int generations = 20;
 		
 		for(int i = 0; i<generations+1; i++) {
-			System.out.println("----" + "Generation " + i +"----");
-			for(deity deity:runtime.getListOfDeities()) {
-				deity.deityActs();
-			}
-			for(int j = 0; j<runtime.getListOfDeities().size();j++) {
-				runtime.getListOfDeities().get(j).update();
+			System.out.println("----" + "Generation " + i + " (" + runtime.getListOfDeities().size() + ")" +"----");
+			if(runtime.getListOfDeities().size() > 0) {
+				for(deity deity:runtime.getListOfDeities()) {
+					deity.deityActs();
+				}
+			
+				for(int j = 0; j<runtime.getListOfDeities().size();j++) {
+					runtime.getListOfDeities().get(j).update();
+				}
 			}
 			if(runtime.getListOfDeities().size() <1) {
+				System.out.println("WORLD IS EMPTY");
 				int generate = runtime.getRandom(1, 100);
 				if(generate > 74) {
 					runtime.createChild(null,null);
-					System.out.println("WORLD IS EMPTY");
+					System.out.println("WORLD IS NO LONGER EMPTY");
 				}
 			}
 			for(deity newDeity:runtime.getNextGen()) {
 				runtime.addDeity(newDeity);
 			}
+			System.out.println("Current domains: " +runtime.getConcepts());
 			runtime.resetNextGen();
 		}
 		System.out.println("---Final Pantheon---");

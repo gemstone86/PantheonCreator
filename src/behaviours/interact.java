@@ -9,16 +9,21 @@ public class interact extends behaviour{
 	private deity owner;
 	private runtime context;
 	private relation target;
-
+	private boolean end = false;
+	
 	public interact(deity deity, runtime context) {
 		owner = deity;
 		this.context = context;
 		target = new relation(context.getRandomDeity(), context);
+		if(target.equals(owner)) {
+			end = true;
+		}
 		owner.addRelation(target);
 	}
 
 	@Override
 	public boolean act() {
+		if(!end) {
 		int modifyRelation = 0;
 
 		if(target.getRelation()<-10) {
@@ -42,6 +47,10 @@ public class interact extends behaviour{
 		}
 		System.out.println("\t\t\tI want to interact more with "+ target.getTarget().getName());
 		return false;
-
+		}
+		else {
+			System.out.println("\t\t\tI can't interact with myself!");
+			return true;
+		}
 	}
 }

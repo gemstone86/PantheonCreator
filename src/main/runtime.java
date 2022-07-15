@@ -206,4 +206,12 @@ public class runtime {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public String getConcepts() {
+		return rndGen.getAvailableDomains();
+	}
+
+	public void returnDomainsToPool(String string) {
+		rndGen.returnDomainToPool(string);
+	}
 }

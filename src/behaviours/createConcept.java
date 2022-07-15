@@ -40,6 +40,7 @@ public class createConcept extends behaviour{
 		
 		if(context.getRandom(1, 100) < 50) {
 			System.out.println("\t\t\tI have created "+myDomain+"!");
+			owner.addDomain(myDomain);
 			context.getCosmos().createConcept(myDomain);
 			return true;
 		}
