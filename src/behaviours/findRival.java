@@ -34,11 +34,14 @@ public class findRival extends behaviour{
 					target.addRelation(new relation(owner,-20, context));
 				}
 				System.out.println("\t\t\tI hate you " + target.getName());
+				
+				owner.addBehaviour(new fight(owner, context, target));
+				
 				return true;
 			}
 			else{
 				if(!lookingForTrouble) {
-					System.out.println("\t\t\tI'm looking for a fight!");
+					System.out.println("\t\t\tI'm looking for trouble!");
 					owner.addBehaviour(new interact(owner, context));
 					lookingForTrouble = true;
 				}

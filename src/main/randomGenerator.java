@@ -24,6 +24,7 @@ public class randomGenerator {
 	
 
 	private String[] malePrefix = {"Ra", "Re", "Set", "Ze", "Ga", "Fre", "Vo", "Ak", "Ur", "Kil", "Rak", "Mel", "Var", "Med", "Mys", "Il", "Sar", "Akor"};
+	private String[] maleMidfix = {"ys", "ul", "ve", "av", "ar", "vu", "el", "de"};
 	private String[] maleSuffix = {"", "o", "or", "us", "otor", "meron", "kad", "ir", "es", "dran", "'ur", "'u", "rh", "tr", "an", "mater"};
 	
 	private String[] planePrefix = {"Mid", "Olym", "Nifel", "Had", "Ker", "Hel", "Har", "Rehn", "Elm", "Ereb", "Fae", "Kor", "Nem"};
@@ -55,7 +56,17 @@ public class randomGenerator {
 	public String getRandomName(int sex){
 		if(sex == 1) {
 //			return listOfMaleNames[context.getRandom(0,listOfMaleNames.length)];
-			return malePrefix[context.getRandom(0,malePrefix.length)] + maleSuffix[context.getRandom(0, maleSuffix.length)];
+			int randomize = context.getRandom(1, 100);
+			if(randomize < 20) {
+				return malePrefix[context.getRandom(0,malePrefix.length)];
+			}
+			else if(randomize >19 && randomize < 81) {
+				return malePrefix[context.getRandom(0,malePrefix.length)] + maleSuffix[context.getRandom(0, maleSuffix.length)];
+			}
+			else {
+				return malePrefix[context.getRandom(0,malePrefix.length)] + maleMidfix[context.getRandom(0, maleMidfix.length)] + maleSuffix[context.getRandom(0, maleSuffix.length)];
+			}
+			
 		}
 		else if(sex == 3) {
 			return femalePrefix[context.getRandom(0,femalePrefix.length)] + femaleSuffix[context.getRandom(0, femaleSuffix.length)];

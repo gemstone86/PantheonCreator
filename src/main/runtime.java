@@ -25,16 +25,20 @@ public class runtime {
 		
 		LinkedList<String> ureDomains = new LinkedList<String>();
 		LinkedList<String> iraDomains = new LinkedList<String>();
+		LinkedList<String> chaDomains = new LinkedList<String>();
 
 		ureDomains.add(rndGen.randomDomain()); ureDomains.add(rndGen.randomDomain()); ureDomains.add(rndGen.randomDomain());
 		iraDomains.add(rndGen.randomDomain()); iraDomains.add(rndGen.randomDomain()); iraDomains.add(rndGen.randomDomain());
+		chaDomains.add(rndGen.randomDomain()); chaDomains.add(rndGen.randomDomain()); chaDomains.add(rndGen.randomDomain());
 
-		addDeity(new deity("Ure", 20, 1, 3, this));
-		addDeity(new deity("Ira", 20, 3, 1, this));
+		addDeity(new deity("Ure", this.getRandom(19, 21), 1, 3, this));
+		addDeity(new deity("Ira", this.getRandom(19, 21), 3, 1, this));
+		addDeity(new deity("cha", this.getRandom(1, 20), getRandom(1,3), getRandom(1,3), this));
 		
 		for(int i = 0; i<3; i++) {
 			listOfActiveDeities.get(0).addDomain(ureDomains.get(i));
 			listOfActiveDeities.get(1).addDomain(iraDomains.get(i));
+			listOfActiveDeities.get(2).addDomain(chaDomains.get(i));
 		}
 		
 	}
@@ -103,7 +107,7 @@ public class runtime {
 	}
 
 	public void createChild(deity father, deity mother) {
-		System.out.println("Creating a new deity");
+		System.out.println("\t\tCreating a new deity");
 		LinkedList<deity> parents = new LinkedList<deity>();
 		if(father !=null) parents.add(father);
 		if(mother !=null) parents.add(mother);

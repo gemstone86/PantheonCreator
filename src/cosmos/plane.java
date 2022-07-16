@@ -20,11 +20,15 @@ public class plane extends place{
 	}
 	
 	public boolean construct(int points) {
+		
 		build += points;
 		if(build > 99) {
 			done = true;
+			System.out.println("\t\t\tThe plane is done!");
 			return true;
+			
 		}
+		System.out.println("\t\t\tPlane is at " + build + "%");
 		return false;
 	}
 	public void startConstruction(deity builder){

@@ -19,6 +19,10 @@ public class deity {
 	private LinkedList<relation> relations = new LinkedList<relation>();
 	private LinkedList<deity> contacts = new LinkedList<deity>();
 	
+	private deity last_attacker;
+	
+	private int health;
+	
 	private LinkedList<behaviour> behaviours;
 	private boolean mateFound = false;
 	private int willingness;
@@ -43,6 +47,7 @@ public class deity {
 		this.context = context;
 		
 		
+		
 		this.name = name;
 		this.domains = domains;
 		this.divineRank = DvR;
@@ -55,6 +60,7 @@ public class deity {
 		
 		baseWillingness = random(30,70);
 		willingness = baseWillingness;
+		this.health = context.getRandom(1, 100) + DvR;
 	}
 
 	public deity (String name, int DvR, int Sex, int Sexuality, LinkedList<deity> parents, runtime context) {
@@ -63,7 +69,7 @@ public class deity {
 		this.divineRank = DvR;
 		this.gender = Sex;
 		this.sexuality = Sexuality;
-
+		
 		behaviours = new LinkedList<behaviour>();
 		
 		behaviours.add(new findMotivation(this, context));
@@ -73,6 +79,8 @@ public class deity {
 		
 		this.parents = parents;
 
+		this.health = context.getRandom(1, 100) + DvR;
+		
 		//add code to fetch 1-2 domain from father, 1-2 domain from mother and then 1-2 random domains.
 		setUpinheritDomains();
 		inheritAlignment();
@@ -156,20 +164,34 @@ public class deity {
 	}
 
 	public void deityActs() {
-		System.out.println("\t"+this.getName() + " (Age: "+age+", DvR " + getDvR()+")" + " (" + getSexualityNoun(gender, sexuality) + " " +getGenderPronoun(getGender()) +") " + " "+this.getDomains().toString() + " acts");
+		System.out.println("\t"+this.getName() + " (Age: "+age+", DvR " + getDvR()+", " + getHealth() + " health)" + " (" + getSexualityNoun(gender, sexuality) + " " +getGenderPronoun(getGender()) +") " + " "+this.getDomains().toString() + " acts");
 		for(int i = 0; i<behaviours.size(); i++) {
 			behaviour action = behaviours.get(i);
 			boolean satisfied = action.act();
 			if(satisfied) {
 				behaviours.remove(i);
 			}
+			if(this.health <= 0) {
+				this.alive = false;
+				this.removeAllBehaviours();
+				System.out.println("\t\t"+this.getName() + " was slain by " + this.getLast_attacker().getName() + "!");
+			}
 		}
 		age++;
 		if(!this.alive) {
 			this.removeAllBehaviours();
 		}
+		last_attacker = null;
 	}
 
+	public int getHealth() {
+		return health;
+	}
+	
+	public deity getLast_attacker() {
+		return last_attacker;
+	}
+	
 	public int getGender() {
 		return gender;
 	}
@@ -331,5 +353,18 @@ public class deity {
 			return true;
 		}
 		return false;
+	}
+
+	public void setDvr(int i) {
+		this.divineRank = i;
+		
+	}
+
+	public void changeHealth(int i) {
+		health += i;
+	}
+	
+	public void setAttacker(deity attacker) {
+		last_attacker = attacker;
 	}
 }
