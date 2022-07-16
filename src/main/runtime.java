@@ -1,6 +1,7 @@
 package main;
 
 import java.util.LinkedList;
+import java.util.Random;
 
 import cosmos.cosmos;
 import gods.deity;
@@ -12,26 +13,32 @@ public class runtime {
 	private LinkedList<deity> nextGeneration;
 	private cosmos theCosmos = new cosmos(this);
 
-	private randomGenerator nameGen;
+	private randomGenerator rndGen;
 	boolean debug = false;
+	int seed = 1;
+	Random generator = new Random(seed);
 
 	public runtime() {
 		newPantheon();
 
-		this.nameGen = new randomGenerator(this);
+		this.rndGen = new randomGenerator(this);
 		
 		LinkedList<String> ureDomains = new LinkedList<String>();
 		LinkedList<String> iraDomains = new LinkedList<String>();
+		LinkedList<String> chaDomains = new LinkedList<String>();
 
-		ureDomains.add(nameGen.randomDomain()); ureDomains.add(nameGen.randomDomain()); ureDomains.add(nameGen.randomDomain());
-		iraDomains.add(nameGen.randomDomain()); iraDomains.add(nameGen.randomDomain()); iraDomains.add(nameGen.randomDomain());
+		ureDomains.add(rndGen.randomDomain()); ureDomains.add(rndGen.randomDomain()); ureDomains.add(rndGen.randomDomain());
+		iraDomains.add(rndGen.randomDomain()); iraDomains.add(rndGen.randomDomain()); iraDomains.add(rndGen.randomDomain());
+		chaDomains.add(rndGen.randomDomain()); chaDomains.add(rndGen.randomDomain()); chaDomains.add(rndGen.randomDomain());
 
-		addDeity(new deity("Ure", 20, 1, 3, this));
-		addDeity(new deity("Ira", 20, 3, 1, this));
+		addDeity(new deity("Ure", this.getRandom(19, 21), 1, 3, this));
+		addDeity(new deity("Ira", this.getRandom(19, 21), 3, 1, this));
+		addDeity(new deity("cha", this.getRandom(1, 20), getRandom(1,3), getRandom(1,3), this));
 		
 		for(int i = 0; i<3; i++) {
 			listOfActiveDeities.get(0).addDomain(ureDomains.get(i));
 			listOfActiveDeities.get(1).addDomain(iraDomains.get(i));
+			listOfActiveDeities.get(2).addDomain(chaDomains.get(i));
 		}
 		
 	}
@@ -74,7 +81,7 @@ public class runtime {
 	}
 
 	public int getRandom(int start, int end) {
-		return (int) ((Math.random() * (end - start)) + start);
+		return (int) ((generator.nextInt(end - start) ) + start);
 	}
 	
 	private LinkedList<String> worldConcepts = new LinkedList<String>();
@@ -100,9 +107,10 @@ public class runtime {
 	}
 
 	public void createChild(deity father, deity mother) {
+		System.out.println("\t\tCreating a new deity");
 		LinkedList<deity> parents = new LinkedList<deity>();
-		parents.add(father);
-		parents.add(mother);
+		if(father !=null) parents.add(father);
+		if(mother !=null) parents.add(mother);
 		
 		//Set sex and sexuality
 		int sex = getRandom(1,3);
@@ -110,7 +118,7 @@ public class runtime {
 
 
 		String newName ="";
-		newName = nameGen.getRandomName(sex);
+		newName = rndGen.getRandomName(sex);
 		
 		if(sex == 1) {
 			sexuality = generateSexuality(3,1);
@@ -122,25 +130,41 @@ public class runtime {
 		else if(sex == 2) {
 			sexuality = getRandom(1,3);
 			if(getRandom(1,2) == 1) {
-				newName = nameGen.getRandomName(1);
+				newName = rndGen.getRandomName(1);
 			}
 			else {
-				newName = nameGen.getRandomName(3);
+				newName = rndGen.getRandomName(3);
 			}
 			
 		}
 		
 		//Set DvR
-		int average = (father.getDvR()+mother.getDvR())/2;
+		int a = getRandom(15,25);
+		if(father != null) {
+			a = father.getDvR();
+		}
+		int b = getRandom(15,25);
+		if(mother != null) {
+			b = mother.getDvR();
+		}
+		
+		int average = (a+b)/2;
 		int newDvR = getRandom(average-5,average+2);
-
+		if (newDvR < 0) {
+			newDvR =0;
+		}
+		
 		//generate the new deity
 		deity newDeity = new deity(newName, newDvR, sex, sexuality, parents, this);
 		
 		nextGeneration.add(newDeity);
 		
-		father.addChild(newDeity);
-		mother.addChild(newDeity);
+		if(father != null) {
+			father.addChild(newDeity);
+		}
+		if(mother != null) {
+			mother.addChild(newDeity);
+		}
 		
 	}
 
@@ -152,19 +176,19 @@ public class runtime {
 	}
 
 	public String getRandomDomainFromPool() {
-		return nameGen.getRandomDomainFromPool();
+		return rndGen.getRandomDomainFromPool();
 	}
 	
 	public String randomDomain() {
-		return nameGen.randomDomain();
+		return rndGen.randomDomain();
 	}
 	
 	public String getRandomName() {
-		return nameGen.getRandomName(1);
+		return rndGen.getRandomName(1);
 	}
 	
 	public String getRandomPlaneName() {
-		return nameGen.getRandomPlaneName();
+		return rndGen.getRandomPlaneName();
 	}
 	
 	public cosmos getCosmos() {
@@ -180,4 +204,29 @@ public class runtime {
 		// TODO Auto-generated method stub
 		return listOfInactiveDeities;
 	}
+
+	public deity getRandomDeity() {
+		return listOfActiveDeities.get(getRandom(0,listOfActiveDeities.size()));
+	}
+
+	public void generateSpontaneousDeity() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public String getConcepts() {
+		return rndGen.getAvailableDomains();
+	}
+
+	public void returnDomainsToPool(String string) {
+		rndGen.returnDomainToPool(string);
+	}
+
+	LinkedList<deity> toInactive = new LinkedList<deity>();
+	
+	public void toInactive(deity add) {
+		// TODO Auto-generated method stub
+		toInactive.add(add);
+	}
+
 }

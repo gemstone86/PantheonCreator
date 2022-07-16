@@ -7,8 +7,8 @@ import main.runtime;
 public class behaviour {
 
 	private deity owner;
-//	private runtime context;
 	private runtime context;
+	private boolean end;
 	
 	public boolean act() {
 		return true;
