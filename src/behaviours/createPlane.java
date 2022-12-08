@@ -53,6 +53,8 @@ public class createPlane extends behaviour {
 		
 		if(plane.construct(context.getRandom(1, owner.getDvR()))) {
 			System.out.println("\t\t\tI'm done with " + plane.getName());
+			owner.setHomePlane(plane);
+			owner.setLocation(plane);
 			return true;
 		}
 		return false;

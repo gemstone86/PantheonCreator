@@ -37,7 +37,9 @@ public class findMate extends behaviour {
 					listOfPotentialMates.get(rndIndex).setMateFound(true, owner);
 					owner.setMateFound(true, listOfPotentialMates.get(rndIndex));
 
-					context.createChild(owner, listOfPotentialMates.get(rndIndex));
+					
+					owner.addBehaviour(new pregnant(owner, owner.getMate(), context)); 
+					System.out.println("\t\tI am pregnant!");
 					return true;
 				}
 

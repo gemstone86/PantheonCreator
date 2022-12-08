@@ -44,8 +44,12 @@ public class findMotivation extends behaviour{
 				owner.addBehaviour(new grow(owner, context));
 				System.out.println("\t\tI need more power!");
 			}
-			if(rnd >= 90) {
-				System.out.println(" \t\tI want... nothing for now");
+			if(rnd >= 90 && rnd < 95) {
+				owner.addBehaviour(new move(owner, context));
+				System.out.println("\t\tI should move!");
+			}
+			if(rnd >= 95) {
+				System.out.println("\t\tI want... nothing for now");
 			}
 
 		}

@@ -22,8 +22,16 @@ public class place {
 		this.name = name;
 	}
 	
-	public void addConnection(place newConnection) {
-		connections.add(newConnection);
+	public void AddConnection(place newConnection) {
+		if(connections.contains(newConnection)) {
+			System.out.println("\t\t\tThis plane already contains this connection!");
+	
+		}
+		else {
+			System.out.println("\t\t\tI have added a new connection!");
+			connections.add(newConnection);
+	
+		}
 	}
 	
 	public void removeConnection(int index) {
@@ -48,6 +56,11 @@ public class place {
 	
 	public deity getCreator() {
 		return creator;
+	}
+
+	public int getNumberOfConnections() {
+		// TODO Auto-generated method stub
+		return connections.size();
 	}
 	
 	

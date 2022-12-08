@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import behaviours.*;
 import cosmos.place;
+import cosmos.plane;
 import main.runtime;
 
 public class deity {
@@ -31,11 +32,14 @@ public class deity {
 	private int age = 0;
 	private runtime context;
 	
+	
+	
 	private int orderChaos;
 	private int goodEvil;
 	
 	private place homeplane;
-
+	private place location;
+	
 	private int sexuality;
 	private int gender;
 
@@ -172,9 +176,12 @@ public class deity {
 				behaviours.remove(i);
 			}
 			if(this.health <= 0) {
-				this.alive = false;
-				this.removeAllBehaviours();
-				System.out.println("\t\t"+this.getName() + " was slain by " + this.getLast_attacker().getName() + "!");
+				this.addBehaviour(new die(this, context));
+		//		this.alive = false;
+		//		this.removeAllBehaviours();
+				if(getLast_attacker() != null) {
+					System.out.println("\t\t"+this.getName() + " was slain by " + this.getLast_attacker().getName() + "!");
+				}
 			}
 		}
 		age++;
@@ -224,6 +231,9 @@ public class deity {
 	public void resetMate() {
 		mateFound = false;
 		mate = null;
+	}
+	public deity getMate() {
+		return mate;
 	}
 
 	public int random(int start, int end) {
@@ -279,7 +289,9 @@ public class deity {
 
 		//check if deity has died
 		if(random(1,100)<age) {
-			this.addBehaviour(new die(this, context));
+			//this.addBehaviour(new die(this, context));
+			System.out.println("\t\t" +getName() + " feels old");
+			this.changeHealth(-context.getRandom(1, 20));
 			return true;
 		}
 
@@ -288,6 +300,10 @@ public class deity {
 
 	public LinkedList<behaviour> getBehaviour(){
 		return behaviours;
+	}
+	
+	public boolean getStatus2() {
+		return alive;
 	}
 	
 	public void addDomain(String domain) {
@@ -366,5 +382,20 @@ public class deity {
 	
 	public void setAttacker(deity attacker) {
 		last_attacker = attacker;
+	}
+
+	public void setHomePlane(plane plane) {
+		homeplane = plane;
+	}
+	public place getHomePlane() {
+		return homeplane;
+	}
+
+	public void setLocation(plane plane) {
+		location = plane;
+	}
+
+	public place getLocation() {
+		return location;
 	}
 }

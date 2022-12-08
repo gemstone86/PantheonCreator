@@ -34,7 +34,7 @@ public class plane extends place{
 	public void startConstruction(deity builder){
 		builders.add(builder);
 	}
-	
+
 	public String toString() {
 		String line = "";
 		if(concepts.size() < 1) {
