@@ -6,6 +6,7 @@ import behaviours.*;
 import cosmos.place;
 import cosmos.plane;
 import main.runtime;
+import status.*;
 
 public class deity {
 
@@ -25,6 +26,8 @@ public class deity {
 	private int health;
 	
 	private LinkedList<behaviour> behaviours;
+	private LinkedList<status> status = new LinkedList<status>();
+	
 	private boolean mateFound = false;
 	private int willingness;
 	private int baseWillingness;
@@ -169,19 +172,24 @@ public class deity {
 
 	public void deityActs() {
 		System.out.println("\t"+this.getName() + " (Age: "+age+", DvR " + getDvR()+", " + getHealth() + " health)" + " (" + getSexualityNoun(gender, sexuality) + " " +getGenderPronoun(getGender()) +") " + " "+this.getDomains().toString() + " acts");
+//		System.out.println("\t\tTime to act!");
 		for(int i = 0; i<behaviours.size(); i++) {
-			behaviour action = behaviours.get(i);
-			boolean satisfied = action.act();
-			if(satisfied) {
+			if(behaviours.get(i).act()) {
 				behaviours.remove(i);
 			}
-			if(this.health <= 0) {
-				this.addBehaviour(new die(this, context));
-		//		this.alive = false;
-		//		this.removeAllBehaviours();
-				if(getLast_attacker() != null) {
-					System.out.println("\t\t"+this.getName() + " was slain by " + this.getLast_attacker().getName() + "!");
-				}
+		}
+		if(status.size()>0) {System.out.println("\t\tChecking status effects!");}
+		for(int i = 0; i<status.size();i++) {
+			if(status.get(i).act()) {
+				status.remove(i);
+			}
+		}
+		if(this.health <= 0) {
+			this.addBehaviour(new die(this, context));
+	//		this.alive = false;
+	//		this.removeAllBehaviours();
+			if(getLast_attacker() != null) {
+				System.out.println("\t\t"+this.getName() + " was slain by " + this.getLast_attacker().getName() + "!");
 			}
 		}
 		age++;
@@ -397,5 +405,10 @@ public class deity {
 
 	public place getLocation() {
 		return location;
+	}
+
+	public void addStatus(status newStatus) {
+		status.add(newStatus);
+		
 	}
 }

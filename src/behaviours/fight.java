@@ -21,22 +21,22 @@ public class fight extends behaviour {
 
 	@Override
 	public boolean act() {
-		int random = context.getRandom(0, owner.getDvR()+target.getDvR());
+		int random = context.getRandom(0, owner.getDvR()+target.getDvR()+1);
 		if(random < owner.getDvR()) {
 			System.out.println("\t\tI won the fight!");
-			owner.changeHealth(-context.getRandom(0, target.getDvR()/2));
+			owner.changeHealth(-context.getRandom(1, 11)-1);
 			owner.setAttacker(target);
 			
-			target.changeHealth(-context.getRandom(1, owner.getDvR()));
+			target.changeHealth(-context.getRandom(1, 20));
 			target.setAttacker(owner);
 			return false;
 		}
 		else {
 			System.out.println("\t\tI... lost the fight!");
-			target.changeHealth(-context.getRandom(0, owner.getDvR()/2));
+			target.changeHealth(-context.getRandom(1, 20));
 			target.setAttacker(owner);
 			
-			owner.changeHealth(-context.getRandom(1, target.getDvR()));
+			owner.changeHealth(-context.getRandom(1, 10)-1);
 			owner.setAttacker(target);
 			return true;
 		}

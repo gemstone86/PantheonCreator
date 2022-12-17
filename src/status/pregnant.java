@@ -1,9 +1,10 @@
-package behaviours;
+package status;
 
+import behaviours.behaviour;
 import gods.deity;
 import main.runtime;
 
-public class pregnant extends behaviour  {
+public class pregnant extends status  {
 
 	private deity owner;
 	private runtime context;
@@ -12,8 +13,9 @@ public class pregnant extends behaviour  {
 	
 	public pregnant(deity mother, deity father, runtime context) {
 		owner = mother;
-		this.partner = mother;
+		this.partner = father;
 		timeLeft = context.getRandom(1, 10);
+		this.context = context;
 	}
 
 	@Override

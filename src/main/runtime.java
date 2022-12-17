@@ -81,7 +81,12 @@ public class runtime {
 	}
 
 	public int getRandom(int start, int end) {
-		return (int) ((generator.nextInt(end - start) ) + start);
+		if(end - start < 0) {
+			return (int) generator.nextInt(0 + start);
+		}
+		else {
+			return (int) ((generator.nextInt(end - start) ) + start);
+		}
 	}
 	
 	private LinkedList<String> worldConcepts = new LinkedList<String>();

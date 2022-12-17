@@ -51,7 +51,7 @@ public class createPlane extends behaviour {
 			}
 		}
 		
-		if(plane.construct(context.getRandom(1, owner.getDvR()))) {
+		if(plane.construct(context.getRandom(1, 5+owner.getDvR()))) {
 			System.out.println("\t\t\tI'm done with " + plane.getName());
 			owner.setHomePlane(plane);
 			owner.setLocation(plane);

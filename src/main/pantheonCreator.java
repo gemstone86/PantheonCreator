@@ -1,7 +1,6 @@
 
 package main;
 
-
 import java.util.LinkedList;
 
 import gods.deity;
@@ -29,11 +28,10 @@ public class pantheonCreator {
 		program.run();
 	}
 
-
 	public void run() {
 		runtime runtime = new runtime();
 
-		int generations = 20;
+		int generations = 200;
 		
 		for(int i = 0; i<generations+1; i++) {
 			System.out.println("----" + "Generation " + i + " (" + runtime.getListOfDeities().size() + ")" +"----");
