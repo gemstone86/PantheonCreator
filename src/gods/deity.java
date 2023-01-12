@@ -3,10 +3,11 @@ package gods;
 import java.util.LinkedList;
 
 import behaviours.*;
-import cosmos.place;
-import cosmos.plane;
+import cosmos.*;
+
 import main.runtime;
 import status.*;
+import traits.*;
 
 public class deity {
 
@@ -35,6 +36,7 @@ public class deity {
 	private int age = 0;
 	private runtime context;
 	
+	private LinkedList<trait> traits = new LinkedList<trait>();
 	
 	
 	private int orderChaos;
@@ -49,11 +51,7 @@ public class deity {
 	private int random = (int) Math.random();
 
 	public deity(String name, int DvR, int Sex, int sexuality, runtime context) {
-
-		
 		this.context = context;
-		
-		
 		
 		this.name = name;
 		this.domains = domains;
@@ -68,8 +66,22 @@ public class deity {
 		baseWillingness = random(30,70);
 		willingness = baseWillingness;
 		this.health = context.getRandom(1, 100) + DvR;
+
+		addTraits();
 	}
 
+	public void addTraits() {
+		aggression = context.getRandom(-10, 10);
+		lust = context.getRandom(-10, 10);
+		creativity = context.getRandom(-10, 10);
+		
+		int nTraits = context.getRandom(1, 3);
+		
+		for(int i = 0; i<nTraits; i++) {
+			this.traits.add(getNewTrait());
+		}
+	}
+	
 	public deity (String name, int DvR, int Sex, int Sexuality, LinkedList<deity> parents, runtime context) {
 		this.context = context;
 		this.name = name;
@@ -91,6 +103,8 @@ public class deity {
 		//add code to fetch 1-2 domain from father, 1-2 domain from mother and then 1-2 random domains.
 		setUpinheritDomains();
 		inheritAlignment();
+		
+		addTraits();
 	}
 
 	private void inheritDomain(deity parent) {
@@ -170,9 +184,16 @@ public class deity {
 		return "Bisexual";
 	}
 
+
+	
 	public void deityActs() {
-		System.out.println("\t"+this.getName() + " (Age: "+age+", DvR " + getDvR()+", " + getHealth() + " health)" + " (" + getSexualityNoun(gender, sexuality) + " " +getGenderPronoun(getGender()) +") " + " "+this.getDomains().toString() + " acts");
+		System.out.println(this.toString() + " acts");
+		//System.out.println("\t"+this.getName() + " (Age: "+age+", DvR " + getDvR()+", " + getHealth() + " health)" + " (" + getSexualityNoun(gender, sexuality) + " " +getGenderPronoun(getGender()) +", agg " + this.getAggression()+") " + this.getDomains().toString() + " acts");
 //		System.out.println("\t\tTime to act!");
+		for(trait i:traits) {
+			i.motivate();
+		}
+		
 		for(int i = 0; i<behaviours.size(); i++) {
 			if(behaviours.get(i).act()) {
 				behaviours.remove(i);
@@ -296,10 +317,14 @@ public class deity {
 		mateFound = false;
 
 		//check if deity has died
-		if(random(1,100)<age) {
+		if(random(20,100)<age) {
 			//this.addBehaviour(new die(this, context));
-			System.out.println("\t\t" +getName() + " feels old");
+			System.out.println("\t" +getName() + " feels old");
 			this.changeHealth(-context.getRandom(1, 20));
+			if(health <= 0) {
+				this.addBehaviour(new die(this, context));
+			}
+			
 			return true;
 		}
 
@@ -310,7 +335,7 @@ public class deity {
 		return behaviours;
 	}
 	
-	public boolean getStatus2() {
+	public boolean isAlive() {
 		return alive;
 	}
 	
@@ -330,7 +355,11 @@ public class deity {
 			status = "Dead ";
 		}
 		
-		return ("\t"+this.getName() + " (DvR " + this.getDvR()+")" + " (" +status+this.getGenderPronoun(this.getGender()) +") " + " "+this.getDomains().toString());
+		return ("\t"+this.getName() + " (Age: " + this.getAge() + ", DvR " + this.getDvR()+", "+this.getHealth() +" health)" + " (" +status+this.getGenderPronoun(this.getGender()) +") "  +"{" + this.getTraits().toString() + "}" + " (" + getSexualityNoun(gender, sexuality) + " " +getGenderPronoun(getGender()) +") " +this.getDomains().toString());
+	}
+	
+	public int getAge() {
+		return age;
 	}
 	
 	public String finalToString() {
@@ -340,13 +369,20 @@ public class deity {
 			status = "Dead ";
 		}
 		
-		String returnString = "\t"+this.getName() + " (DvR " + this.getDvR()+")" + " (" +status+this.getGenderPronoun(this.getGender()) +") " + " "+this.getDomains().toString();
+		String returnString = "\t"+this.getName() + " (DvR " + this.getDvR()+")" + " (" + getSexualityNoun(gender, sexuality) + " " +status+this.getGenderPronoun(this.getGender()) +", agg " + this.getAggression() +") " + " "+this.getDomains().toString();
+		
+		returnString +="\n\t" + this.getTraits().toString();
+		
 		for(deity parent:getParents()) {
 			returnString += "\n\t\tParent:" + parent.getName() + " ("+parent.getStatus() + ")";
 		}
 		return returnString;
 	}
 
+	public  LinkedList<trait> getTraits(){
+		return traits;
+	}
+	
 	private String getStatus() {
 		if(!alive) {
 			return "Dead";
@@ -409,6 +445,54 @@ public class deity {
 
 	public void addStatus(status newStatus) {
 		status.add(newStatus);
+		
+	}
+
+	private int aggression;
+	
+	public void setAggression(int i) {
+		aggression += i;
+		
+	}
+
+	public int getAggression() {
+		return aggression;
+	}
+
+	private int lust;
+	
+	public void setLust(int i) {
+		lust += i;
+	}
+	
+	public int getLust() {
+		return lust;
+	}
+	
+	public trait getNewTrait() {
+		int randomTrait = context.getRandom(76,125);
+		
+		return new ambitious(this,context);
+		
+//		if(isBetween(randomTrait,1,25)) { System.out.println("AGGRESSIVE " + randomTrait); return new aggressive(this, context); }
+//		if(isBetween(randomTrait,26,50)) { System.out.println("LUSTFUL " + randomTrait); return new lustful(this, context); }
+//		if(isBetween(randomTrait,51,75)) { System.out.println("PACIFIST " + randomTrait); return new pacifist(this, context); }
+//		if(isBetween(randomTrait,76,100)) {System.out.println("CREATIVE " + randomTrait); return new creative(this,context);}
+//		if(isBetween(randomTrait,101,125)) {System.out.println("AMBITIOUS " + randomTrait); return new ambitious(this,context);}
+//		return null;
+	}
+	
+	public boolean isBetween(int in, int low, int high) {
+		if((in >= low) && (in <= high)) {
+			return true;
+		}
+		return false;
+	}
+
+	private int creativity;
+	
+	public void setCreativity(int i) {
+		creativity += i;
 		
 	}
 }

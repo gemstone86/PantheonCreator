@@ -16,7 +16,7 @@ public class findMotivation extends behaviour{
 	@Override
 	public boolean act() {
 		//give me more to do if I only want something to do or if I roll less than 30.
-		if(owner.getBehaviour().size() <2 | context.getRandom(1, 100) < 30) {
+		if(owner.getBehaviour().size() <3 | context.getRandom(1, 100) < 30) {
 			System.out.println("\t\tI want something new to do!");
 			int rnd = context.getRandom(1,100);
 
@@ -48,6 +48,9 @@ public class findMotivation extends behaviour{
 				owner.addBehaviour(new move(owner, context));
 				System.out.println("\t\tI should move!");
 			}
+		}
+		if(owner.getAggression() > 5 && owner.getBehaviour().size() <4) {
+				owner.addBehaviour(new findRival(owner, context));
 		}
 		return false;
 	}

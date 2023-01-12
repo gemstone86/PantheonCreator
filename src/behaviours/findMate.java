@@ -19,6 +19,9 @@ public class findMate extends behaviour {
 
 	@Override
 	public boolean act() {
+		if(owner.getLust()>10) {
+			
+		
 		System.out.println("\t\tI'm trying to find a mate");
 
 		if(!owner.checkIfMateFound()) {
@@ -30,6 +33,9 @@ public class findMate extends behaviour {
 					listOfPotentialMates.add(i);
 				}
 			}
+			if(!listOfPotentialMates.contains(owner) && owner.random(1, 20) < 3 || context.getListOfDeities().size() == 1) {
+				listOfPotentialMates.add(owner);
+			}
 			if(listOfPotentialMates.size() > 0) {
 				int rndIndex = context.getRandom(0,listOfPotentialMates.size());
 
@@ -38,10 +44,16 @@ public class findMate extends behaviour {
 					listOfPotentialMates.get(rndIndex).setMateFound(true, owner);
 					owner.setMateFound(true, listOfPotentialMates.get(rndIndex));
 
+					int check = context.getRandom(1, 100);
+					if(check < 25-context.getListOfDeities().size()) {
+						owner.addStatus(new pregnant(owner, owner.getMate(), context)); 
+						System.out.println("\t\tI am pregnant!");
+						owner.setLust(-10);
+						return true;
+					}
+					System.out.println("\t\tI am not pregnant yet");
+					return false;
 					
-					owner.addStatus(new pregnant(owner, owner.getMate(), context)); 
-					System.out.println("\t\tI am pregnant!");
-					return true;
 				}
 
 				else {
@@ -53,6 +65,10 @@ public class findMate extends behaviour {
 					System.out.println("\t\t\tThere has to be someone out there for me");
 				}
 			}
+		}
+		}
+		else {
+			owner.setLust(context.getRandom(1, 3));
 		}
 		return false;
 	}

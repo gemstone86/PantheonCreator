@@ -31,7 +31,7 @@ public class pantheonCreator {
 	public void run() {
 		runtime runtime = new runtime();
 
-		int generations = 200;
+		int generations = 25;
 		
 		for(int i = 0; i<generations+1; i++) {
 			System.out.println("----" + "Generation " + i + " (" + runtime.getListOfDeities().size() + ")" +"----");
@@ -70,7 +70,7 @@ public class pantheonCreator {
 		}
 		System.out.println("---Final Pantheon---");
 		for(deity deity:runtime.getListOfDeities()) {
-			System.out.println(deity.finalToString());
+			System.out.println(deity.toString());
 		}
 		System.out.println("---Cosmos---");
 		System.out.println(runtime.getCosmos().toString());

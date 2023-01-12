@@ -23,7 +23,7 @@ public class die extends behaviour {
 
 	@Override
 	public boolean act() {
-		if(!owner.getStatus2()) {
+		if(owner.isAlive()) {
 			owner.setStatus(false);
 
 			//context.getListOfDeities().remove(owner);

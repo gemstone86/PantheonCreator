@@ -1,40 +1,42 @@
 package traits;
 
-import behaviours.behaviour;
+import behaviours.findMate;
 import behaviours.findRival;
+import behaviours.interact;
 import gods.deity;
 import main.runtime;
 
-public class aggressive extends trait{
+public class lustful extends trait{
 
 	private runtime context;
 	private deity owner;
 	
-	public aggressive(deity owner, runtime context) {
+	public lustful(deity owner, runtime context) {
 		this.context = context;
 		this.owner = owner;
-		owner.setAggression(10);
-		owner.setCreativity(-5);
+		owner.setLust(10);
 	}
-	
+
 	@Override
 	public boolean removeTrait() {
 		// TODO Auto-generated method stub
-		owner.setAggression(-10);
-		owner.setCreativity(5);
+		owner.setLust(-10);
 		return true;
 	}
 
 	@Override
 	public void motivate() {
-		if(owner.getBehaviour().size() < 4) {
-			owner.addBehaviour(new findRival(owner, context));
+		// TODO Auto-generated method stub
+		if(!owner.checkIfMateFound()) {
+			owner.addBehaviour(new findMate(owner, context));
 		}
 	}
 
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return "aggressive";
+		return "lustful";
 	}
+	
+	
 }
