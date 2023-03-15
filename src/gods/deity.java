@@ -77,7 +77,7 @@ public class deity {
 		
 		int nTraits = context.getRandom(1, 3);
 		
-		for(int i = 0; i<nTraits; i++) {
+		for(int i = 0; i<nTraits+1; i++) {
 			this.traits.add(getNewTrait());
 		}
 	}
@@ -470,16 +470,16 @@ public class deity {
 	}
 	
 	public trait getNewTrait() {
-		int randomTrait = context.getRandom(76,125);
+		int randomTrait = context.getRandom(1,125);
 		
-		return new ambitious(this,context);
+//		return new ambitious(this,context);
 		
-//		if(isBetween(randomTrait,1,25)) { System.out.println("AGGRESSIVE " + randomTrait); return new aggressive(this, context); }
-//		if(isBetween(randomTrait,26,50)) { System.out.println("LUSTFUL " + randomTrait); return new lustful(this, context); }
-//		if(isBetween(randomTrait,51,75)) { System.out.println("PACIFIST " + randomTrait); return new pacifist(this, context); }
-//		if(isBetween(randomTrait,76,100)) {System.out.println("CREATIVE " + randomTrait); return new creative(this,context);}
-//		if(isBetween(randomTrait,101,125)) {System.out.println("AMBITIOUS " + randomTrait); return new ambitious(this,context);}
-//		return null;
+		if(isBetween(randomTrait,1,25)) { System.out.println("AGGRESSIVE " + randomTrait); return new aggressive(this, context); }
+		if(isBetween(randomTrait,26,50)) { System.out.println("LUSTFUL " + randomTrait); return new lustful(this, context); }
+		if(isBetween(randomTrait,51,75)) { System.out.println("PACIFIST " + randomTrait); return new pacifist(this, context); }
+		if(isBetween(randomTrait,76,100)) {System.out.println("CREATIVE " + randomTrait); return new creative(this,context);}
+		if(isBetween(randomTrait,101,125)) {System.out.println("AMBITIOUS " + randomTrait); return new ambitious(this,context);}
+		return null;
 	}
 	
 	public boolean isBetween(int in, int low, int high) {

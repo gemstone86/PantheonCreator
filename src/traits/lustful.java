@@ -27,7 +27,8 @@ public class lustful extends trait{
 	@Override
 	public void motivate() {
 		// TODO Auto-generated method stub
-		if(!owner.checkIfMateFound()) {
+		// TODO: fixa så att den inte alltid lägger till ett behaviour
+		if(!owner.checkIfMateFound() && owner.getBehaviour().size() < 3) {
 			owner.addBehaviour(new findMate(owner, context));
 		}
 	}

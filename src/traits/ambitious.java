@@ -36,6 +36,6 @@ public class ambitious extends trait{
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return "aggressive";
+		return "ambitious";
 	}
 }

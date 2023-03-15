@@ -23,15 +23,15 @@ public class randomGenerator {
 
 	
 
-	private String[] malePrefix = {"Ra", "Re", "Set", "Ze", "Ga", "Fre", "Vo", "Ak", "Ur", "Kil", "Rak", "Mel", "Var", "Med", "Mys", "Il", "Sar", "Akor"};
-	private String[] maleMidfix = {"ys", "ul", "ve", "av", "ar", "vu", "el", "de"};
-	private String[] maleSuffix = {"", "o", "or", "us", "otor", "meron", "kad", "ir", "es", "dran", "'ur", "'u", "rh", "tr", "an", "mater"};
+	private String[] malePrefix = {"Ra", "Re", "Set", "Ze", "Ga", "Fre", "Vo", "Ak", "Ur", "Kil", "Rak", "Mel", "Var", "Med", "Mys", "Il", "Sar", "Akor", "Heru", "Sob", "Tal"};
+	private String[] maleMidfix = {"ys", "ul", "ve", "av", "ar", "vu", "el", "de", "ne", "ah",""};
+	private String[] maleSuffix = {"", "o", "or", "us", "otor", "meron", "kad", "ir", "es", "dran", "'ur", "'u", "rh", "tr", "an", "mater","an","ak"};
 	
-	private String[] planePrefix = {"Mid", "Olym", "Nifel", "Had", "Ker", "Hel", "Har", "Rehn", "Elm", "Ereb", "Fae", "Kor", "Nem"};
-	private String[] planeSuffix = {"", "gard", "pus", "heim", "es", "as", "ren", "altor", "run", "karn", "rorn", "nae"};
+	private String[] planePrefix = {"Mid", "Olym", "Nifel", "Had", "Ker", "Hel", "Har", "Rehn", "Elm", "Ereb", "Fae", "Kor", "Nem","Kem", "Mun"};
+	private String[] planeSuffix = {"", "gard", "pus", "heim", "es", "as", "ren", "altor", "run", "karn", "rorn", "nae","dana","nar","vel"};
 	
-	private String[] femalePrefix = {"Ba", "He", "Is", "Shi", "Seka", "Vi", "Ti", "Cei", "Hel", "Shu", "Idu"};
-	private String[] femaleSuffix = {"", "st", "sti", "is", "ra", "ah", "a", "ia", "'ia", "na", "ena", "ni", "anda", "n"};
+	private String[] femalePrefix = {"Ba", "He", "Is", "Shi", "Seka", "Vi", "Ti", "Cei", "Hel", "Shu", "Idu","Fre","Fr","He"};
+	private String[] femaleSuffix = {"", "st", "sti", "is", "ra", "ah", "a", "ia", "'ia", "na", "ena", "ni", "anda", "n","igga","ja"};
 	
 //	private String[] listOfMaleNames = {"Rao", "Re", "Meln", "Varu", "Kil","gahn", "Torak", "Freden", "medri", "vorn", "var", "Galden",
 //			"Ilmater", "Helm", "Bvaal", "Nern", "Hur", "Her'u", "Sardor", "Akkad", "Mystr", "vreten", "vadir", "Turh", "Oda", "Zaes", 

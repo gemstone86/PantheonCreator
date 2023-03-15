@@ -33,7 +33,7 @@ public class creative extends trait{
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return "lustful";
+		return "creative";
 	}
 	
 	
