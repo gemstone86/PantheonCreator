@@ -13,7 +13,7 @@ public class relation {
 		this.context = context;
 		relation = context.getRandom(-5,5);
 	}
-	public relation(deity owner, int i, runtime context) {
+	public relation(deity owner, deity target, int i, runtime context) {
 		this.target = target;
 		this.context = context;
 		relation = i;

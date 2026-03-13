@@ -6,7 +6,7 @@ import main.runtime;
 
 public class createPlane extends behaviour {
 
-	private runtime context;
+	//private runtime context;
 	private deity owner;
 	private plane plane;
 	private cosmos cosmos;

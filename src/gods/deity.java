@@ -39,8 +39,8 @@ public class deity {
 	private LinkedList<trait> traits = new LinkedList<trait>();
 	
 	
-	private int orderChaos;
-	private int goodEvil;
+	private int orderChaos = 0;
+	private int goodEvil = 0;
 	
 	private place homeplane;
 	private place location;

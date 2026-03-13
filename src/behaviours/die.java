@@ -9,7 +9,6 @@ import main.runtime;
 
 public class die extends behaviour {
 
-	private runtime context;
 	private deity owner;
 	private plane plane;
 	private cosmos cosmos;

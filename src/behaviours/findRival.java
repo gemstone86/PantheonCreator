@@ -31,7 +31,7 @@ public class findRival extends behaviour{
 				target = possibleRivals.get(context.getRandom(0, possibleRivals.size()));
 
 				if(!target.doYouKnowMe(owner)) {
-					target.addRelation(new relation(owner,-20, context));
+					target.addRelation(new relation(owner,target,-20, context));
 				}
 				System.out.println("\t\t\tI hate you " + target.getName());
 				
