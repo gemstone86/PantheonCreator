@@ -325,14 +325,31 @@ public class Deity {
 		children.add(newDeity);
 	}
 
+	/* Gods don't age at all before this age. */
+	public static final int OLD_AGE_START = 20;
+	/* After OLD_AGE_START, the chance of dying each generation grows by this many per mille (tenths of a percent) per year. */
+	public static final int OLD_AGE_RISK_PER_YEAR = 5;
+
+	/*
+	 * Rolls for death by old age. The chance is zero until OLD_AGE_START and then grows steadily,
+	 * e.g. with the defaults 5% at age 30 and 10% at age 40.
+	 */
+	private boolean diesOfOldAge() {
+		int yearsOld = age - OLD_AGE_START;
+		if(yearsOld <= 0) {
+			return false;
+		}
+		return random(0, 1000) < yearsOld * OLD_AGE_RISK_PER_YEAR;
+	}
+
 	public boolean update() {
 		if(!alive) {
 			return false;
 		}
 		mateFound = false;
 
-		//check if deity has died
-		if(random(1,100)<age) {
+		//check if deity has died of old age
+		if(diesOfOldAge()) {
 			this.addBehaviour(new Die(this, context));
 			return true;
 		}

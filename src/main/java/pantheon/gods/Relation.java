@@ -1,24 +1,24 @@
-package gods;
+package pantheon.gods;
 
-import main.runtime;
+import pantheon.sim.Simulation;
 
-public class relation {
+public class Relation {
 
-	private deity target;
+	private Deity target;
 	private int relation;
-	private runtime context;
+	private Simulation context;
 	
-	public relation(deity target, runtime context) {
+	public Relation(Deity target, Simulation context) {
 		this.target = target;
 		this.context = context;
 		relation = context.getRandom(-5,5);
 	}
-	public relation(deity owner, deity target, int i, runtime context) {
+	public Relation(Deity target, int startingRelation, Simulation context) {
 		this.target = target;
 		this.context = context;
-		relation = i;
+		relation = startingRelation;
 	}
-	public deity getTarget() {
+	public Deity getTarget() {
 		return target;
 	}
 	public int getRelation() {
@@ -28,7 +28,7 @@ public class relation {
 	public void modifyRelation(int relation) {
 		this.relation += relation;
 	}
-	public deity getDeity() {
+	public Deity getDeity() {
 		// TODO Auto-generated method stub
 		return target;
 	}

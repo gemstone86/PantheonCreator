@@ -1,16 +1,16 @@
-package cosmos;
+package pantheon.cosmos;
 
 import java.util.LinkedList;
 
-import gods.*;
-import main.runtime;
+import pantheon.gods.*;
+import pantheon.sim.Simulation;
 
-public class place {
+public class Place {
 
-	private place parentPlane;
-	private deity creator;
+	private Place parentPlane;
+	private Deity creator;
 	
-	LinkedList<place> connections = new LinkedList<place>();
+	LinkedList<Place> connections = new LinkedList<Place>();
 	
 	private String name;
 	
@@ -22,27 +22,26 @@ public class place {
 		this.name = name;
 	}
 	
-	public void AddConnection(place newConnection) {
+	/*
+	 * Connects this place to another one. Returns false if they were already connected.
+	 */
+	public boolean addConnection(Place newConnection) {
 		if(connections.contains(newConnection)) {
-			System.out.println("\t\t\tThis plane already contains this connection!");
-	
+			return false;
 		}
-		else {
-			System.out.println("\t\t\tI have added a new connection!");
-			connections.add(newConnection);
-	
-		}
+		connections.add(newConnection);
+		return true;
 	}
 	
 	public void removeConnection(int index) {
 		connections.remove(index);
 	}
 	
-	public LinkedList<place> getConnections() {
+	public LinkedList<Place> getConnections() {
 		return connections;
 	}
 	
-	public void setOwner(deity deity) {
+	public void setOwner(Deity deity) {
 		this.creator = deity;
 	}
 	
@@ -50,16 +49,15 @@ public class place {
 		this.creator = null;
 	}
 	
-	public place getParentPlane() {
+	public Place getParentPlane() {
 		return parentPlane;
 	}
 	
-	public deity getCreator() {
+	public Deity getCreator() {
 		return creator;
 	}
 
 	public int getNumberOfConnections() {
-		// TODO Auto-generated method stub
 		return connections.size();
 	}
 	

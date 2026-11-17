@@ -66,6 +66,18 @@ class SimulationTest {
 	}
 
 	@Test
+	void nobodyDiesOfOldAgeWhileYoung() {
+		for(long seed = 1; seed <= 100; seed++) {
+			for(Snapshot.DeityView deity:runToEnd(seed, 80).deities()) {
+				if("old age".equals(deity.causeOfDeath())) {
+					assertThat(deity.diedIn() - deity.bornIn()).as("%s in seed %d", deity.name(), seed)
+							.isGreaterThan(pantheon.gods.Deity.OLD_AGE_START);
+				}
+			}
+		}
+	}
+
+	@Test
 	void sessionStepsUntilFinished() {
 		SimulationSession session = new SimulationSession("test", 5, 3);
 		session.step();
