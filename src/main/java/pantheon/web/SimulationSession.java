@@ -63,6 +63,20 @@ public class SimulationSession {
 		return info();
 	}
 
+	/* Most living gods a pantheon can have before adding more is refused. */
+	public static final int MAX_LIVING_GODS = 200;
+
+	/*
+	 * Adds a new random god to the pantheon right away. Returns null if the pantheon is full.
+	 */
+	public synchronized Info addRandomDeity() {
+		if(simulation.getListOfDeities().size() >= MAX_LIVING_GODS) {
+			return null;
+		}
+		simulation.addRandomDeity();
+		return info();
+	}
+
 	public synchronized Info play(ScheduledExecutorService scheduler, long msPerGeneration) {
 		this.msPerGeneration = msPerGeneration;
 		stopPlayer();

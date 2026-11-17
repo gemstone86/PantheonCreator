@@ -52,8 +52,12 @@ public class Plane extends Place{
 		for(Deity builder:builders) {
 			builderIds.add(builder.getId());
 		}
+		List<String> connectionNames = new ArrayList<String>();
+		for(Place connection:getConnections()) {
+			connectionNames.add(connection.getName());
+		}
 		return new Snapshot.PlaneView(getName(), getCreator() == null ? null : getCreator().getId(),
-				getProgress(), done, List.copyOf(concepts), builderIds);
+				getProgress(), done, connectionNames, List.copyOf(concepts), builderIds);
 	}
 	
 	public String toString() {

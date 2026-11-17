@@ -11,8 +11,35 @@ public class Cosmos extends Place{
 	
 	private LinkedList<Plane> underConstruction = new LinkedList<Plane>();
 	
+	/* The cosmos itself is the space between the planes, where gods start out. */
+	public static final String VOID = "The Void";
+
 	public Cosmos(Simulation context) {
 		this.context = context;
+		setName(VOID);
+	}
+
+	/*
+	 * Opens a two-way path between two places. Returns false if they were already connected.
+	 */
+	public boolean connect(Place a, Place b) {
+		if(a == b) {
+			return false;
+		}
+		boolean added = a.addConnection(b);
+		b.addConnection(a);
+		return added;
+	}
+
+	/* Planes that are finished and can be lived in. */
+	public LinkedList<Plane> getFinishedPlanes() {
+		LinkedList<Plane> finished = new LinkedList<Plane>();
+		for(Plane plane:createdPlanes) {
+			if(plane.isDone()) {
+				finished.add(plane);
+			}
+		}
+		return finished;
 	}
 
 	LinkedList<String> createdConcepts = new LinkedList<String>();

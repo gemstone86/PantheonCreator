@@ -1,6 +1,6 @@
 # Pantheon Creator
 
-Simulates a pantheon of gods over many generations. Gods find mates and have children, create concepts like Storms or Justice, build planes together, form friendships and rivalries, fight, and eventually die. Watch it happen live in your browser, or run it as text in a terminal.
+Simulates a pantheon of gods over many generations. Gods find mates and have children, create concepts like Storms or Justice, build planes of existence and travel between them, form friendships and rivalries, fight, and eventually die. Watch it happen live in your browser, or run it as text in a terminal.
 
 ## Run it
 
@@ -40,11 +40,22 @@ On macOS or Linux, use the Maven wrapper directly: `./mvnw spring-boot:run`, or 
 
 - **New pantheon** starts a new simulation. Leave the seed empty for a random one; the same seed always gives the same pantheon.
 - **Play** runs generations one after another at the chosen speed; **Next generation** runs a single one.
-- **The graph** shows every god. Size is divine rank, colour is sex, and the gold ring is health. Fallen gods become dashed outlines. Lines show family, mates (gold, dashed), and strong feelings (green for likes, red for dislikes). Fights flash red.
+- **Add a god** brings a new random god into the Void straight away.
+- **The map** shows the planes of existence. Gods start in the Void in the middle; finished planes appear around it as gold circles (dashed while still being shaped), with dotted paths between connected planes. Each god stands on the plane they are on, so you can watch them travel. The view zooms out as planes appear; **Show all planes** brings it back after you have panned or zoomed.
+- **Gods** are circles: size is divine rank, colour is sex, and the gold ring is health. Lines show family, mates (gold, dashed), and strong feelings (green for likes, red for dislikes). Fights flash red. Tick **Fallen gods** to also show dead gods where they died.
 - **Click a god** to see their domains, family and feelings.
 - **Planes** shows each plane being built, who is building it and which concepts it holds.
 - **Chronicle** lists births, deaths, fights and creations. Turn on **Inner thoughts** to see what each god is thinking.
 - **Domains** along the bottom light up gold once a god has created them.
+
+## Planes and travel
+
+- Gods start in **the Void**, the space between the planes. From there they can enter any finished plane.
+- The god who finishes a plane makes it their **home plane** and moves there.
+- From a plane, gods follow its **paths** to other planes. If a plane has no paths, a god who wants to move opens one to another plane, or returns to the Void if there is no other plane.
+- Gods mostly socialise with, and court, gods **on the same plane**: 80% of the time when anyone suitable is there (`SAME_PLACE_PREFERENCE` in `Simulation.java`).
+- A god who wants to fight someone on another plane **travels there first**.
+- Gods don't risk dying of old age before 20; after that the risk grows by half a percentage point a year (`OLD_AGE_START` and `OLD_AGE_RISK_PER_YEAR` in `Deity.java`).
 
 ## How it fits together
 
@@ -53,7 +64,7 @@ src/main/java/pantheon/
   sim/          Simulation (step(), snapshots), events, random names and domains
   gods/         Deity and Relation
   behaviours/   What gods do each generation: find a mate, fight, create, ...
-  cosmos/       The cosmos and its planes
+  cosmos/       The cosmos (the Void) and its planes
   web/          Spring Boot app: REST API and live event stream
   PantheonCreator.java   Text version
 src/main/resources/static/   Browser UI (D3 graph)
@@ -71,6 +82,7 @@ The simulation knows nothing about the web. It reports everything that happens a
 | `POST /api/simulations/{id}/step` | Run one generation |
 | `POST /api/simulations/{id}/play?msPerGeneration=1000` | Run continuously |
 | `POST /api/simulations/{id}/pause` | Stop running |
+| `POST /api/simulations/{id}/deities` | Add a random god to the Void (up to 200 living gods) |
 | `GET /api/simulations/{id}/events` | Live event stream |
 | `DELETE /api/simulations/{id}` | Remove a simulation |
 

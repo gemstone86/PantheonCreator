@@ -46,6 +46,7 @@ public class Deity {
 	private int goodEvil;
 	
 	private Place homeplane;
+	private Place location;
 
 	private int sexuality;
 	private int gender;
@@ -54,6 +55,7 @@ public class Deity {
 		this.context = context;
 		this.id = context.nextDeityId();
 		this.bornIn = context.getGeneration();
+		this.location = context.getCosmos();
 		this.name = name;
 		this.divineRank = DvR;
 		this.gender = Sex;
@@ -73,6 +75,7 @@ public class Deity {
 		this.context = context;
 		this.id = context.nextDeityId();
 		this.bornIn = context.getGeneration();
+		this.location = context.getCosmos();
 		this.name = name;
 		this.divineRank = DvR;
 		this.gender = Sex;
@@ -444,6 +447,41 @@ public class Deity {
 		health += i;
 	}
 	
+	public Place getLocation() {
+		return location;
+	}
+
+	public Place getHomePlane() {
+		return homeplane;
+	}
+
+	public void setHomePlane(Place plane) {
+		this.homeplane = plane;
+	}
+
+	/* True if both deities are in the same place. */
+	public boolean isNear(Deity other) {
+		return other != null && other.location == this.location;
+	}
+
+	/*
+	 * Travels to another place and reports it.
+	 */
+	public void moveTo(Place destination) {
+		if(destination == null || destination == location) {
+			return;
+		}
+		Place from = location;
+		location = destination;
+		context.narrate(this, 1, "I have travelled from " + from.getName() + " to " + destination.getName());
+		context.emit(new SimEvent.DeityMoved(context.getGeneration(), id, from.getName(), destination.getName()));
+	}
+
+	/* Places a newborn where it was born, without reporting a journey. */
+	public void setBirthplace(Place place) {
+		this.location = place;
+	}
+
 	public void setAttacker(Deity attacker) {
 		last_attacker = attacker;
 	}
@@ -477,6 +515,8 @@ public class Deity {
 		return new Snapshot.DeityView(id, name, alive, gender, getGenderPronoun(gender), getSexualityNoun(gender, sexuality),
 				divineRank, health, Math.max(maxHealth, health), age, bornIn, diedIn, causeOfDeath,
 				killer == null ? null : killer.getId(),
+				location == null ? null : location.getName(),
+				homeplane == null ? null : homeplane.getName(),
 				List.copyOf(domains), parentIds, mateIds, relationViews);
 	}
 }

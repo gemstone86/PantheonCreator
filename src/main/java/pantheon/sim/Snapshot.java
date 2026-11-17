@@ -30,6 +30,8 @@ public record Snapshot(
 			Integer diedIn,
 			String causeOfDeath,
 			String killerId,
+			String location,
+			String homePlane,
 			List<String> domains,
 			List<String> parentIds,
 			List<String> mateIds,
@@ -42,6 +44,7 @@ public record Snapshot(
 			String creatorId,
 			int progress,
 			boolean done,
+			List<String> connections,
 			List<String> concepts,
 			List<String> builderIds) {}
 }

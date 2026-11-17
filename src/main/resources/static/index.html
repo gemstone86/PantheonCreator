@@ -23,22 +23,23 @@
 		<div class="playback" role="group" aria-label="Playback">
 			<button id="play" type="button" class="primary">Play</button>
 			<button id="step" type="button">Next generation</button>
-			<label>Speed
-				<select id="speed">
-					<option value="2000">Slow</option>
-					<option value="1000" selected>Normal</option>
-					<option value="400">Fast</option>
-					<option value="150">Very fast</option>
+			<button id="add-god" type="button">Add a god</button>
+			<label class="speed"><span class="visually-hidden">Speed</span>
+				<select id="speed" title="Speed">
+					<option value="2000">Slow speed</option>
+					<option value="1000" selected>Normal speed</option>
+					<option value="400">Fast speed</option>
+					<option value="150">Very fast speed</option>
 				</select>
 			</label>
 		</div>
 
-		<p id="generation" class="generation" aria-live="polite">Generation 0</p>
 	</header>
 
 	<main class="layout">
-		<section class="heavens" aria-label="The pantheon">
-			<svg id="graph" role="img" aria-label="Graph of the gods and how they are related"></svg>
+		<section class="heavens" aria-label="The planes of existence">
+			<svg id="graph" role="img" aria-label="The planes of existence and the gods on them"></svg>
+			<button id="fit" type="button" class="fit">Show all planes</button>
 
 			<div class="legend">
 				<fieldset>
@@ -46,7 +47,7 @@
 					<label><input type="checkbox" id="show-family" checked> Family</label>
 					<label><input type="checkbox" id="show-mates" checked> Mates</label>
 					<label><input type="checkbox" id="show-feelings" checked> Feelings</label>
-					<label><input type="checkbox" id="show-fallen" checked> Fallen gods</label>
+					<label><input type="checkbox" id="show-fallen"> Fallen gods</label>
 				</fieldset>
 				<ul class="key">
 					<li><span class="swatch male"></span>Male</li>
@@ -55,9 +56,14 @@
 					<li><span class="ring"></span>Health</li>
 					<li><span class="line friendly"></span>Likes</li>
 					<li><span class="line hostile"></span>Dislikes</li>
+					<li><span class="region-swatch"></span>Plane</li>
+					<li><span class="region-swatch building"></span>Being shaped</li>
 				</ul>
 			</div>
-			<p class="hint">Drag to pan, scroll to zoom, click a god to see who they are.</p>
+			<div class="overlay-top">
+				<p id="generation" class="generation" aria-live="polite">Generation 0</p>
+				<p class="hint">Drag to pan, scroll to zoom, click a god to see who they are.</p>
+			</div>
 		</section>
 
 		<aside class="side">

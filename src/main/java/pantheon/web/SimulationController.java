@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import pantheon.sim.Snapshot;
@@ -61,6 +62,17 @@ public class SimulationController {
 	@PostMapping("/{id}/pause")
 	public SimulationSession.Info pause(@PathVariable String id) {
 		return service.get(id).pause();
+	}
+
+	@PostMapping("/{id}/deities")
+	@ResponseStatus(HttpStatus.CREATED)
+	public SimulationSession.Info addDeity(@PathVariable String id) {
+		SimulationSession.Info info = service.get(id).addRandomDeity();
+		if(info == null) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT,
+					"The pantheon already has " + SimulationSession.MAX_LIVING_GODS + " living gods");
+		}
+		return info;
 	}
 
 	@DeleteMapping("/{id}")

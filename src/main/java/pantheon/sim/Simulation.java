@@ -19,6 +19,8 @@ import pantheon.gods.Deity;
 public class Simulation {
 
 	public static final int DEFAULT_GENERATIONS = 20;
+	/* Chance in percent that a god socialises with, or courts, someone on the same plane rather than anyone at all. */
+	public static final int SAME_PLACE_PREFERENCE = 80;
 
 	private LinkedList<Deity> listOfActiveDeities;
 	private LinkedList<Deity> listOfInactiveDeities = new LinkedList<Deity>();
@@ -238,6 +240,53 @@ public class Simulation {
 	}
 
 	public void createChild(Deity father, Deity mother) {
+		Deity newDeity = buildDeity(father, mother);
+		nextGeneration.add(newDeity);
+
+		if(father != null) {
+			father.addChild(newDeity);
+		}
+		if(mother != null) {
+			mother.addChild(newDeity);
+		}
+		narrate(father, 1, "A new deity is born: " + newDeity.getName());
+		emit(new SimEvent.DeityBorn(generation, newDeity.toView()));
+	}
+
+	/*
+	 * Adds a brand-new god with no parents straight into the pantheon, in the Void.
+	 * Can be called between generations, e.g. from the web app.
+	 */
+	public Deity addRandomDeity() {
+		Deity deity = buildDeity(null, null);
+		addDeity(deity);
+		narrate(null, 0, deity.getName() + " has appeared in " + deity.getLocation().getName());
+		emit(new SimEvent.DeityBorn(generation, deity.toView()));
+		emit(new SimEvent.WorldChanged(generation, snapshot()));
+		return deity;
+	}
+
+	/*
+	 * Picks someone for owner to deal with. With chanceSamePlace percent it is someone in the same place,
+	 * if anyone else is there; otherwise anyone in the pantheon (which may be owner itself).
+	 */
+	public Deity getRandomDeityPreferringNear(Deity owner, int chanceSamePlace) {
+		LinkedList<Deity> near = new LinkedList<Deity>();
+		for(Deity deity:listOfActiveDeities) {
+			if(deity != owner && deity.isAlive() && deity.isNear(owner)) {
+				near.add(deity);
+			}
+		}
+		if(!near.isEmpty() && getRandom(0, 100) < chanceSamePlace) {
+			return near.get(getRandom(0, near.size()));
+		}
+		return getRandomDeity();
+	}
+
+	/*
+	 * Creates a deity from two parents (either may be null), born where the first parent is.
+	 */
+	private Deity buildDeity(Deity father, Deity mother) {
 		LinkedList<Deity> parents = new LinkedList<Deity>();
 		if(father !=null) parents.add(father);
 		if(mother !=null) parents.add(mother);
@@ -282,17 +331,11 @@ public class Simulation {
 
 		//generate the new deity
 		Deity newDeity = new Deity(newName, newDvR, sex, sexuality, parents, this);
-
-		nextGeneration.add(newDeity);
-
-		if(father != null) {
-			father.addChild(newDeity);
+		Deity parent = father != null ? father : mother;
+		if(parent != null) {
+			newDeity.setBirthplace(parent.getLocation());
 		}
-		if(mother != null) {
-			mother.addChild(newDeity);
-		}
-		narrate(father, 1, "A new deity is born: " + newName);
-		emit(new SimEvent.DeityBorn(generation, newDeity.toView()));
+		return newDeity;
 	}
 
 	public LinkedList<Deity> getNextGen(){

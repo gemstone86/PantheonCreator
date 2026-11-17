@@ -34,4 +34,13 @@ public sealed interface SimEvent {
 	record PlaneStarted(int generation, String plane, String creatorId) implements SimEvent {}
 
 	record PlaneFinished(int generation, String plane, String finisherId) implements SimEvent {}
+
+	/* A deity travelled from one place to another. Places are plane names or Cosmos.VOID. */
+	record DeityMoved(int generation, String deityId, String from, String to) implements SimEvent {}
+
+	/* A deity opened a path between two places. */
+	record PlacesConnected(int generation, String deityId, String placeA, String placeB) implements SimEvent {}
+
+	/* The world was changed from outside the normal flow of generations, e.g. a god was added. */
+	record WorldChanged(int generation, Snapshot snapshot) implements SimEvent {}
 }

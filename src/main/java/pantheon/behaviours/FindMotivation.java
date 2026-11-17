@@ -40,7 +40,8 @@ public class FindMotivation extends Behaviour {
 				say("I need more power!");
 			}
 			if(rnd >= 90) {
-				say("I want... nothing for now");
+				owner.addBehaviour(new Move(owner, context));
+				say("I should move!");
 			}
 		}
 		return false;

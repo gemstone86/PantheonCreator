@@ -11,7 +11,7 @@ public class Interact extends Behaviour {
 
 	public Interact(Deity owner, Simulation context) {
 		super(owner, context);
-		Deity other = context.getRandomDeity();
+		Deity other = context.getRandomDeityPreferringNear(owner, Simulation.SAME_PLACE_PREFERENCE);
 
 		if(other.equals(owner) || !other.isAlive()) {
 			end = true;

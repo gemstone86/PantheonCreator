@@ -22,6 +22,12 @@ public class Fight extends Behaviour {
 			say("There's no one left to fight");
 			return true;
 		}
+		if(!owner.isNear(target)) {
+			//go after the target first; the fight happens next turn if they are still there
+			say("I'm going after " + target.getName() + " in " + target.getLocation().getName() + "!");
+			owner.moveTo(target.getLocation());
+			return false;
+		}
 		int random = context.getRandom(0, owner.getDvR() + target.getDvR());
 		if(random < owner.getDvR()) {
 			say("I won the fight against " + target.getName() + "!");

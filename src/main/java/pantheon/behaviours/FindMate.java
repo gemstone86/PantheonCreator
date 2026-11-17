@@ -25,6 +25,16 @@ public class FindMate extends Behaviour {
 					listOfPotentialMates.add(candidate);
 				}
 			}
+			//gods usually court someone on their own plane, if there is anyone suitable there
+			LinkedList<Deity> nearbyMates = new LinkedList<Deity>();
+			for(Deity candidate:listOfPotentialMates) {
+				if(candidate.isNear(owner)) {
+					nearbyMates.add(candidate);
+				}
+			}
+			if(!nearbyMates.isEmpty() && context.getRandom(0, 100) < Simulation.SAME_PLACE_PREFERENCE) {
+				listOfPotentialMates = nearbyMates;
+			}
 			if(listOfPotentialMates.size() > 0) {
 				Deity mate = listOfPotentialMates.get(context.getRandom(0, listOfPotentialMates.size()));
 

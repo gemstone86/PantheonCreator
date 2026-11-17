@@ -78,6 +78,49 @@ class SimulationTest {
 	}
 
 	@Test
+	void godsTravelBetweenFinishedPlanesOnly() {
+		int moves = 0;
+		for(long seed = 1; seed <= 100; seed++) {
+			Simulation simulation = new Simulation(seed, 80);
+			List<SimEvent.DeityMoved> moved = new ArrayList<SimEvent.DeityMoved>();
+			simulation.addListener(e -> {
+				if(e instanceof SimEvent.DeityMoved m) moved.add(m);
+			});
+			while(!simulation.isFinished()) {
+				simulation.step();
+			}
+			Snapshot snapshot = simulation.snapshot();
+			List<String> places = new ArrayList<String>();
+			places.add(pantheon.cosmos.Cosmos.VOID);
+			snapshot.planes().stream().filter(Snapshot.PlaneView::done).forEach(p -> places.add(p.name()));
+			for(SimEvent.DeityMoved m:moved) {
+				assertThat(places).contains(m.to());
+				assertThat(m.to()).isNotEqualTo(m.from());
+			}
+			for(Snapshot.DeityView deity:snapshot.deities()) {
+				assertThat(places).contains(deity.location());
+			}
+			moves += moved.size();
+		}
+		assertThat(moves).isGreaterThan(100);
+	}
+
+	@Test
+	void addingAGodPutsItInTheVoidRightAway() {
+		Simulation simulation = new Simulation(3, 10);
+		int before = simulation.getListOfDeities().size();
+		List<SimEvent> events = new ArrayList<SimEvent>();
+		simulation.addListener(events::add);
+
+		pantheon.gods.Deity added = simulation.addRandomDeity();
+
+		assertThat(simulation.getListOfDeities()).hasSize(before + 1).contains(added);
+		assertThat(added.getLocation().getName()).isEqualTo(pantheon.cosmos.Cosmos.VOID);
+		assertThat(events).hasAtLeastOneElementOfType(SimEvent.DeityBorn.class)
+				.hasAtLeastOneElementOfType(SimEvent.WorldChanged.class);
+	}
+
+	@Test
 	void sessionStepsUntilFinished() {
 		SimulationSession session = new SimulationSession("test", 5, 3);
 		session.step();

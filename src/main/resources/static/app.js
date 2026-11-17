@@ -58,21 +58,157 @@
 
 	const svg = d3.select('#graph');
 	const zoomLayer = svg.append('g');
+	const regionLayer = zoomLayer.append('g');
+	const pathLayer = zoomLayer.append('g');
 	const linkLayer = zoomLayer.append('g');
 	const effectLayer = zoomLayer.append('g');
 	const nodeLayer = zoomLayer.append('g');
 
-	svg.call(d3.zoom().scaleExtent([0.2, 4]).on('zoom', (event) => zoomLayer.attr('transform', event.transform)));
+	// the view follows the planes as they appear, until the user pans or zooms themselves
+	let userZoomed = false;
+	let lastFitKey = '';
+	let currentScale = 1;
+	const zoom = d3.zoom().scaleExtent([0.1, 4]).on('zoom', (event) => {
+		zoomLayer.attr('transform', event.transform);
+		if (event.sourceEvent) userZoomed = true;
+		currentScale = event.transform.k;
+		applyLabelScale();
+	});
+
+	// keep names readable when zoomed out to see many planes
+	function applyLabelScale() {
+		const grow = Math.min(2.4, Math.max(1, 1 / currentScale));
+		nodeLayer.selectAll('g.node text').style('font-size', `${12 * grow}px`)
+			.attr('y', (d) => radius(d) + 6 + 11 * grow);
+		regionLayer.selectAll('g.region text').style('font-size', `${16 * grow}px`)
+			.attr('y', (d) => -d.r - 6 - 6 * grow);
+	}
+	svg.call(zoom);
+
+	// ---------- places: the Void in the middle, planes on a spiral around it ----------
+
+	const VOID = 'The Void';
+	const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
+	let places = new Map();   // place name -> { name, x, y, r, plane }
+
+	function planeAnchor(index) {
+		// each plane keeps its spot as more are added
+		const distance = 270 + 100 * Math.sqrt(index);
+		const angle = index * GOLDEN_ANGLE - Math.PI / 2;
+		return { x: distance * Math.cos(angle), y: distance * Math.sin(angle) };
+	}
+
+	function buildPlaces() {
+		const living = new Map();
+		for (const n of state.nodes.values()) {
+			if (n.view.alive) living.set(n.view.location, (living.get(n.view.location) || 0) + 1);
+		}
+		const regionRadius = (name) => 70 + 28 * Math.sqrt(living.get(name) || 0);
+		places = new Map();
+		places.set(VOID, { name: VOID, x: 0, y: 0, r: regionRadius(VOID) + 20, plane: null });
+		state.snapshot.planes.forEach((plane, i) => {
+			places.set(plane.name, { name: plane.name, ...planeAnchor(i), r: regionRadius(plane.name), plane });
+		});
+	}
+
+	const anchorOf = (d) => places.get(d.view.location) || places.get(VOID);
+
+	// pushes any god that has strayed outside its place back inside the circle
+	function containWithinPlace() {
+		let nodes = [];
+		const force = (alpha) => {
+			for (const d of nodes) {
+				const place = anchorOf(d);
+				if (!place) continue;
+				const dx = d.x - place.x;
+				const dy = d.y - place.y;
+				const distance = Math.hypot(dx, dy) || 1;
+				const limit = Math.max(place.r - radius(d) - 10, 8);
+				if (distance > limit) {
+					const k = ((distance - limit) / distance) * Math.min(1, alpha * 4);
+					d.vx -= dx * k;
+					d.vy -= dy * k;
+				}
+			}
+		};
+		force.initialize = (n) => { nodes = n; };
+		return force;
+	}
+
+	function renderRegions() {
+		const list = [...places.values()];
+		const regions = regionLayer.selectAll('g.region').data(list, (d) => d.name);
+		regions.exit().remove();
+		const entering = regions.enter().append('g');
+		entering.append('circle').attr('r', 0);
+		entering.append('text');
+		const all = entering.merge(regions)
+			.attr('class', (d) => `region${d.plane === null ? ' void' : d.plane.done ? '' : ' building'}`)
+			.attr('transform', (d) => `translate(${d.x},${d.y})`);
+		all.select('circle').transition().duration(reducedMotion ? 0 : 600).attr('r', (d) => d.r);
+		all.select('text')
+			.attr('y', (d) => -d.r - 12)
+			.text((d) => (d.plane && !d.plane.done ? `${d.name}, ${d.plane.progress}%` : d.name));
+
+		// paths between planes, drawn from edge to edge
+		const paths = [];
+		const seen = new Set();
+		for (const plane of state.snapshot.planes) {
+			for (const other of plane.connections) {
+				const key = [plane.name, other].sort().join('|');
+				if (seen.has(key) || !places.has(other)) continue;
+				seen.add(key);
+				paths.push({ key, a: places.get(plane.name), b: places.get(other) });
+			}
+		}
+		const edge = (from, to) => {
+			const dx = to.x - from.x;
+			const dy = to.y - from.y;
+			const length = Math.hypot(dx, dy) || 1;
+			return { x: from.x + (dx / length) * from.r, y: from.y + (dy / length) * from.r };
+		};
+		const lines = pathLayer.selectAll('line').data(paths, (d) => d.key);
+		lines.exit().remove();
+		lines.enter().append('line').attr('class', 'plane-path')
+			.merge(lines)
+			.attr('x1', (d) => edge(d.a, d.b).x).attr('y1', (d) => edge(d.a, d.b).y)
+			.attr('x2', (d) => edge(d.b, d.a).x).attr('y2', (d) => edge(d.b, d.a).y);
+	}
+
+	function fitToView(force = false) {
+		if (places.size === 0) return;
+		const { width, height } = $('graph').getBoundingClientRect();
+		if (!width || !height) return;
+		let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+		for (const p of places.values()) {
+			minX = Math.min(minX, p.x - p.r - 30);
+			maxX = Math.max(maxX, p.x + p.r + 30);
+			minY = Math.min(minY, p.y - p.r - 45);
+			maxY = Math.max(maxY, p.y + p.r + 30);
+		}
+		const key = [minX, minY, maxX, maxY, width, height].map(Math.round).join(',');
+		if (!force && key === lastFitKey) return;
+		lastFitKey = key;
+		const scale = Math.min(1.3, 0.92 * Math.min(width / (maxX - minX), height / (maxY - minY)));
+		const transform = d3.zoomIdentity.scale(scale).translate(-(minX + maxX) / 2, -(minY + maxY) / 2);
+		(reducedMotion ? svg : svg.transition().duration(700)).call(zoom.transform, transform);
+	}
+
+	$('fit').addEventListener('click', () => {
+		userZoomed = false;
+		fitToView(true);
+	});
 	svg.on('click', (event) => {
 		if (event.target === svg.node()) select(null);
 	});
 
 	const simulation = d3.forceSimulation()
-		.force('charge', d3.forceManyBody().strength(-260))
+		.force('charge', d3.forceManyBody().strength(-120).distanceMax(160))
 		.force('link', d3.forceLink().id((d) => d.id))
 		.force('collide', d3.forceCollide((d) => radius(d) + 14))
-		.force('x', d3.forceX().strength(0.045))
-		.force('y', d3.forceY().strength(0.045))
+		.force('x', d3.forceX())
+		.force('y', d3.forceY())
+		.force('contain', containWithinPlace())
 		.on('tick', ticked);
 
 	const drag = d3.drag()
@@ -94,6 +230,7 @@
 	function fitViewBox() {
 		const { width, height } = $('graph').getBoundingClientRect();
 		svg.attr('viewBox', [-width / 2, -height / 2, width, height]);
+		if (!userZoomed) fitToView();
 	}
 	new ResizeObserver(fitViewBox).observe(document.querySelector('.heavens'));
 	fitViewBox();
@@ -132,6 +269,8 @@
 
 	function render() {
 		if (!state.snapshot) return;
+		buildPlaces();
+		renderRegions();
 		const showFallen = $('show-fallen').checked;
 		const visible = [...state.nodes.values()].filter((n) => showFallen || n.view.alive);
 		const visibleIds = new Set(visible.map((n) => n.id));
@@ -181,8 +320,14 @@
 		simulation.force('link')
 			.links(links)
 			.distance((l) => (l.kind === 'family' ? 60 : l.kind === 'mate' ? 45 : 150))
-			.strength((l) => (l.kind === 'family' ? 0.5 : l.kind === 'mate' ? 0.6 : 0.03));
-		simulation.alpha(0.5).restart();
+			.strength(0);   // lines only show relationships; where a god stands is decided by their plane
+		// pull every god towards the plane they are on; this is what makes travel visible
+		const pull = (d) => (d.view.alive ? 0.2 : 0.08);
+		simulation.force('x').x((d) => anchorOf(d).x).strength(pull);
+		simulation.force('y').y((d) => anchorOf(d).y).strength(pull);
+		simulation.alpha(0.6).restart();
+		applyLabelScale();
+		if (!userZoomed) fitToView();
 	}
 
 	function ticked() {
@@ -217,11 +362,12 @@
 			if (!node) {
 				// newborns appear next to a parent, so they visibly come from them
 				const parent = view.parentIds.map((id) => state.nodes.get(id)).find((p) => p && p.x !== undefined);
-				const spread = parent ? 24 : 240;
+				const spread = parent ? 24 : 80;
+				const home = places.get(view.location) || { x: 0, y: 0 };
 				node = {
 					id: view.id,
-					x: (parent ? parent.x : 0) + (Math.random() - 0.5) * spread,
-					y: (parent ? parent.y : 0) + (Math.random() - 0.5) * spread,
+					x: (parent ? parent.x : home.x) + (Math.random() - 0.5) * spread,
+					y: (parent ? parent.y : home.y) + (Math.random() - 0.5) * spread,
 				};
 				state.nodes.set(view.id, node);
 			}
@@ -254,15 +400,20 @@
 	function renderPlanes() {
 		const planes = state.snapshot.planes;
 		const container = $('planes');
+		const livingIn = (place) => state.snapshot.deities.filter((d) => d.alive && d.location === place).map((d) => d.id);
+		const inVoid = livingIn(VOID);
+		const voidNote = el('p', { class: 'void-note' }, inVoid.length ? ['In the Void between the planes: ', ...listOfNames(inVoid)] : 'Nobody is in the Void between the planes.');
 		if (planes.length === 0) {
-			container.replaceChildren(el('p', { class: 'empty' }, 'No god has started shaping a plane yet.'));
+			container.replaceChildren(voidNote, el('p', { class: 'empty' }, 'No god has started shaping a plane yet.'));
 			return;
 		}
-		container.replaceChildren(...planes.map((plane) => el('article', { class: `plane${plane.done ? ' done' : ''}` },
+		container.replaceChildren(voidNote, ...planes.map((plane) => el('article', { class: `plane${plane.done ? ' done' : ''}` },
 			el('h3', {}, plane.name, el('small', {}, plane.done ? 'Complete' : `${plane.progress}%`)),
 			el('div', { class: 'progress', role: 'progressbar', 'aria-valuenow': plane.progress, 'aria-valuemin': 0, 'aria-valuemax': 100, 'aria-label': `${plane.name} progress` },
 				el('span', { style: `width:${plane.progress}%` })),
 			el('p', {}, plane.done ? 'Shaped by ' : 'Being shaped by ', ...listOfNames(plane.builderIds)),
+			plane.done ? el('p', {}, livingIn(plane.name).length ? ['Here now: ', ...listOfNames(livingIn(plane.name))] : 'Nobody is here right now') : null,
+			plane.connections.length ? el('p', {}, `Paths to ${plane.connections.join(', ')}`) : null,
 			plane.concepts.length ? el('ul', { class: 'chips' }, plane.concepts.map((c) => el('li', {}, c))) : null,
 		)));
 	}
@@ -321,6 +472,8 @@
 					: fate),
 				el('dt', {}, 'Age'), el('dd', {}, view.age),
 				el('dt', {}, 'Born'), el('dd', {}, view.parentIds.length === 0 && view.bornIn === 0 ? 'One of the first gods' : `Generation ${view.bornIn}`),
+				el('dt', {}, view.alive ? 'Location' : 'Died in'), el('dd', {}, view.location || VOID),
+				el('dt', {}, 'Home plane'), el('dd', {}, view.homePlane || 'None'),
 				el('dt', {}, 'Parents'), el('dd', {}, view.parentIds.length ? nameButtons(view.parentIds) : 'None'),
 				el('dt', {}, 'Mates'), el('dd', {}, nameButtons(view.mateIds)),
 				el('dt', {}, 'Children'), el('dd', {}, nameButtons(children)),
@@ -391,7 +544,7 @@
 		},
 		DeityBorn: (e) => {
 			state.names.set(e.deity.id, e.deity.name);
-			if (e.deity.parentIds.length === 0) chronicleEntry('', godName(e.deity.id), ' appeared in the empty world.');
+			if (e.deity.parentIds.length === 0) chronicleEntry('', godName(e.deity.id), ` appeared in ${e.deity.location}.`);
 			else chronicleEntry('', godName(e.deity.id), ' was born to ', ...listOfNames(e.deity.parentIds), '.');
 		},
 		DeityDied: (e) => {
@@ -412,6 +565,9 @@
 		},
 		PlaneStarted: (e) => chronicleEntry('', godName(e.creatorId), ` began shaping the plane ${e.plane}.`),
 		PlaneFinished: (e) => chronicleEntry('', `The plane ${e.plane} was completed by `, godName(e.finisherId), '.'),
+		DeityMoved: (e) => chronicleEntry('', godName(e.deityId), ` travelled from ${e.from} to ${e.to}.`),
+		PlacesConnected: (e) => chronicleEntry('', godName(e.deityId), ` opened a path between ${e.placeA} and ${e.placeB}.`),
+		WorldChanged: (e) => applySnapshot(e.snapshot),
 		Error: (message) => chronicleEntry('error', message),
 	};
 
@@ -443,7 +599,7 @@
 			});
 			if (!response.ok) {
 				const problem = await response.json().catch(() => ({}));
-				chronicleEntry('error', `The server refused that: ${problem.detail || problem.error || response.status}.`);
+				chronicleEntry('error', `The server refused that: ${problem.message || problem.detail || problem.error || response.status}.`);
 				return null;
 			}
 			return response.status === 204 ? {} : await response.json();
@@ -457,6 +613,10 @@
 		if (state.source) state.source.close();
 		if (state.simId) call('DELETE', `${API}/${state.simId}`);
 		Object.assign(state, { simId: null, info: null, snapshot: null, selectedId: null, serverLost: false });
+		userZoomed = false;
+		lastFitKey = '';
+		regionLayer.selectAll('*').remove();
+		pathLayer.selectAll('*').remove();
 		state.nodes.clear();
 		state.names.clear();
 		state.creators.clear();
@@ -502,6 +662,12 @@
 	$('step').addEventListener('click', async () => {
 		if (!state.simId) return;
 		const info = await call('POST', `${API}/${state.simId}/step`);
+		if (info) updateInfo(info);
+	});
+
+	$('add-god').addEventListener('click', async () => {
+		if (!state.simId) return;
+		const info = await call('POST', `${API}/${state.simId}/deities`);
 		if (info) updateInfo(info);
 	});
 
