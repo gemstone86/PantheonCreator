@@ -5,6 +5,9 @@ import pantheon.sim.Simulation;
 
 public class FindMotivation extends Behaviour {
 
+	/* Gods more aggressive than this go looking for rivals whenever they aren't busy. */
+	public static final int AGGRESSION_FOR_TROUBLE = 10;
+
 	public FindMotivation(Deity owner, Simulation context) {
 		super(owner, context);
 	}
@@ -12,7 +15,7 @@ public class FindMotivation extends Behaviour {
 	@Override
 	public boolean act() {
 		//give me more to do if I only want something to do or if I roll less than 30.
-		if(owner.getBehaviour().size() < 2 | context.getRandom(1, 100) < 30) {
+		if(owner.getBehaviour().size() < 3 | context.getRandom(1, 100) < 30) {
 			int rnd = context.getRandom(1, 100);
 
 			if(rnd < 10) {
@@ -43,6 +46,10 @@ public class FindMotivation extends Behaviour {
 				owner.addBehaviour(new Move(owner, context));
 				say("I should move!");
 			}
+		}
+		//aggressive gods go looking for trouble when they aren't busy
+		if(owner.getAggression() > AGGRESSION_FOR_TROUBLE && owner.getBehaviour().size() < 4) {
+			owner.addBehaviour(new FindRival(owner, context));
 		}
 		return false;
 	}

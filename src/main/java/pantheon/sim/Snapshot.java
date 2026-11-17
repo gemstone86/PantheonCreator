@@ -35,7 +35,12 @@ public record Snapshot(
 			List<String> domains,
 			List<String> parentIds,
 			List<String> mateIds,
-			List<RelationView> relations) {}
+			List<RelationView> relations,
+			List<String> traits,
+			List<String> statuses,
+			int aggression,
+			int lust,
+			int creativity) {}
 
 	public record RelationView(String targetId, int value) {}
 

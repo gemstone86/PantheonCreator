@@ -121,6 +121,59 @@ class SimulationTest {
 	}
 
 	@Test
+	void everyGodHasTwoOrThreeDifferentTraits() {
+		for(long seed = 1; seed <= 50; seed++) {
+			for(Snapshot.DeityView deity:runToEnd(seed, 40).deities()) {
+				assertThat(deity.traits()).hasSizeBetween(2, 3).doesNotHaveDuplicates();
+				assertThat(deity.traits().containsAll(List.of("aggressive", "pacifist"))).as(deity.name()).isFalse();
+			}
+		}
+	}
+
+	@Test
+	void aPregnancyEndsInABirthWithBothParents() {
+		Simulation simulation = new Simulation(11, 30);
+		pantheon.gods.Deity mother = simulation.getListOfDeities().get(1);
+		pantheon.gods.Deity father = simulation.getListOfDeities().get(0);
+		mother.addStatus(new pantheon.status.Pregnant(mother, father, simulation));
+
+		for(int i = 0; i < 12; i++) {
+			simulation.step();
+		}
+
+		assertThat(simulation.snapshot().deities())
+				.anySatisfy(child -> assertThat(child.parentIds()).containsExactly(mother.getId(), father.getId()));
+	}
+
+	@Test
+	void poisonHurtsEachGenerationAndWearsOff() {
+		Simulation simulation = new Simulation(2, 10);
+		pantheon.gods.Deity victim = simulation.getListOfDeities().get(0);
+		pantheon.gods.Deity poisoner = simulation.getListOfDeities().get(1);
+		pantheon.status.Poisoned poison = new pantheon.status.Poisoned(victim, poisoner, simulation, 4, 2);
+		int health = victim.getHealth();
+
+		assertThat(poison.act()).isFalse();
+		assertThat(poison.act()).isFalse();
+		assertThat(poison.act()).isTrue();
+		assertThat(victim.getHealth()).isEqualTo(health - 8);
+		assertThat(victim.getLast_attacker()).isSameAs(poisoner);
+	}
+
+	@Test
+	void childrenAreBornThroughPregnancy() {
+		int born = 0;
+		for(long seed = 1; seed <= 100; seed++) {
+			for(Snapshot.DeityView deity:runToEnd(seed, 50).deities()) {
+				if(!deity.parentIds().isEmpty()) {
+					born++;
+				}
+			}
+		}
+		assertThat(born).isGreaterThan(300);
+	}
+
+	@Test
 	void sessionStepsUntilFinished() {
 		SimulationSession session = new SimulationSession("test", 5, 3);
 		session.step();

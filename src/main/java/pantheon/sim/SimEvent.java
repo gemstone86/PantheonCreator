@@ -35,6 +35,12 @@ public sealed interface SimEvent {
 
 	record PlaneFinished(int generation, String plane, String finisherId) implements SimEvent {}
 
+	/* A deity became pregnant. partnerId is the other parent, or the deity itself for a child conceived alone. */
+	record Conceived(int generation, String deityId, String partnerId) implements SimEvent {}
+
+	/* A deity was poisoned by another. */
+	record Poisoned(int generation, String deityId, String poisonerId) implements SimEvent {}
+
 	/* A deity travelled from one place to another. Places are plane names or Cosmos.VOID. */
 	record DeityMoved(int generation, String deityId, String from, String to) implements SimEvent {}
 

@@ -11,6 +11,7 @@
 	--other: #6CC0AC;
 	--friendly: #6CC0AC;
 	--hostile: #D2553F;
+	--poison: #9CCB5B;
 
 	--display: "Marcellus", "Trajan Pro", Georgia, serif;
 	--text: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
@@ -150,6 +151,8 @@ label { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--dus
 .swatch.female { background: var(--female); }
 .swatch.other { background: var(--other); }
 .ring { width: 0.8rem; height: 0.8rem; border-radius: 50%; border: 2px solid var(--gold); }
+.ring.poison { border-color: var(--poison); }
+.mark-swatch { width: 0.8rem; height: 0.8rem; border-radius: 50%; background: radial-gradient(circle, var(--parchment) 0 30%, var(--male) 34%); }
 .line { width: 1.1rem; height: 2px; }
 .line.friendly { background: var(--friendly); }
 .line.hostile { background: var(--hostile); }
@@ -195,6 +198,10 @@ label { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--dus
 .node.dead .health, .node.dead .health-track { display: none; }
 .node.dead text { fill: var(--dust); }
 .node.selected .body { stroke: var(--gold); stroke-width: 3; }
+.node .pregnant-mark { fill: var(--parchment); stroke: var(--lapis-deep); stroke-width: 1; display: none; pointer-events: none; }
+.node.pregnant .pregnant-mark { display: inline; }
+.node.poisoned .health { stroke: var(--poison); }
+.node.dead .pregnant-mark { display: none; }
 
 .region circle { fill: rgb(212 175 55 / 0.06); stroke: rgb(212 175 55 / 0.45); stroke-width: 1.5; }
 .region.building circle { fill: none; stroke-dasharray: 6 5; stroke: rgb(212 175 55 / 0.35); }
@@ -242,6 +249,8 @@ label { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--dus
 .details dl { display: grid; grid-template-columns: auto 1fr; gap: 0.3rem 1rem; margin: 0; }
 .details dt { color: var(--dust); }
 .details dd { margin: 0; }
+.chips li.status.poisoned { border-color: var(--poison); color: var(--poison); }
+.chips li.status.pregnant { border-color: var(--gold); }
 .details .link-button { background: none; border: 0; padding: 0; color: var(--gold-soft); text-decoration: underline; text-underline-offset: 2px; }
 .health-bar { height: 0.45rem; border-radius: 4px; background: rgb(212 175 55 / 0.18); margin-top: 0.35rem; }
 .health-bar span { display: block; height: 100%; border-radius: 4px; background: var(--gold); }

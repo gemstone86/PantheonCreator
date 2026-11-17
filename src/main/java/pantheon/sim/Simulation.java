@@ -18,7 +18,7 @@ import pantheon.gods.Deity;
  */
 public class Simulation {
 
-	public static final int DEFAULT_GENERATIONS = 20;
+	public static final int DEFAULT_GENERATIONS = 25;
 	/* Chance in percent that a god socialises with, or courts, someone on the same plane rather than anyone at all. */
 	public static final int SAME_PLACE_PREFERENCE = 80;
 

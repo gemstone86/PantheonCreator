@@ -9,6 +9,8 @@ import pantheon.cosmos.Place;
 import pantheon.sim.SimEvent;
 import pantheon.sim.Simulation;
 import pantheon.sim.Snapshot;
+import pantheon.status.Status;
+import pantheon.traits.*;
 
 public class Deity {
 
@@ -19,6 +21,13 @@ public class Deity {
 	private Deity killer;
 	private int maxHealth;
 	private LinkedList<Deity> partners = new LinkedList<Deity>();
+
+	//temperament, shifted by traits: roughly -10 (not at all) to 20 (very)
+	private int aggression;
+	private int lust;
+	private int creativity;
+	private LinkedList<Trait> traits = new LinkedList<Trait>();
+	private LinkedList<Status> statuses = new LinkedList<Status>();
 
 	private boolean alive = true;
 	private String name;
@@ -69,6 +78,7 @@ public class Deity {
 		willingness = baseWillingness;
 		this.health = context.getRandom(1, 100) + DvR;
 		this.maxHealth = health;
+		addTraits();
 	}
 
 	public Deity (String name, int DvR, int Sex, int Sexuality, LinkedList<Deity> parents, Simulation context) {
@@ -92,6 +102,7 @@ public class Deity {
 
 		this.health = context.getRandom(1, 100) + DvR;
 		this.maxHealth = health;
+		addTraits();
 		
 		//add code to fetch 1-2 domain from father, 1-2 domain from mother and then 1-2 random domains.
 		setUpinheritDomains();
@@ -179,7 +190,10 @@ public class Deity {
 		if(!alive) {
 			return;
 		}
-		context.narrate(this, 0, this.getName() + " (Age: "+age+", DvR " + getDvR()+", " + getHealth() + " health)" + " (" + getSexualityNoun(gender, sexuality) + " " +getGenderPronoun(getGender()) +") " + " "+this.getDomains().toString() + " acts");
+		context.narrate(this, 0, this.getName() + " (Age: "+age+", DvR " + getDvR()+", " + getHealth() + " health)" + " (" + getSexualityNoun(gender, sexuality) + " " +getGenderPronoun(getGender()) +") " + traits + " "+this.getDomains().toString() + " acts");
+		for(Trait trait:traits) {
+			trait.motivate();
+		}
 		//Act on a snapshot so behaviours added this turn start next turn,
 		//and removing a finished behaviour doesn't skip the one after it.
 		LinkedList<Behaviour> currentBehaviours = new LinkedList<Behaviour>(behaviours);
@@ -191,6 +205,17 @@ public class Deity {
 			checkDeath();
 			if(!this.alive) {
 				break;
+			}
+		}
+		if(this.alive) {
+			for(Status status:new LinkedList<Status>(statuses)) {
+				if(status.act()) {
+					statuses.remove(status);
+				}
+				checkDeath();
+				if(!this.alive) {
+					break;
+				}
 			}
 		}
 		age++;
@@ -268,7 +293,7 @@ public class Deity {
 	public void setMateFound(boolean set, Deity seducer) {
 		mateFound = set;
 		mate = seducer;
-		if(seducer != null && !partners.contains(seducer)) {
+		if(seducer != null && seducer != this && !partners.contains(seducer)) {
 			partners.add(seducer);
 		}
 	}
@@ -390,7 +415,8 @@ public class Deity {
 			status = "Dead ";
 		}
 		
-		String returnString = "\t"+this.getName() + " (DvR " + this.getDvR()+")" + " (" +status+this.getGenderPronoun(this.getGender()) +") " + " "+this.getDomains().toString();
+		String returnString = "\t"+this.getName() + " (DvR " + this.getDvR()+")" + " (" + getSexualityNoun(gender, sexuality) + " " +status+this.getGenderPronoun(this.getGender()) +", agg " + aggression + ") " + " "+this.getDomains().toString();
+		returnString += "\n\t\tTraits: " + traits;
 		for(Deity parent:getParents()) {
 			returnString += "\n\t\tParent:" + parent.getName() + " ("+parent.getStatus() + ")";
 		}
@@ -517,6 +543,108 @@ public class Deity {
 				killer == null ? null : killer.getId(),
 				location == null ? null : location.getName(),
 				homeplane == null ? null : homeplane.getName(),
-				List.copyOf(domains), parentIds, mateIds, relationViews);
+				List.copyOf(domains), parentIds, mateIds, relationViews,
+				traitNames(), statusDescriptions(), aggression, lust, creativity);
+	}
+
+	private List<String> traitNames() {
+		List<String> names = new ArrayList<String>();
+		for(Trait trait:traits) {
+			names.add(trait.getName());
+		}
+		return names;
+	}
+
+	private List<String> statusDescriptions() {
+		List<String> descriptions = new ArrayList<String>();
+		for(Status status:statuses) {
+			descriptions.add(status.describe());
+		}
+		return descriptions;
+	}
+
+	/*
+	 * Gives a new god a random temperament and two or three different traits.
+	 */
+	private void addTraits() {
+		aggression = context.getRandom(-10, 10);
+		lust = context.getRandom(-10, 10);
+		creativity = context.getRandom(-10, 10);
+
+		int numberOfTraits = context.getRandom(2, 4);
+		for(int attempt = 0; attempt < 20 && traits.size() < numberOfTraits; attempt++) {
+			Trait trait = getNewTrait();
+			if(!hasTrait(trait.getName()) && !contradictsTraits(trait.getName())) {
+				traits.add(trait);
+			}
+			else {
+				trait.removeTrait();
+			}
+		}
+	}
+
+	private Trait getNewTrait() {
+		switch(context.getRandom(0, 5)) {
+		case 0: return new Aggressive(this, context);
+		case 1: return new Lustful(this, context);
+		case 2: return new Pacifist(this, context);
+		case 3: return new Creative(this, context);
+		default: return new Ambitious(this, context);
+		}
+	}
+
+	/* Aggressive and pacifist can't go together. */
+	private boolean contradictsTraits(String name) {
+		return (name.equals("aggressive") && hasTrait("pacifist"))
+				|| (name.equals("pacifist") && hasTrait("aggressive"));
+	}
+
+	public boolean hasTrait(String name) {
+		for(Trait trait:traits) {
+			if(trait.getName().equals(name)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public LinkedList<Trait> getTraits() {
+		return traits;
+	}
+
+	public void addStatus(Status status) {
+		statuses.add(status);
+	}
+
+	public LinkedList<Status> getStatuses() {
+		return statuses;
+	}
+
+	public Deity getMate() {
+		return mate;
+	}
+
+	public int getAggression() {
+		return aggression;
+	}
+
+	public void changeAggression(int amount) {
+		aggression += amount;
+	}
+
+	public int getLust() {
+		return lust;
+	}
+
+	public void changeLust(int amount) {
+		lust += amount;
+	}
+
+	public int getCreativity() {
+		return creativity;
+	}
+
+	public void changeCreativity(int amount) {
+		creativity += amount;
 	}
 }

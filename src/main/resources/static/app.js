@@ -296,6 +296,7 @@
 		entering.append('circle').attr('class', 'health-track');
 		entering.append('circle').attr('class', 'health').attr('transform', 'rotate(-90)');
 		entering.append('circle').attr('class', 'body').attr('r', reducedMotion ? radius : 0);
+		entering.append('circle').attr('class', 'pregnant-mark').attr('r', 3.5);
 		entering.append('text');
 		entering.append('title');
 		if (!reducedMotion) {
@@ -303,7 +304,9 @@
 		}
 
 		const all = entering.merge(nodeSel);
-		all.attr('class', (d) => `node ${sexClass(d.view.sex)}${d.view.alive ? '' : ' dead'}${d.id === state.selectedId ? ' selected' : ''}`);
+		const hasStatus = (d, name) => d.view.statuses.some((s) => s.startsWith(name));
+		all.attr('class', (d) => `node ${sexClass(d.view.sex)}${d.view.alive ? '' : ' dead'}${d.id === state.selectedId ? ' selected' : ''}`
+			+ `${hasStatus(d, 'pregnant') ? ' pregnant' : ''}${hasStatus(d, 'poisoned') ? ' poisoned' : ''}`);
 		nodeSel.select('.body').attr('r', radius);
 		all.select('.health-track').attr('r', (d) => radius(d) + 4);
 		all.select('.health')
@@ -314,7 +317,8 @@
 				return `${circumference * fraction} ${circumference}`;
 			});
 		all.select('text').attr('y', (d) => radius(d) + 17).text((d) => d.view.name);
-		all.select('title').text((d) => `${d.view.name}, divine rank ${d.view.divineRank}${d.view.alive ? '' : ' (fallen)'}`);
+		all.select('title').text((d) => [`${d.view.name}, divine rank ${d.view.divineRank}${d.view.alive ? '' : ' (fallen)'}`,
+			d.view.traits.join(', '), ...d.view.statuses].filter(Boolean).join('\n'));
 
 		simulation.nodes(visible);
 		simulation.force('link')
@@ -465,6 +469,10 @@
 			el('h2', {}, view.name),
 			el('p', { class: 'who' }, `${view.gender}, ${view.sexuality.toLowerCase()}`),
 			el('dl', {},
+				el('dt', {}, 'Traits'), el('dd', {}, view.traits.length ? el('ul', { class: 'chips' }, view.traits.map((t) => el('li', {}, t))) : 'None'),
+				el('dt', {}, 'Temperament'), el('dd', {}, `Aggression ${view.aggression}, lust ${view.lust}, creativity ${view.creativity}`),
+				view.statuses.length ? el('dt', {}, 'Right now') : null,
+				view.statuses.length ? el('dd', {}, el('ul', { class: 'chips' }, view.statuses.map((s) => el('li', { class: `status ${s.split(',')[0]}` }, s)))) : null,
 				el('dt', {}, 'Divine rank'), el('dd', {}, view.divineRank),
 				el('dt', {}, view.alive ? 'Health' : 'Fate'), el('dd', {}, view.alive
 					? [`${Math.max(view.health, 0)} of ${view.maxHealth}`,
@@ -553,6 +561,10 @@
 			else chronicleEntry('death', godName(e.deityId), ' died of old age.');
 		},
 		MateFound: (e) => chronicleEntry('', godName(e.deityId), ' and ', godName(e.mateId), ' became mates.'),
+		Conceived: (e) => (e.partnerId === e.deityId
+			? chronicleEntry('', godName(e.deityId), ' is expecting a child on their own.')
+			: chronicleEntry('', godName(e.deityId), ' is expecting a child with ', godName(e.partnerId), '.')),
+		Poisoned: (e) => chronicleEntry('fight', godName(e.poisonerId), ' poisoned ', godName(e.deityId), '.'),
 		RivalryDeclared: (e) => chronicleEntry('fight', godName(e.deityId), ' swore enmity against ', godName(e.rivalId), '.'),
 		FightResolved: (e) => {
 			flashFight(e.attackerId, e.defenderId);

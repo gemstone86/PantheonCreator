@@ -57,12 +57,32 @@ On macOS or Linux, use the Maven wrapper directly: `./mvnw spring-boot:run`, or 
 - A god who wants to fight someone on another plane **travels there first**.
 - Gods don't risk dying of old age before 20; after that the risk grows by half a percentage point a year (`OLD_AGE_START` and `OLD_AGE_RISK_PER_YEAR` in `Deity.java`).
 
+## Traits, temperament and statuses
+
+- Every god has a **temperament** (aggression, lust and creativity, each starting between -10 and 10) and **two or three traits** that shift it:
+
+  | Trait | Temperament | Now and then (30% a generation) |
+  | --- | --- | --- |
+  | Aggressive | +10 aggression, -5 creativity | looks for a rival |
+  | Ambitious | +5 aggression, creativity and lust | tries to grow more powerful |
+  | Creative | +10 creativity | tries to create a concept |
+  | Lustful | +10 lust | looks for a mate |
+  | Pacifist | -10 aggression | socialises |
+
+  Aggressive and pacifist never go together. Gods with aggression above 10 also go looking for rivals whenever they aren't busy.
+- **Mating:** a god courts once their lust is above -10; while waiting, lust builds by 1–2 a generation. Sometimes a god has a child alone, and always if they are the only god left. After a successful courtship the chance of a **pregnancy** is 100% minus 4% per living god, so there are none at all from 25 living gods. The child is born 1–9 generations later, if the parent is still alive. A god gives up after three failed attempts.
+- **Poison:** a god who wins a fight poisons the loser 10% of the time, for 2–6 damage a generation over 2–4 generations. If the poison kills, the poisoner is blamed.
+- In the browser, pregnant gods have a dot in the middle and poisoned gods a green health ring; click a god to see their traits, temperament and statuses.
+- The balance values are constants: `LUST_NEEDED`, `PREGNANCY_CHANCE` and `PREGNANCY_DROP_PER_GOD` in `FindMate.java`, `AGGRESSION_FOR_TROUBLE` in `FindMotivation.java`, `URGE_CHANCE` in `Trait.java` and `POISON_CHANCE` in `Fight.java`. With these values a 50-generation pantheon has about 4 living gods on average and dies out in about 1 run in 6.
+
 ## How it fits together
 
 ```
 src/main/java/pantheon/
   sim/          Simulation (step(), snapshots), events, random names and domains
   gods/         Deity and Relation
+  traits/       Aggressive, Ambitious, Creative, Lustful, Pacifist
+  status/       Pregnant and Poisoned
   behaviours/   What gods do each generation: find a mate, fight, create, ...
   cosmos/       The cosmos (the Void) and its planes
   web/          Spring Boot app: REST API and live event stream
