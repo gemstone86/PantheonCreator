@@ -28,13 +28,18 @@ public class createPlane extends behaviour {
 				}
 				else {
 					System.out.println("\t\t\tI want to make something of my own!");
-					plane = cosmos.startBuildingPlane();
+					plane = cosmos.startBuildingPlane(owner);
 				}
 			}
 			else {
 				System.out.println("\t\t\tI want to make something of my own!");
-				plane = cosmos.startBuildingPlane();
+				plane = cosmos.startBuildingPlane(owner);
 			}
+			plane.startConstruction(owner);
+		}
+		if(plane.isDone()) {
+			System.out.println("\t\t\t" + plane.getName() + " was finished by someone else");
+			return true;
 		}
 		System.out.println("\t\t\tI'm working on "+plane.getName());
 		
@@ -51,7 +56,8 @@ public class createPlane extends behaviour {
 			}
 		}
 		
-		if(plane.construct(context.getRandom(1, owner.getDvR()))) {
+		if(plane.construct(context.getRandom(1, owner.getDvR() + 1))) {
+			cosmos.finishPlane(plane);
 			System.out.println("\t\t\tI'm done with " + plane.getName());
 			return true;
 		}

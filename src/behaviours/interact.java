@@ -14,13 +14,18 @@ public class interact extends behaviour{
 	public interact(deity deity, runtime context) {
 		owner = deity;
 		this.context = context;
-		target = new relation(context.getRandomDeity(), context);
+		deity other = context.getRandomDeity();
 		
-		if(target.getDeity().equals(owner)) {
+		if(other.equals(owner) || !other.isAlive()) {
 			end = true;
 		}
 		else {
-			owner.addRelation(target);
+			//keep building on an existing relationship instead of starting a new one each time
+			target = owner.getRelationTo(other);
+			if(target == null) {
+				target = new relation(other, context);
+				owner.addRelation(target);
+			}
 		}
 	}
 
@@ -52,7 +57,7 @@ public class interact extends behaviour{
 			return false;
 		}
 		else {
-			System.out.println("\t\t\tI can't interact with myself!");
+			System.out.println("\t\t\tThere's no one to interact with!");
 			return true;
 		}
 	}

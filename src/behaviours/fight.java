@@ -21,6 +21,10 @@ public class fight extends behaviour {
 
 	@Override
 	public boolean act() {
+		if(!target.isAlive() || !owner.isAlive()) {
+			System.out.println("\t\tThere's no one left to fight");
+			return true;
+		}
 		int random = context.getRandom(0, owner.getDvR()+target.getDvR());
 		if(random < owner.getDvR()) {
 			System.out.println("\t\tI won the fight!");
@@ -29,7 +33,8 @@ public class fight extends behaviour {
 			
 			target.changeHealth(-context.getRandom(1, owner.getDvR()));
 			target.setAttacker(owner);
-			return false;
+			target.checkDeath();
+			return !target.isAlive();
 		}
 		else {
 			System.out.println("\t\tI... lost the fight!");
@@ -38,6 +43,7 @@ public class fight extends behaviour {
 			
 			owner.changeHealth(-context.getRandom(1, target.getDvR()));
 			owner.setAttacker(target);
+			target.checkDeath();
 			return true;
 		}
 	}

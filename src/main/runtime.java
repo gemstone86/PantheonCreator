@@ -15,10 +15,16 @@ public class runtime {
 
 	private randomGenerator rndGen;
 	boolean debug = false;
-	int seed = 1;
+	long seed = 1;
 	Random generator = new Random(seed);
 
 	public runtime() {
+		this(1);
+	}
+
+	public runtime(long seed) {
+		this.seed = seed;
+		this.generator = new Random(seed);
 		newPantheon();
 
 		this.rndGen = new randomGenerator(this);
@@ -33,7 +39,7 @@ public class runtime {
 
 		addDeity(new deity("Ure", this.getRandom(19, 21), 1, 3, this));
 		addDeity(new deity("Ira", this.getRandom(19, 21), 3, 1, this));
-		addDeity(new deity("cha", this.getRandom(1, 20), getRandom(1,3), getRandom(1,3), this));
+		addDeity(new deity("cha", this.getRandom(1, 20), getRandom(1,4), getRandom(1,4), this));
 		
 		for(int i = 0; i<3; i++) {
 			listOfActiveDeities.get(0).addDomain(ureDomains.get(i));
@@ -44,7 +50,10 @@ public class runtime {
 	}
 	
 	public runtime(boolean debug) {
+		this.debug = debug;
 		newPantheon();
+
+		this.rndGen = new randomGenerator(this);
 
 		LinkedList<String> ureDomains = new LinkedList<String>();
 		LinkedList<String> iraDomains = new LinkedList<String>();
@@ -80,8 +89,19 @@ public class runtime {
 		return listOfActiveDeities;
 	}
 
+	/*
+	 * Returns a random number from start (inclusive) up to end (exclusive).
+	 * If the range is empty (end <= start), start is returned instead of throwing.
+	 */
 	public int getRandom(int start, int end) {
-		return (int) ((generator.nextInt(end - start) ) + start);
+		if(end <= start) {
+			return start;
+		}
+		return generator.nextInt(end - start) + start;
+	}
+
+	public long getSeed() {
+		return seed;
 	}
 	
 	private LinkedList<String> worldConcepts = new LinkedList<String>();
@@ -113,7 +133,7 @@ public class runtime {
 		if(mother !=null) parents.add(mother);
 		
 		//Set sex and sexuality
-		int sex = getRandom(1,3);
+		int sex = getRandom(1,4);
 		int sexuality = 0;
 
 
@@ -128,8 +148,8 @@ public class runtime {
 			sexuality = generateSexuality(1,3);
 		}
 		else if(sex == 2) {
-			sexuality = getRandom(1,3);
-			if(getRandom(1,2) == 1) {
+			sexuality = getRandom(1,4);
+			if(getRandom(1,3) == 1) {
 				newName = rndGen.getRandomName(1);
 			}
 			else {
@@ -225,8 +245,9 @@ public class runtime {
 	LinkedList<deity> toInactive = new LinkedList<deity>();
 	
 	public void toInactive(deity add) {
-		// TODO Auto-generated method stub
-		toInactive.add(add);
+		if(!toInactive.contains(add)) {
+			toInactive.add(add);
+		}
 	}
 
 }

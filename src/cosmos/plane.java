@@ -20,7 +20,9 @@ public class plane extends place{
 	}
 	
 	public boolean construct(int points) {
-		
+		if(done) {
+			return true;
+		}
 		build += points;
 		if(build > 99) {
 			done = true;
@@ -32,7 +34,13 @@ public class plane extends place{
 		return false;
 	}
 	public void startConstruction(deity builder){
-		builders.add(builder);
+		if(!builders.contains(builder)) {
+			builders.add(builder);
+		}
+	}
+	
+	public boolean isDone() {
+		return done;
 	}
 	
 	public String toString() {

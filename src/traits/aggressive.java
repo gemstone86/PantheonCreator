@@ -6,7 +6,7 @@ public class aggressive extends trait{
 
 	private runtime context;
 	
-	public void aggressive(runtime context) {
+	public aggressive(runtime context) {
 		this.context = context;
 	}
 	

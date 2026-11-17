@@ -72,7 +72,7 @@ public class randomGenerator {
 			return femalePrefix[context.getRandom(0,femalePrefix.length)] + femaleSuffix[context.getRandom(0, femaleSuffix.length)];
 		}
 		else {
-			if(context.getRandom(1,2) == 1) {
+			if(context.getRandom(1,3) == 1) {
 //				return listOfMaleNames[context.getRandom(0,listOfMaleNames.length)];
 				return malePrefix[context.getRandom(0,malePrefix.length)] + maleSuffix[context.getRandom(0, maleSuffix.length)];
 			}

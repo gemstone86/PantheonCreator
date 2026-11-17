@@ -25,13 +25,13 @@ public class createConcept extends behaviour{
 		
 		if(!domainSet) {
 			myDomain = context.getRandomDomainFromPool();
-			if(myDomain == "empty") {
+			if(myDomain.equals("empty")) {
 				System.out.println("\t\t\tThere's nothing left to create");
 				return true;
 			}
 			else {
-			
-			System.out.println("\t\t\tI want to create " + myDomain +"!");
+				domainSet = true;
+				System.out.println("\t\t\tI want to create " + myDomain +"!");
 			}
 		}
 		else {

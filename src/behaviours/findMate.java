@@ -25,7 +25,7 @@ public class findMate extends behaviour {
 			for(deity i:context.getListOfDeities()) {
 				//build list of potential mates in this generation
 
-				if( i.checkCompatibility(owner.getGender() )){
+				if(i != owner && i.isAlive() && !i.checkIfMateFound() && i.checkCompatibility(owner.getGender())){
 					listOfPotentialMates.add(i);
 				}
 			}

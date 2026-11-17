@@ -39,8 +39,6 @@ public class deity {
 	private int sexuality;
 	private int gender;
 
-	private int random = (int) Math.random();
-
 	public deity(String name, int DvR, int Sex, int sexuality, runtime context) {
 
 		
@@ -49,7 +47,6 @@ public class deity {
 		
 		
 		this.name = name;
-		this.domains = domains;
 		this.divineRank = DvR;
 		this.gender = Sex;
 		this.sexuality = sexuality;
@@ -94,15 +91,15 @@ public class deity {
 				inheritance.add(element);
 			}
 
-			int numOfInheritance = random(1,2);
+			int numOfInheritance = random(1,3);
 
 			for(int index = 0; index < numOfInheritance; index++) {
-				int rnd = random(1,inheritance.size());
+				int rnd = random(0,inheritance.size());
 				addDomain(inheritance.get(rnd));
 				inheritance.remove(rnd);
 			}
 		}
-		else {
+		else if(parent.getDomains().size() == 1) {
 			addDomain(parent.getDomains().element());
 		}
 	}
@@ -120,7 +117,7 @@ public class deity {
 			inheritDomain(parent);
 		}
 		//get one or two additional domains.
-		int randomDomains = random(1,2);
+		int randomDomains = random(1,3);
 		for(int i = 0; i<randomDomains;i++) {
 			addDomain(context.randomDomain());
 		}
@@ -164,24 +161,46 @@ public class deity {
 	}
 
 	public void deityActs() {
+		if(!alive) {
+			return;
+		}
 		System.out.println("\t"+this.getName() + " (Age: "+age+", DvR " + getDvR()+", " + getHealth() + " health)" + " (" + getSexualityNoun(gender, sexuality) + " " +getGenderPronoun(getGender()) +") " + " "+this.getDomains().toString() + " acts");
-		for(int i = 0; i<behaviours.size(); i++) {
-			behaviour action = behaviours.get(i);
+		//Act on a snapshot so behaviours added this turn start next turn,
+		//and removing a finished behaviour doesn't skip the one after it.
+		LinkedList<behaviour> currentBehaviours = new LinkedList<behaviour>(behaviours);
+		for(behaviour action:currentBehaviours) {
 			boolean satisfied = action.act();
 			if(satisfied) {
-				behaviours.remove(i);
+				behaviours.remove(action);
 			}
-			if(this.health <= 0) {
-				this.alive = false;
-				this.removeAllBehaviours();
-				System.out.println("\t\t"+this.getName() + " was slain by " + this.getLast_attacker().getName() + "!");
+			checkDeath();
+			if(!this.alive) {
+				break;
 			}
 		}
 		age++;
-		if(!this.alive) {
-			this.removeAllBehaviours();
-		}
 		last_attacker = null;
+	}
+
+	/*
+	 * Checks whether this deity has run out of health and, if so, marks it as slain.
+	 */
+	public void checkDeath() {
+		if(this.alive && this.health <= 0) {
+			this.alive = false;
+			this.removeAllBehaviours();
+			if(last_attacker != null) {
+				System.out.println("\t\t"+this.getName() + " was slain by " + last_attacker.getName() + "!");
+			}
+			else {
+				System.out.println("\t\t"+this.getName() + " was slain!");
+			}
+			context.toInactive(this);
+		}
+	}
+
+	public boolean isAlive() {
+		return alive;
 	}
 
 	public int getHealth() {
@@ -205,13 +224,13 @@ public class deity {
 	}
 
 	public boolean checkCompatibility(int suitorGender) {
-		if((sexuality == 2) & suitorGender == (1|3) | sexuality == suitorGender) {
-			return true;
+		if(sexuality == 2) {
+			if(suitorGender == 1 || suitorGender == 3) {
+				return true;
+			}
+			return suitorGender == 2 && random(1,101) <= 50;
 		}
-		else if(sexuality == 2 & suitorGender == 2 & (random(1,100) < 51)) {
-			return true;
-		}
-		return false;
+		return sexuality == suitorGender;
 	}
 
 	public boolean checkIfMateFound() {
@@ -226,8 +245,11 @@ public class deity {
 		mate = null;
 	}
 
+	/*
+	 * Uses the runtime's seeded generator so that a run can be reproduced from its seed.
+	 */
 	public int random(int start, int end) {
-		return (int) ((Math.random() * (end - start)) + start);
+		return context.getRandom(start, end);
 	}
 
 	public String getName() {
@@ -275,6 +297,9 @@ public class deity {
 	}
 
 	public boolean update() {
+		if(!alive) {
+			return false;
+		}
 		mateFound = false;
 
 		//check if deity has died
@@ -332,6 +357,15 @@ public class deity {
 
 	public void setStatus(boolean alive) {
 		this.alive = alive;
+	}
+
+	public relation getRelationTo(deity other) {
+		for(relation contact:relations) {
+			if(contact.getTarget() == other) {
+				return contact;
+			}
+		}
+		return null;
 	}
 
 	public void addRelation(relation target) {

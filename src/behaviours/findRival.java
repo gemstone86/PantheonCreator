@@ -23,7 +23,8 @@ public class findRival extends behaviour{
 	public boolean act() {
 		if(target == null) {
 			for(relation contact:owner.getRelations()) {
-				if( contact.getRelation() < -20) {
+				if(contact.getRelation() < -20 && contact.getDeity() != null && contact.getDeity().isAlive()
+						&& !possibleRivals.contains(contact.getDeity())) {
 					possibleRivals.add(contact.getDeity());
 				}
 			}
