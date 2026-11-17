@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Pantheon Creator</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Marcellus&display=swap" rel="stylesheet">
+	<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231B2F5E'/%3E%3Ccircle cx='16' cy='16' r='8' fill='%23E295B0'/%3E%3Ccircle cx='16' cy='16' r='11.5' fill='none' stroke='%23D4AF37' stroke-width='2.5'/%3E%3C/svg%3E">
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<header class="bar">
+		<h1>Pantheon Creator</h1>
+
+		<form id="new-form" class="new-form">
+			<label>Seed <input id="seed" type="number" min="1" step="1" placeholder="Random"></label>
+			<label>Generations <input id="generations" type="number" min="1" max="1000" step="1" value="50"></label>
+			<button type="submit">New pantheon</button>
+		</form>
+
+		<div class="playback" role="group" aria-label="Playback">
+			<button id="play" type="button" class="primary">Play</button>
+			<button id="step" type="button">Next generation</button>
+			<label>Speed
+				<select id="speed">
+					<option value="2000">Slow</option>
+					<option value="1000" selected>Normal</option>
+					<option value="400">Fast</option>
+					<option value="150">Very fast</option>
+				</select>
+			</label>
+		</div>
+
+		<p id="generation" class="generation" aria-live="polite">Generation 0</p>
+	</header>
+
+	<main class="layout">
+		<section class="heavens" aria-label="The pantheon">
+			<svg id="graph" role="img" aria-label="Graph of the gods and how they are related"></svg>
+
+			<div class="legend">
+				<fieldset>
+					<legend>Show</legend>
+					<label><input type="checkbox" id="show-family" checked> Family</label>
+					<label><input type="checkbox" id="show-mates" checked> Mates</label>
+					<label><input type="checkbox" id="show-feelings" checked> Feelings</label>
+					<label><input type="checkbox" id="show-fallen" checked> Fallen gods</label>
+				</fieldset>
+				<ul class="key">
+					<li><span class="swatch male"></span>Male</li>
+					<li><span class="swatch female"></span>Female</li>
+					<li><span class="swatch other"></span>Neither</li>
+					<li><span class="ring"></span>Health</li>
+					<li><span class="line friendly"></span>Likes</li>
+					<li><span class="line hostile"></span>Dislikes</li>
+				</ul>
+			</div>
+			<p class="hint">Drag to pan, scroll to zoom, click a god to see who they are.</p>
+		</section>
+
+		<aside class="side">
+			<section id="details" class="panel details" aria-live="polite">
+				<p class="empty">Click a god in the graph to see their domains, family and feelings.</p>
+			</section>
+
+			<section class="panel planes-panel">
+				<h2>Planes</h2>
+				<div id="planes"><p class="empty">No god has started shaping a plane yet.</p></div>
+			</section>
+
+			<section class="panel chronicle-panel">
+				<div class="panel-head">
+					<h2>Chronicle</h2>
+					<label class="thoughts"><input type="checkbox" id="show-thoughts"> Inner thoughts</label>
+				</div>
+				<ol id="chronicle" class="chronicle">
+					<li class="empty">Press Play to let the gods act, or play one generation at a time.</li>
+				</ol>
+			</section>
+		</aside>
+	</main>
+
+	<footer class="domains" aria-label="Domains">
+		<h2>Domains</h2>
+		<ul id="domains"></ul>
+	</footer>
+
+	<script src="vendor/d3.min.js"></script>
+	<script src="app.js"></script>
+</body>
+</html>
