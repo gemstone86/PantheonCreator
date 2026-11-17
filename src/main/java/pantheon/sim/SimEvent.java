@@ -1,0 +1,37 @@
+package pantheon.sim;
+
+/*
+ * Everything that happens in a simulation is reported as one of these events.
+ * The console prints them as text; the web app streams them to the browser.
+ */
+public sealed interface SimEvent {
+
+	int generation();
+
+	/* A generation is about to be played. */
+	record GenerationStarted(int generation, int activeDeities) implements SimEvent {}
+
+	/* A generation has been played; carries the full state afterwards. */
+	record GenerationEnded(int generation, Snapshot snapshot) implements SimEvent {}
+
+	/* Free-text commentary, e.g. "I want to find a mate". deityId is null for world-level messages. depth is used for indentation. */
+	record Narration(int generation, String deityId, int depth, String text) implements SimEvent {}
+
+	record DeityBorn(int generation, Snapshot.DeityView deity) implements SimEvent {}
+
+	/* cause is "old age" or "slain"; killerId is null unless slain by another deity. */
+	record DeityDied(int generation, String deityId, String cause, String killerId) implements SimEvent {}
+
+	record MateFound(int generation, String deityId, String mateId) implements SimEvent {}
+
+	record RivalryDeclared(int generation, String deityId, String rivalId) implements SimEvent {}
+
+	record FightResolved(int generation, String attackerId, String defenderId, String winnerId,
+			int damageToWinner, int damageToLoser) implements SimEvent {}
+
+	record ConceptCreated(int generation, String deityId, String concept) implements SimEvent {}
+
+	record PlaneStarted(int generation, String plane, String creatorId) implements SimEvent {}
+
+	record PlaneFinished(int generation, String plane, String finisherId) implements SimEvent {}
+}

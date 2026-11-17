@@ -1,14 +1,14 @@
-package main;
+package pantheon.sim;
 
 import java.util.LinkedList;
 
-public class randomGenerator {
+public class RandomGenerator {
 
-	private runtime context;
+	private Simulation context;
 	private LinkedList<String> conceptPool = new LinkedList<String>();
 
 
-	public randomGenerator(runtime context) {
+	public RandomGenerator(Simulation context) {
 		this.context = context;
 		for(String in:listOfDomains) {
 			conceptPool.add(in);
@@ -72,7 +72,7 @@ public class randomGenerator {
 			return femalePrefix[context.getRandom(0,femalePrefix.length)] + femaleSuffix[context.getRandom(0, femaleSuffix.length)];
 		}
 		else {
-			if(context.getRandom(1,2) == 1) {
+			if(context.getRandom(1,3) == 1) {
 //				return listOfMaleNames[context.getRandom(0,listOfMaleNames.length)];
 				return malePrefix[context.getRandom(0,malePrefix.length)] + maleSuffix[context.getRandom(0, maleSuffix.length)];
 			}
@@ -104,6 +104,10 @@ public class randomGenerator {
 		else return "empty";
 	}
 	
+	public java.util.List<String> getDomainPool() {
+		return java.util.List.copyOf(conceptPool);
+	}
+
 	public String getAvailableDomains() {
 		String returnValue ="[";
 		for(int i = 0; i<conceptPool.size(); i++)
