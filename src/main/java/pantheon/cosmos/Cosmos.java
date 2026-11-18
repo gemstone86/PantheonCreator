@@ -2,6 +2,8 @@ package pantheon.cosmos;
 
 import java.util.LinkedList;
 
+import pantheon.artifacts.Artifact;
+import pantheon.artifacts.ArtifactType;
 import pantheon.gods.Deity;
 import pantheon.sim.Simulation;
 
@@ -95,6 +97,43 @@ public class Cosmos extends Place{
 		return false;
 	}
 	
+	LinkedList<Artifact> artifacts = new LinkedList<Artifact>();
+
+	/*
+	 * Starts a new artifact of a random type for a deity, named after one of the deity's domains.
+	 */
+	public Artifact startArtifact(Deity creator) {
+		ArtifactType[] types = ArtifactType.values();
+		ArtifactType type = types[context.getRandom(0, types.length)];
+		String noun = type == ArtifactType.OTHER ? "Relic" : type.getLabel();
+		String domain = creator.getDomains().isEmpty() ? "Power"
+				: creator.getDomains().get(context.getRandom(0, creator.getDomains().size()));
+		String name = noun + " of " + domain;
+		if(isArtifactNameTaken(name)) {
+			name = creator.getName() + "'s " + name;
+		}
+		String base = name;
+		for(int number = 2; isArtifactNameTaken(name); number++) {
+			name = base + " " + number;
+		}
+		Artifact artifact = new Artifact(name, type, creator, context.getGeneration());
+		artifacts.add(artifact);
+		return artifact;
+	}
+
+	private boolean isArtifactNameTaken(String name) {
+		for(Artifact artifact:artifacts) {
+			if(artifact.getName().equals(name)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public LinkedList<Artifact> getArtifacts() {
+		return artifacts;
+	}
+
 	public LinkedList<Plane> getPlanes(){
 		return createdPlanes;
 	}

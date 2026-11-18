@@ -22,9 +22,15 @@ public class FindMotivation extends Behaviour {
 				owner.addBehaviour(new FindMate(owner, context));
 				say("I want to find a mate");
 			}
-			if(rnd > 9 && rnd < 40) {
+			if(rnd > 9 && rnd < 35) {
 				owner.addBehaviour(new CreateConcept(owner, context));
 				say("I want to create a concept");
+			}
+			if(rnd >= 35 && rnd < 40) {
+				if(!owner.hasBehaviour(CraftArtifact.class)) {
+					owner.addBehaviour(new CraftArtifact(owner, context));
+					say("I want to craft an artifact");
+				}
 			}
 			if(rnd >= 40 && rnd < 60) {
 				owner.addBehaviour(new CreatePlane(owner, context));

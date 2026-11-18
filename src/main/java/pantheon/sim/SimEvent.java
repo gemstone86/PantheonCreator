@@ -50,6 +50,12 @@ public sealed interface SimEvent {
 		public static final String FLED_CRIMES = "fled their crimes";
 	}
 
+	/* A deity started crafting an artifact. */
+	record ArtifactStarted(int generation, String deityId, String artifact, String type) implements SimEvent {}
+
+	/* A deity finished an artifact; power is the divine rank invested, rankLost what it cost them. */
+	record ArtifactCrafted(int generation, String deityId, String artifact, String type, double power, int rankLost) implements SimEvent {}
+
 	/* A deity's crime score went up. */
 	record CrimeCommitted(int generation, String deityId, int crime) implements SimEvent {}
 

@@ -246,8 +246,18 @@ label { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--dus
 .panel-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
 .empty { color: var(--dust); margin: 0; }
 
-.details { flex: 0 1 auto; max-height: 38%; overflow-y: auto; }
-.planes-panel { flex: 0 1 auto; max-height: 30%; overflow-y: auto; }
+.details { flex: 0 1 auto; max-height: 34%; overflow-y: auto; }
+.planes-panel { flex: 0 1 auto; max-height: 24%; overflow-y: auto; }
+.artifacts-panel { flex: 0 1 auto; max-height: 22%; overflow-y: auto; }
+
+#artifacts { display: grid; gap: 0.7rem; }
+.artifact { display: grid; grid-template-columns: 1.25rem 1fr; gap: 0 0.6rem; align-items: start; }
+.artifact svg { width: 1.25rem; height: 1.25rem; margin-top: 0.15rem; fill: none; stroke: var(--gold); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.artifact h3 { font-family: var(--display); font-weight: 400; font-size: var(--step-1); margin: 0; }
+.artifact p { margin: 0.1rem 0 0; color: var(--dust); font-size: var(--step--1); }
+.artifact.crafting svg { stroke: var(--dust); stroke-dasharray: 2 2; }
+.artifact.unfinished h3 { color: var(--dust); }
+.artifact.unfinished svg { stroke: var(--dust); }
 .details h2 { font-size: var(--step-3); margin-bottom: 0.1rem; }
 .details .who { color: var(--dust); margin: 0 0 0.7rem; }
 .details dl { display: grid; grid-template-columns: auto 1fr; gap: 0.3rem 1rem; margin: 0; }
@@ -299,7 +309,7 @@ label { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--dus
 .chronicle .death { color: var(--female); }
 .chronicle .fight { color: #EE8E7C; }
 .chronicle .error { color: var(--hostile); font-weight: 700; }
-.chronicle .supreme { color: var(--gold-soft); }
+.chronicle .supreme, .chronicle .crafted { color: var(--gold-soft); }
 .crime-bar span { background: var(--hostile); }
 .chronicle .name { font-family: var(--display); }
 
@@ -338,7 +348,7 @@ label { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--dus
 	.fit { position: static; order: -1; align-self: flex-start; margin: 0.5rem 1rem 0; }
 
 	.side { border-left: 0; border-top: 1px solid var(--lapis-line); }
-	.details, .planes-panel { max-height: none; }
+	.details, .planes-panel, .artifacts-panel { max-height: none; }
 	.chronicle-panel { flex-basis: 24rem; height: 24rem; }
 	.domains { flex-direction: column; align-items: flex-start; }
 }

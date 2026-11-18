@@ -197,8 +197,12 @@ public class Simulation {
 		for(Plane plane:theCosmos.getPlanes()) {
 			planes.add(plane.toView());
 		}
+		List<Snapshot.ArtifactView> artifacts = new ArrayList<Snapshot.ArtifactView>();
+		for(pantheon.artifacts.Artifact artifact:theCosmos.getArtifacts()) {
+			artifacts.add(artifact.toView());
+		}
 		return new Snapshot(seed, generation, maxGenerations, isFinished(), deities, planes,
-				List.copyOf(theCosmos.getAllConcepts()), rndGen.getDomainPool());
+				List.copyOf(theCosmos.getAllConcepts()), rndGen.getDomainPool(), artifacts);
 	}
 
 	public void newPantheon() {

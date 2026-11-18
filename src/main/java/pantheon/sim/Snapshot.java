@@ -13,7 +13,12 @@ public record Snapshot(
 		List<DeityView> deities,
 		List<PlaneView> planes,
 		List<String> createdConcepts,
-		List<String> domainPool) {
+		List<String> domainPool,
+		List<ArtifactView> artifacts) {
+
+	/* power is the divine rank invested; finishedIn is null while it is still being crafted. */
+	public record ArtifactView(String name, String type, double power, String creatorId, boolean done,
+			int startedIn, Integer finishedIn) {}
 
 	public record DeityView(
 			String id,

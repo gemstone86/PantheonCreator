@@ -389,6 +389,7 @@
 
 		render();
 		renderPlanes();
+		renderArtifacts();
 		renderDomains();
 		renderDetails();
 		renderGeneration();
@@ -424,6 +425,51 @@
 		)));
 	}
 
+	// small line icons for each kind of artifact, drawn on a 16 x 16 grid
+	const ARTIFACT_ICONS = {
+		Ring: '<circle cx="8" cy="10" r="4.5"/><path d="M6 4 L8 2 L10 4 L8 5.5 Z"/>',
+		Sword: '<path d="M8 1.5 V11.5 M4.5 11 H11.5 M8 11.5 V15"/>',
+		Shield: '<path d="M8 1.5 L13.5 3.5 V8 C13.5 11.5 11 13.5 8 14.8 C5 13.5 2.5 11.5 2.5 8 V3.5 Z"/>',
+		Armor: '<path d="M5 2 H11 L14 4.5 L12 6.5 V14.5 H4 V6.5 L2 4.5 Z M6.5 2 C6.5 4 9.5 4 9.5 2"/>',
+		Staff: '<path d="M3.5 14.5 L11 4"/><circle cx="12.2" cy="2.8" r="1.8"/>',
+		Book: '<path d="M3 2.5 H12.5 V14 H3 Z M5.5 2.5 V14 M7.5 6 H11"/>',
+		Orb: '<circle cx="8" cy="8.5" r="5.5"/><path d="M5.5 6.5 A3 3 0 0 1 8 5"/>',
+		Other: '<path d="M8 1.5 L13.5 8 L8 14.5 L2.5 8 Z"/>',
+	};
+
+	// "a sword", "an orb", "a relic"
+	function aKind(type) {
+		const word = type === 'Other' ? 'relic' : type.toLowerCase();
+		return `${/^[aeiou]/.test(word) ? 'an' : 'a'} ${word}`;
+	}
+
+	function artifactIcon(type) {
+		const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+		icon.setAttribute('viewBox', '0 0 16 16');
+		icon.setAttribute('aria-hidden', 'true');
+		icon.innerHTML = ARTIFACT_ICONS[type] || ARTIFACT_ICONS.Other;
+		return icon;
+	}
+
+	function renderArtifacts() {
+		const container = $('artifacts');
+		const artifacts = [...state.snapshot.artifacts].sort((a, b) => b.startedIn - a.startedIn);
+		if (artifacts.length === 0) {
+			container.replaceChildren(el('p', { class: 'empty' }, 'No god has crafted an artifact yet.'));
+			return;
+		}
+		const creatorAlive = (id) => state.nodes.get(id)?.view.alive;
+		container.replaceChildren(...artifacts.map((a) => {
+			const status = a.done ? 'done' : creatorAlive(a.creatorId) ? 'crafting' : 'unfinished';
+			const line = status === 'done'
+				? [`${a.type}, power ${a.power.toFixed(1)}, crafted by `, godName(a.creatorId), ` in generation ${a.finishedIn}`]
+				: status === 'crafting'
+					? [`${a.type} being crafted by `, godName(a.creatorId), `, ${a.power.toFixed(1)} invested so far`]
+					: [`${a.type} left unfinished when `, godName(a.creatorId), ` died, ${a.power.toFixed(1)} invested`];
+			return el('article', { class: `artifact ${status}` }, artifactIcon(a.type), el('div', {}, el('h3', {}, a.name), el('p', {}, ...line)));
+		}));
+	}
+
 	function renderDomains() {
 		const s = state.snapshot;
 		const created = new Set(s.createdConcepts);
@@ -455,6 +501,7 @@
 			el('button', { type: 'button', class: 'link-button', onclick: () => select(id) }, nameOf(id)),
 		]));
 		const children = state.snapshot.deities.filter((d) => d.parentIds.includes(view.id)).map((d) => d.id);
+		const crafted = state.snapshot.artifacts.filter((a) => a.creatorId === view.id);
 		const feelings = [...view.relations]
 			.sort((a, b) => Math.abs(b.value) - Math.abs(a.value))
 			.slice(0, 6)
@@ -491,6 +538,7 @@
 				el('dt', {}, 'Mates'), el('dd', {}, nameButtons(view.mateIds)),
 				el('dt', {}, 'Children'), el('dd', {}, nameButtons(children)),
 				el('dt', {}, 'Domains'), el('dd', {}, el('ul', { class: 'chips' }, view.domains.map((d) => el('li', {}, d)))),
+				el('dt', {}, 'Artifacts'), el('dd', {}, crafted.length ? el('ul', { class: 'chips' }, crafted.map((a) => el('li', {}, a.done ? a.name : `${a.name} (unfinished)`))) : 'None'),
 				el('dt', {}, 'Feelings'), el('dd', {}, feelings.length ? el('ul', { class: 'chips' }, feelings) : 'Knows no one yet'),
 			),
 		);
@@ -588,6 +636,8 @@
 			else if (e.reason === 'fled their crimes') chronicleEntry('fight', godName(e.deityId), ` fled from ${e.from} to the Void to escape their crimes.`);
 			else chronicleEntry('', godName(e.deityId), ` travelled from ${e.from} to ${e.to}.`);
 		},
+		ArtifactStarted: (e) => chronicleEntry('', godName(e.deityId), ` began crafting the ${e.artifact}.`),
+		ArtifactCrafted: (e) => chronicleEntry('crafted', godName(e.deityId), ` finished the ${e.artifact}, ${aKind(e.type)} of power ${e.power.toFixed(1)}, and lost ${e.rankLost} divine rank.`),
 		CrimeCommitted: (e) => chronicleEntry('fight', godName(e.deityId), ` committed a crime (crime ${e.crime} of 100).`),
 		PlacesConnected: (e) => chronicleEntry('', godName(e.deityId), ` opened a path between ${e.placeA} and ${e.placeB}.`),
 		WorldChanged: (e) => applySnapshot(e.snapshot),

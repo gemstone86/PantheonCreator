@@ -45,6 +45,7 @@ On macOS or Linux, use the Maven wrapper directly: `./mvnw spring-boot:run`, or 
 - **Gods** are circles: size is divine rank, colour is sex, and the gold ring is health. Lines show family, mates (gold, dashed), and strong feelings (green for likes, red for dislikes). Fights flash red. Tick **Fallen gods** to also show dead gods where they died.
 - **Click a god** to see their domains, family and feelings.
 - **Planes** shows each plane being built, who is building it and which concepts it holds.
+- **Artifacts** lists every artifact, newest first: its type, power and maker, or how far it has come while still being crafted.
 - **Chronicle** lists births, deaths, fights and creations. Turn on **Inner thoughts** to see what each god is thinking.
 - **Domains** along the bottom light up gold once a god has created them.
 
@@ -55,6 +56,7 @@ On macOS or Linux, use the Maven wrapper directly: `./mvnw spring-boot:run`, or 
 - From a plane, gods follow its **paths** to other planes. If a plane has no paths, a god who wants to move opens one to another plane, or returns to the Void if there is no other plane.
 - Gods very rarely go **back to the Void** on their own (2% of the times they move from a plane). They go there when **fleeing**: the loser of a fight flees to the Void 30% of the time, and a god whose crimes catch up with them flees there too. Gods don't follow anyone into the Void.
 - **Crime:** now and then a god turns to crime. Their crime score (0–100) then has a 25% chance of rising by 10 each generation. Once it is above 75, they flee to the Void, their score starts over and they stop.
+- **Crafting artifacts:** now and then a god sets out to craft an artifact: a ring, sword, shield, armor, staff, book, orb or other relic, named after one of their domains (for example "Sword of Storms"). Each generation they invest 0.5 to 1 point of divine rank into it, and after each investment there is a 25% chance it is finished. The artifact's power is the total invested; on finishing it the god loses half of that, rounded up. An artifact whose maker dies first stays unfinished. Artifacts are listed on the right. (`DONE_CHANCE` in `CraftArtifact.java`.)
 - **Supreme deity:** each generation there is a 1% chance that a supreme deity comes into being in the Void, at most one per pantheon. It has divine rank 25–30, cannot die (it can be hurt, but never below 1 health), and mostly stays in the Void: it rarely visits a plane, soon returns, and doesn't leave the Void to fight. In the browser it has a gold halo.
 - Gods mostly socialise with, and court, gods **on the same plane**: 80% of the time when anyone suitable is there (`SAME_PLACE_PREFERENCE` in `Simulation.java`).
 - A god who wants to fight someone on another plane **travels there first**.
@@ -86,6 +88,7 @@ src/main/java/pantheon/
   gods/         Deity and Relation
   traits/       Aggressive, Ambitious, Creative, Lustful, Pacifist
   status/       Pregnant and Poisoned
+  artifacts/    Artifacts and their types
   behaviours/   What gods do each generation: find a mate, fight, create, ...
   cosmos/       The cosmos (the Void) and its planes
   web/          Spring Boot app: REST API and live event stream
@@ -101,7 +104,7 @@ The simulation knows nothing about the web. It reports everything that happens a
 | --- | --- |
 | `POST /api/simulations` with `{"seed": 42, "generations": 80}` | Create a simulation (both fields optional) |
 | `GET /api/simulations/{id}` | Seed, generation, and whether it is playing |
-| `GET /api/simulations/{id}/state` | The full current state |
+| `GET /api/simulations/{id}/state` | The full current state, including planes and artifacts |
 | `POST /api/simulations/{id}/step` | Run one generation |
 | `POST /api/simulations/{id}/play?msPerGeneration=1000` | Run continuously |
 | `POST /api/simulations/{id}/pause` | Stop running |

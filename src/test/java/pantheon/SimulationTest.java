@@ -242,6 +242,46 @@ class SimulationTest {
 	}
 
 	@Test
+	void craftingInvestsHalfAPointToAPointEachGenerationAndCostsHalfThePowerRoundedUp() {
+		for(long seed = 1; seed <= 40; seed++) {
+			Simulation simulation = new Simulation(seed, 10);
+			pantheon.gods.Deity crafter = simulation.getListOfDeities().get(0);
+			int rankBefore = crafter.getDvR();
+			pantheon.behaviours.CraftArtifact craft = new pantheon.behaviours.CraftArtifact(crafter, simulation);
+
+			int generations = 1;
+			while(!craft.act()) {
+				generations++;
+				assertThat(generations).isLessThan(200);
+			}
+
+			pantheon.artifacts.Artifact artifact = craft.getArtifact();
+			assertThat(artifact.isDone()).isTrue();
+			assertThat(artifact.getPowerTenths()).isBetween(5 * generations, 10 * generations);
+			int expectedCost = (int) Math.ceil(artifact.getPower() / 2);
+			assertThat(artifact.rankCost()).isEqualTo(expectedCost);
+			assertThat(crafter.getDvR()).isEqualTo(Math.max(0, rankBefore - expectedCost));
+		}
+	}
+
+	@Test
+	void artifactsOfEveryTypeGetCrafted() {
+		java.util.Set<String> types = new java.util.HashSet<String>();
+		int finished = 0;
+		for(long seed = 1; seed <= 100; seed++) {
+			for(Snapshot.ArtifactView artifact:runToEnd(seed, 60).artifacts()) {
+				assertThat(artifact.power()).isPositive();
+				if(artifact.done()) {
+					finished++;
+					types.add(artifact.type());
+				}
+			}
+		}
+		assertThat(finished).isGreaterThan(100);
+		assertThat(types).containsExactlyInAnyOrder("Ring", "Sword", "Shield", "Armor", "Staff", "Book", "Orb", "Other");
+	}
+
+	@Test
 	void sessionStepsUntilFinished() {
 		SimulationSession session = new SimulationSession("test", 5, 3);
 		session.step();
