@@ -12,10 +12,17 @@ import pantheon.sim.Simulation;
 /*
  * Travels to another place.
  * From the Void a god can enter any finished plane. From a plane a god follows the plane's connections;
- * if there are none, the god opens a path to another plane (and travels it next time),
- * or returns to the Void if there is no other plane.
+ * if there are none, the god opens a path to another plane (and travels it next time).
+ * Gods very rarely go back to the Void on their own: only VOID_RETURN_CHANCE percent of the time.
+ * (They also go there when fleeing a fight or their crimes; see Fight and Crime.)
+ * A supreme deity mostly stays in the Void and only now and then visits a plane.
  */
 public class Move extends Behaviour {
+
+	/* Chance in percent that a god on a plane who wants to move goes back to the Void. */
+	public static final int VOID_RETURN_CHANCE = 2;
+	/* Chance in percent that a supreme deity in the Void who wants to move visits a plane. */
+	public static final int SUPREME_WANDER_CHANCE = 15;
 
 	public Move(Deity owner, Simulation context) {
 		super(owner, context);
@@ -27,12 +34,31 @@ public class Move extends Behaviour {
 		Place here = owner.getLocation();
 		LinkedList<Plane> finished = cosmos.getFinishedPlanes();
 
+		if(owner.isSupreme()) {
+			if(here != cosmos) {
+				owner.moveTo(cosmos);
+			}
+			else if(!finished.isEmpty() && context.getRandom(0, 100) < SUPREME_WANDER_CHANCE) {
+				owner.moveTo(finished.get(context.getRandom(0, finished.size())));
+			}
+			else {
+				say("I am content in the Void");
+			}
+			return true;
+		}
+
 		if(here == cosmos) {
 			if(finished.isEmpty()) {
 				say("There is nowhere to go yet; no plane has been finished");
 				return true;
 			}
 			owner.moveTo(finished.get(context.getRandom(0, finished.size())));
+			return true;
+		}
+
+		if(context.getRandom(0, 100) < VOID_RETURN_CHANCE) {
+			say("I long for the Void");
+			owner.moveTo(cosmos);
 			return true;
 		}
 
@@ -45,8 +71,7 @@ public class Move extends Behaviour {
 		LinkedList<Plane> others = new LinkedList<Plane>(finished);
 		others.remove(here);
 		if(others.isEmpty()) {
-			say("There is nowhere to go from " + here.getName() + "; I will return to the Void");
-			owner.moveTo(cosmos);
+			say("There is nowhere to go from " + here.getName() + ", so I will stay");
 			return true;
 		}
 

@@ -152,6 +152,7 @@ label { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--dus
 .swatch.other { background: var(--other); }
 .ring { width: 0.8rem; height: 0.8rem; border-radius: 50%; border: 2px solid var(--gold); }
 .ring.poison { border-color: var(--poison); }
+.halo-swatch { width: 0.9rem; height: 0.9rem; border-radius: 50%; border: 1.5px dashed var(--gold); background: radial-gradient(circle, var(--male) 0 45%, transparent 48%); }
 .mark-swatch { width: 0.8rem; height: 0.8rem; border-radius: 50%; background: radial-gradient(circle, var(--parchment) 0 30%, var(--male) 34%); }
 .line { width: 1.1rem; height: 2px; }
 .line.friendly { background: var(--friendly); }
@@ -198,6 +199,9 @@ label { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--dus
 .node.dead .health, .node.dead .health-track { display: none; }
 .node.dead text { fill: var(--dust); }
 .node.selected .body { stroke: var(--gold); stroke-width: 3; }
+.node .supreme-halo { fill: rgb(212 175 55 / 0.18); stroke: var(--gold); stroke-width: 2.5; stroke-dasharray: 4 3; display: none; }
+.node.supreme .supreme-halo { display: inline; }
+.node.supreme .body { stroke: var(--gold); stroke-width: 2.5; }
 .node .pregnant-mark { fill: var(--parchment); stroke: var(--lapis-deep); stroke-width: 1; display: none; pointer-events: none; }
 .node.pregnant .pregnant-mark { display: inline; }
 .node.poisoned .health { stroke: var(--poison); }
@@ -295,6 +299,8 @@ label { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--dus
 .chronicle .death { color: var(--female); }
 .chronicle .fight { color: #EE8E7C; }
 .chronicle .error { color: var(--hostile); font-weight: 700; }
+.chronicle .supreme { color: var(--gold-soft); }
+.crime-bar span { background: var(--hostile); }
 .chronicle .name { font-family: var(--display); }
 
 /* ---------- domains strip ---------- */

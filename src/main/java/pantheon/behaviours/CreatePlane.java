@@ -50,11 +50,13 @@ public class CreatePlane extends Behaviour {
 			cosmos.finishPlane(plane);
 			say("I'm done with " + plane.getName() + "!");
 			context.emit(new SimEvent.PlaneFinished(context.getGeneration(), plane.getName(), owner.getId()));
-			//the god who finishes a plane makes it their home and settles there
-			if(owner.getHomePlane() == null) {
-				owner.setHomePlane(plane);
+			//the god who finishes a plane makes it their home and settles there; a supreme deity stays in the Void
+			if(!owner.isSupreme()) {
+				if(owner.getHomePlane() == null) {
+					owner.setHomePlane(plane);
+				}
+				owner.moveTo(plane);
 			}
-			owner.moveTo(plane);
 			return true;
 		}
 		say(plane.getName() + " is at " + plane.getProgress() + "%");

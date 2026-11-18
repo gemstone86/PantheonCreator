@@ -42,9 +42,15 @@ public class FindMotivation extends Behaviour {
 				owner.addBehaviour(new Grow(owner, context));
 				say("I need more power!");
 			}
-			if(rnd >= 90) {
+			if(rnd >= 90 && rnd < 96) {
 				owner.addBehaviour(new Move(owner, context));
 				say("I should move!");
+			}
+			if(rnd >= 96) {
+				if(!owner.hasBehaviour(Crime.class)) {
+					owner.addBehaviour(new Crime(owner, context));
+					say("I am tempted by crime...");
+				}
 			}
 		}
 		//aggressive gods go looking for trouble when they aren't busy

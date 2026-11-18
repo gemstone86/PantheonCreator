@@ -174,6 +174,74 @@ class SimulationTest {
 	}
 
 	@Test
+	void supremeDeitiesNeverDieAndStayWithinTheirRank() {
+		int supremes = 0;
+		for(long seed = 1; seed <= 150; seed++) {
+			List<Snapshot.DeityView> found = runToEnd(seed, 100).deities().stream().filter(Snapshot.DeityView::supreme).toList();
+			assertThat(found).as("seed %d", seed).hasSizeLessThanOrEqualTo(1);
+			for(Snapshot.DeityView supreme:found) {
+				assertThat(supreme.alive()).isTrue();
+				assertThat(supreme.divineRank()).isBetween(Simulation.SUPREME_MIN_RANK, Simulation.SUPREME_MAX_RANK);
+			}
+			supremes += found.size();
+		}
+		assertThat(supremes).isGreaterThan(30);
+	}
+
+	@Test
+	void aSupremeDeityCannotBeKilledOrMadeToFlee() {
+		Simulation simulation = new Simulation(4, 10);
+		pantheon.gods.Deity supreme = simulation.createSupremeDeity();
+		supreme.changeHealth(-10_000);
+		supreme.checkDeath();
+		supreme.die("slain", null);
+		supreme.fleeToVoid(SimEvent.DeityMoved.FLED_FIGHT);
+
+		assertThat(supreme.isAlive()).isTrue();
+		assertThat(supreme.getHealth()).isEqualTo(1);
+		assertThat(supreme.getLocation().getName()).isEqualTo(pantheon.cosmos.Cosmos.VOID);
+	}
+
+	@Test
+	void godsRarelyReturnToTheVoidWithoutAReason() {
+		int ordinaryReturns = 0;
+		int moves = 0;
+		for(long seed = 1; seed <= 100; seed++) {
+			Simulation simulation = new Simulation(seed, 80);
+			List<SimEvent.DeityMoved> moved = new ArrayList<SimEvent.DeityMoved>();
+			simulation.addListener(e -> {
+				if(e instanceof SimEvent.DeityMoved m) moved.add(m);
+			});
+			while(!simulation.isFinished()) {
+				simulation.step();
+			}
+			moves += moved.size();
+			ordinaryReturns += moved.stream().filter(m -> m.to().equals(pantheon.cosmos.Cosmos.VOID) && m.reason() == null).count();
+		}
+		assertThat(ordinaryReturns).isLessThan(moves / 20);
+	}
+
+	@Test
+	void crimeAboveTheLimitMakesAGodFleeToTheVoid() {
+		Simulation simulation = new Simulation(6, 10);
+		pantheon.gods.Deity criminal = simulation.getListOfDeities().get(0);
+		pantheon.cosmos.Plane plane = simulation.getCosmos().startBuildingPlane(criminal);
+		plane.construct(200);
+		criminal.moveTo(plane);
+		criminal.addCrime(80);
+		List<SimEvent> events = new ArrayList<SimEvent>();
+		simulation.addListener(events::add);
+
+		boolean finished = new pantheon.behaviours.Crime(criminal, simulation).act();
+
+		assertThat(finished).isTrue();
+		assertThat(criminal.getLocation().getName()).isEqualTo(pantheon.cosmos.Cosmos.VOID);
+		assertThat(criminal.getCrime()).isZero();
+		assertThat(events).anySatisfy(e -> assertThat(e).isInstanceOfSatisfying(SimEvent.DeityMoved.class,
+				m -> assertThat(m.reason()).isEqualTo(SimEvent.DeityMoved.FLED_CRIMES)));
+	}
+
+	@Test
 	void sessionStepsUntilFinished() {
 		SimulationSession session = new SimulationSession("test", 5, 3);
 		session.step();

@@ -41,8 +41,17 @@ public sealed interface SimEvent {
 	/* A deity was poisoned by another. */
 	record Poisoned(int generation, String deityId, String poisonerId) implements SimEvent {}
 
-	/* A deity travelled from one place to another. Places are plane names or Cosmos.VOID. */
-	record DeityMoved(int generation, String deityId, String from, String to) implements SimEvent {}
+	/*
+	 * A deity travelled from one place to another. Places are plane names or Cosmos.VOID.
+	 * reason is null for an ordinary journey, or FLED_FIGHT / FLED_CRIMES when fleeing to the Void.
+	 */
+	record DeityMoved(int generation, String deityId, String from, String to, String reason) implements SimEvent {
+		public static final String FLED_FIGHT = "fled a fight";
+		public static final String FLED_CRIMES = "fled their crimes";
+	}
+
+	/* A deity's crime score went up. */
+	record CrimeCommitted(int generation, String deityId, int crime) implements SimEvent {}
 
 	/* A deity opened a path between two places. */
 	record PlacesConnected(int generation, String deityId, String placeA, String placeB) implements SimEvent {}

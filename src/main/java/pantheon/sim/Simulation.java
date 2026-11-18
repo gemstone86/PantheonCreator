@@ -21,6 +21,11 @@ public class Simulation {
 	public static final int DEFAULT_GENERATIONS = 25;
 	/* Chance in percent that a god socialises with, or courts, someone on the same plane rather than anyone at all. */
 	public static final int SAME_PLACE_PREFERENCE = 80;
+	/* Chance per mille (tenths of a percent) each generation that a supreme deity comes into being, if there is none yet. */
+	public static final int SUPREME_CHANCE_PER_MILLE = 10;
+	/* A supreme deity's divine rank is between these (both included). */
+	public static final int SUPREME_MIN_RANK = 25;
+	public static final int SUPREME_MAX_RANK = 30;
 
 	private LinkedList<Deity> listOfActiveDeities;
 	private LinkedList<Deity> listOfInactiveDeities = new LinkedList<Deity>();
@@ -120,6 +125,9 @@ public class Simulation {
 				createChild(null,null);
 				narrate(null, 0, "WORLD IS NO LONGER EMPTY");
 			}
+		}
+		if(!hasSupremeDeity() && getRandom(0, 1000) < SUPREME_CHANCE_PER_MILLE) {
+			createSupremeDeity();
 		}
 		for(Deity newDeity:nextGeneration) {
 			addDeity(newDeity);
@@ -251,6 +259,32 @@ public class Simulation {
 		}
 		narrate(father, 1, "A new deity is born: " + newDeity.getName());
 		emit(new SimEvent.DeityBorn(generation, newDeity.toView()));
+	}
+
+	/* True if a supreme deity already exists (alive or about to join). A pantheon has at most one. */
+	public boolean hasSupremeDeity() {
+		for(Deity deity:listOfActiveDeities) {
+			if(deity.isSupreme()) return true;
+		}
+		for(Deity deity:nextGeneration) {
+			if(deity.isSupreme()) return true;
+		}
+		for(Deity deity:listOfInactiveDeities) {
+			if(deity.isSupreme()) return true;
+		}
+		return false;
+	}
+
+	/*
+	 * A supreme deity comes into being in the Void and joins at the end of this generation.
+	 */
+	public Deity createSupremeDeity() {
+		Deity deity = buildDeity(null, null);
+		deity.makeSupreme(getRandom(SUPREME_MIN_RANK, SUPREME_MAX_RANK + 1));
+		nextGeneration.add(deity);
+		narrate(null, 0, deity.getName() + ", a supreme deity, has come into being in " + deity.getLocation().getName() + "!");
+		emit(new SimEvent.DeityBorn(generation, deity.toView()));
+		return deity;
 	}
 
 	/*

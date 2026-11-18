@@ -12,6 +12,8 @@ public class Fight extends Behaviour {
 
 	/* Chance in percent that the winner of a fight also poisons the loser. */
 	public static final int POISON_CHANCE = 10;
+	/* Chance in percent that the loser of a fight flees to the Void. */
+	public static final int FLEE_CHANCE = 30;
 
 	private final Deity target;
 
@@ -27,6 +29,14 @@ public class Fight extends Behaviour {
 			return true;
 		}
 		if(!owner.isNear(target)) {
+			if(target.getLocation() == context.getCosmos()) {
+				say(target.getName() + " is hiding in the Void, out of my reach");
+				return true;
+			}
+			if(owner.isSupreme()) {
+				say("I will not leave the Void for " + target.getName());
+				return true;
+			}
 			//go after the target first; the fight happens next turn if they are still there
 			say("I'm going after " + target.getName() + " in " + target.getLocation().getName() + "!");
 			owner.moveTo(target.getLocation());
@@ -45,6 +55,9 @@ public class Fight extends Behaviour {
 					damageToWinner, damageToLoser));
 			poisonMaybe(owner, target);
 			target.checkDeath();
+			if(fleesMaybe(target)) {
+				return true;
+			}
 			return !target.isAlive();
 		}
 		else {
@@ -59,8 +72,20 @@ public class Fight extends Behaviour {
 					damageToWinner, damageToLoser));
 			poisonMaybe(target, owner);
 			target.checkDeath();
+			owner.checkDeath();
+			fleesMaybe(owner);
 			return true;
 		}
+	}
+
+	/* The loser may flee to the Void. Returns true if they did. */
+	private boolean fleesMaybe(Deity loser) {
+		if(loser.isAlive() && !loser.isSupreme() && loser.getLocation() != context.getCosmos()
+				&& context.getRandom(0, 100) < FLEE_CHANCE) {
+			loser.fleeToVoid(SimEvent.DeityMoved.FLED_FIGHT);
+			return true;
+		}
+		return false;
 	}
 
 	private void poisonMaybe(Deity winner, Deity loser) {

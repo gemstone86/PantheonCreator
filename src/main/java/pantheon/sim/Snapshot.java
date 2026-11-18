@@ -40,7 +40,9 @@ public record Snapshot(
 			List<String> statuses,
 			int aggression,
 			int lust,
-			int creativity) {}
+			int creativity,
+			boolean supreme,
+			int crime) {}
 
 	public record RelationView(String targetId, int value) {}
 

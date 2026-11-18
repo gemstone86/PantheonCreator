@@ -53,6 +53,9 @@ On macOS or Linux, use the Maven wrapper directly: `./mvnw spring-boot:run`, or 
 - Gods start in **the Void**, the space between the planes. From there they can enter any finished plane.
 - The god who finishes a plane makes it their **home plane** and moves there.
 - From a plane, gods follow its **paths** to other planes. If a plane has no paths, a god who wants to move opens one to another plane, or returns to the Void if there is no other plane.
+- Gods very rarely go **back to the Void** on their own (2% of the times they move from a plane). They go there when **fleeing**: the loser of a fight flees to the Void 30% of the time, and a god whose crimes catch up with them flees there too. Gods don't follow anyone into the Void.
+- **Crime:** now and then a god turns to crime. Their crime score (0–100) then has a 25% chance of rising by 10 each generation. Once it is above 75, they flee to the Void, their score starts over and they stop.
+- **Supreme deity:** each generation there is a 1% chance that a supreme deity comes into being in the Void, at most one per pantheon. It has divine rank 25–30, cannot die (it can be hurt, but never below 1 health), and mostly stays in the Void: it rarely visits a plane, soon returns, and doesn't leave the Void to fight. In the browser it has a gold halo.
 - Gods mostly socialise with, and court, gods **on the same plane**: 80% of the time when anyone suitable is there (`SAME_PLACE_PREFERENCE` in `Simulation.java`).
 - A god who wants to fight someone on another plane **travels there first**.
 - Gods don't risk dying of old age before 20; after that the risk grows by half a percentage point a year (`OLD_AGE_START` and `OLD_AGE_RISK_PER_YEAR` in `Deity.java`).

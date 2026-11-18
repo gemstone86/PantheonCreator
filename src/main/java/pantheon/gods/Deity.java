@@ -29,6 +29,11 @@ public class Deity {
 	private LinkedList<Trait> traits = new LinkedList<Trait>();
 	private LinkedList<Status> statuses = new LinkedList<Status>();
 
+	//a supreme deity cannot die and prefers to stay in the Void
+	private boolean supreme = false;
+	//0 to 100; see the Crime behaviour
+	private int crime = 0;
+
 	private boolean alive = true;
 	private String name;
 	private LinkedList<String> domains = new LinkedList<String>();
@@ -226,6 +231,9 @@ public class Deity {
 	 * Checks whether this deity has run out of health and, if so, marks it as slain.
 	 */
 	public void checkDeath() {
+		if(supreme) {
+			return;
+		}
 		if(this.alive && this.health <= 0) {
 			if(last_attacker != null) {
 				context.narrate(this, 1, this.getName() + " was slain by " + last_attacker.getName() + "!");
@@ -241,6 +249,9 @@ public class Deity {
 	 * Marks this deity as dead, records why, and moves it out of the active pantheon at the end of the generation.
 	 */
 	public void die(String cause, Deity killer) {
+		if(supreme) {
+			return;
+		}
 		if(!alive) {
 			return;
 		}
@@ -376,6 +387,15 @@ public class Deity {
 		}
 		mateFound = false;
 
+		if(supreme) {
+			//a supreme deity never ages to death, and soon goes back to the Void after visiting a plane
+			if(location != context.getCosmos() && context.getRandom(0, 100) < SUPREME_HOMESICKNESS) {
+				context.narrate(this, 1, "I return to the Void, where I belong");
+				moveTo(context.getCosmos());
+			}
+			return false;
+		}
+
 		//check if deity has died of old age
 		if(diesOfOldAge()) {
 			this.addBehaviour(new Die(this, context));
@@ -413,6 +433,9 @@ public class Deity {
 		
 		if(!alive) {
 			status = "Dead ";
+		}
+		if(supreme) {
+			status = "Supreme ";
 		}
 		
 		String returnString = "\t"+this.getName() + " (DvR " + this.getDvR()+")" + " (" + getSexualityNoun(gender, sexuality) + " " +status+this.getGenderPronoun(this.getGender()) +", agg " + aggression + ") " + " "+this.getDomains().toString();
@@ -465,12 +488,19 @@ public class Deity {
 	}
 
 	public void setDvr(int i) {
+		//a supreme deity's rank stays within the supreme range
+		if(supreme) {
+			i = Math.max(Simulation.SUPREME_MIN_RANK, Math.min(Simulation.SUPREME_MAX_RANK, i));
+		}
 		this.divineRank = i;
 		
 	}
 
 	public void changeHealth(int i) {
 		health += i;
+		if(supreme && health < 1) {
+			health = 1;
+		}
 	}
 	
 	public Place getLocation() {
@@ -500,7 +530,60 @@ public class Deity {
 		Place from = location;
 		location = destination;
 		context.narrate(this, 1, "I have travelled from " + from.getName() + " to " + destination.getName());
-		context.emit(new SimEvent.DeityMoved(context.getGeneration(), id, from.getName(), destination.getName()));
+		context.emit(new SimEvent.DeityMoved(context.getGeneration(), id, from.getName(), destination.getName(), null));
+	}
+
+	/*
+	 * Flees to the Void, e.g. after losing a fight. A supreme deity never needs to flee.
+	 * reason is SimEvent.DeityMoved.FLED_FIGHT or FLED_CRIMES.
+	 */
+	public void fleeToVoid(String reason) {
+		Place from = location;
+		if(supreme || from == context.getCosmos()) {
+			return;
+		}
+		location = context.getCosmos();
+		context.narrate(this, 1, "I flee from " + from.getName() + " to the Void!");
+		context.emit(new SimEvent.DeityMoved(context.getGeneration(), id, from.getName(), location.getName(), reason));
+	}
+
+	/* Chance in percent each generation that a supreme deity on a plane goes back to the Void. */
+	public static final int SUPREME_HOMESICKNESS = 50;
+
+	/*
+	 * Makes this deity a supreme deity: immortal, with the given divine rank.
+	 */
+	public void makeSupreme(int divineRank) {
+		this.supreme = true;
+		this.divineRank = divineRank;
+		this.health = Math.max(health, 100 + divineRank);
+		this.maxHealth = Math.max(maxHealth, health);
+	}
+
+	public boolean isSupreme() {
+		return supreme;
+	}
+
+	public int getCrime() {
+		return crime;
+	}
+
+	public void addCrime(int amount) {
+		crime = Math.max(0, Math.min(100, crime + amount));
+	}
+
+	public void resetCrime() {
+		crime = 0;
+	}
+
+	/* True if the deity already has a behaviour of this kind. */
+	public boolean hasBehaviour(Class<? extends Behaviour> kind) {
+		for(Behaviour behaviour:behaviours) {
+			if(kind.isInstance(behaviour)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/* Places a newborn where it was born, without reporting a journey. */
@@ -544,7 +627,7 @@ public class Deity {
 				location == null ? null : location.getName(),
 				homeplane == null ? null : homeplane.getName(),
 				List.copyOf(domains), parentIds, mateIds, relationViews,
-				traitNames(), statusDescriptions(), aggression, lust, creativity);
+				traitNames(), statusDescriptions(), aggression, lust, creativity, supreme, crime);
 	}
 
 	private List<String> traitNames() {

@@ -293,6 +293,7 @@
 				event.stopPropagation();
 				select(d.id);
 			});
+		entering.append('circle').attr('class', 'supreme-halo');
 		entering.append('circle').attr('class', 'health-track');
 		entering.append('circle').attr('class', 'health').attr('transform', 'rotate(-90)');
 		entering.append('circle').attr('class', 'body').attr('r', reducedMotion ? radius : 0);
@@ -306,7 +307,8 @@
 		const all = entering.merge(nodeSel);
 		const hasStatus = (d, name) => d.view.statuses.some((s) => s.startsWith(name));
 		all.attr('class', (d) => `node ${sexClass(d.view.sex)}${d.view.alive ? '' : ' dead'}${d.id === state.selectedId ? ' selected' : ''}`
-			+ `${hasStatus(d, 'pregnant') ? ' pregnant' : ''}${hasStatus(d, 'poisoned') ? ' poisoned' : ''}`);
+			+ `${hasStatus(d, 'pregnant') ? ' pregnant' : ''}${hasStatus(d, 'poisoned') ? ' poisoned' : ''}${d.view.supreme ? ' supreme' : ''}`);
+		all.select('.supreme-halo').attr('r', (d) => radius(d) + 14);
 		nodeSel.select('.body').attr('r', radius);
 		all.select('.health-track').attr('r', (d) => radius(d) + 4);
 		all.select('.health')
@@ -317,7 +319,7 @@
 				return `${circumference * fraction} ${circumference}`;
 			});
 		all.select('text').attr('y', (d) => radius(d) + 17).text((d) => d.view.name);
-		all.select('title').text((d) => [`${d.view.name}, divine rank ${d.view.divineRank}${d.view.alive ? '' : ' (fallen)'}`,
+		all.select('title').text((d) => [`${d.view.name}, ${d.view.supreme ? 'supreme deity, ' : ''}divine rank ${d.view.divineRank}${d.view.alive ? '' : ' (fallen)'}`,
 			d.view.traits.join(', '), ...d.view.statuses].filter(Boolean).join('\n'));
 
 		simulation.nodes(visible);
@@ -467,13 +469,16 @@
 
 		panel.replaceChildren(
 			el('h2', {}, view.name),
-			el('p', { class: 'who' }, `${view.gender}, ${view.sexuality.toLowerCase()}`),
+			el('p', { class: 'who' }, `${view.supreme ? 'Supreme deity, ' : ''}${view.supreme ? view.gender.toLowerCase() : view.gender}, ${view.sexuality.toLowerCase()}`),
 			el('dl', {},
 				el('dt', {}, 'Traits'), el('dd', {}, view.traits.length ? el('ul', { class: 'chips' }, view.traits.map((t) => el('li', {}, t))) : 'None'),
 				el('dt', {}, 'Temperament'), el('dd', {}, `Aggression ${view.aggression}, lust ${view.lust}, creativity ${view.creativity}`),
 				view.statuses.length ? el('dt', {}, 'Right now') : null,
 				view.statuses.length ? el('dd', {}, el('ul', { class: 'chips' }, view.statuses.map((s) => el('li', { class: `status ${s.split(',')[0]}` }, s)))) : null,
 				el('dt', {}, 'Divine rank'), el('dd', {}, view.divineRank),
+				view.crime > 0 ? el('dt', {}, 'Crime') : null,
+				view.crime > 0 ? el('dd', {}, `${view.crime} of 100`,
+					el('div', { class: 'health-bar crime-bar' }, el('span', { style: `width:${view.crime}%` }))) : null,
 				el('dt', {}, view.alive ? 'Health' : 'Fate'), el('dd', {}, view.alive
 					? [`${Math.max(view.health, 0)} of ${view.maxHealth}`,
 						el('div', { class: 'health-bar' }, el('span', { style: `width:${Math.max(0, Math.min(100, (100 * view.health) / view.maxHealth))}%` }))]
@@ -552,7 +557,8 @@
 		},
 		DeityBorn: (e) => {
 			state.names.set(e.deity.id, e.deity.name);
-			if (e.deity.parentIds.length === 0) chronicleEntry('', godName(e.deity.id), ` appeared in ${e.deity.location}.`);
+			if (e.deity.supreme) chronicleEntry('supreme', godName(e.deity.id), `, a supreme deity, came into being in ${e.deity.location}.`);
+			else if (e.deity.parentIds.length === 0) chronicleEntry('', godName(e.deity.id), ` appeared in ${e.deity.location}.`);
 			else chronicleEntry('', godName(e.deity.id), ' was born to ', ...listOfNames(e.deity.parentIds), '.');
 		},
 		DeityDied: (e) => {
@@ -577,7 +583,12 @@
 		},
 		PlaneStarted: (e) => chronicleEntry('', godName(e.creatorId), ` began shaping the plane ${e.plane}.`),
 		PlaneFinished: (e) => chronicleEntry('', `The plane ${e.plane} was completed by `, godName(e.finisherId), '.'),
-		DeityMoved: (e) => chronicleEntry('', godName(e.deityId), ` travelled from ${e.from} to ${e.to}.`),
+		DeityMoved: (e) => {
+			if (e.reason === 'fled a fight') chronicleEntry('fight', godName(e.deityId), ` lost a fight and fled from ${e.from} to the Void.`);
+			else if (e.reason === 'fled their crimes') chronicleEntry('fight', godName(e.deityId), ` fled from ${e.from} to the Void to escape their crimes.`);
+			else chronicleEntry('', godName(e.deityId), ` travelled from ${e.from} to ${e.to}.`);
+		},
+		CrimeCommitted: (e) => chronicleEntry('fight', godName(e.deityId), ` committed a crime (crime ${e.crime} of 100).`),
 		PlacesConnected: (e) => chronicleEntry('', godName(e.deityId), ` opened a path between ${e.placeA} and ${e.placeB}.`),
 		WorldChanged: (e) => applySnapshot(e.snapshot),
 		Error: (message) => chronicleEntry('error', message),
